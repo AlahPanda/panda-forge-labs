@@ -1,0 +1,59 @@
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { HelmetProvider } from "react-helmet-async";
+import { Toaster as Sonner } from "@/components/ui/sonner";
+import { Toaster } from "@/components/ui/toaster";
+import { TooltipProvider } from "@/components/ui/tooltip";
+import { ThemeProvider } from "@/lib/theme";
+import { I18nProvider } from "@/lib/i18n";
+import CookieConsent from "@/components/CookieConsent";
+
+import Home from "./pages/Home";
+import Modpacks from "./pages/Modpacks";
+import ModpackDetail from "./pages/ModpackDetail";
+import News from "./pages/News";
+import NewsArticle from "./pages/NewsArticle";
+import Faq from "./pages/Faq";
+import About from "./pages/About";
+import Legal from "./pages/Legal";
+import Support from "./pages/Support";
+import AdminLogin from "./pages/admin/AdminLogin";
+import AdminEditor from "./pages/admin/AdminEditor";
+import NotFound from "./pages/NotFound";
+
+const queryClient = new QueryClient();
+
+const App = () => (
+  <QueryClientProvider client={queryClient}>
+    <HelmetProvider>
+    <ThemeProvider>
+      <I18nProvider>
+        <TooltipProvider>
+          <Toaster />
+          <Sonner />
+          <CookieConsent />
+          <BrowserRouter>
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/modpacks" element={<Modpacks />} />
+              <Route path="/modpacks/:slug" element={<ModpackDetail />} />
+              <Route path="/news" element={<News />} />
+              <Route path="/news/:slug" element={<NewsArticle />} />
+              <Route path="/faq" element={<Faq />} />
+              <Route path="/about" element={<About />} />
+              <Route path="/legal/privacy" element={<Legal kind="privacy" />} />
+              <Route path="/legal/terms" element={<Legal kind="terms" />} />
+              <Route path="/support" element={<Support />} />
+              <Route path="/admin" element={<AdminLogin />} />
+              <Route path="/admin/editor" element={<AdminEditor />} />
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </BrowserRouter>
+        </TooltipProvider>
+      </I18nProvider>
+    </ThemeProvider>
+    </HelmetProvider>
+  </QueryClientProvider>
+);
+
+export default App;

@@ -1,0 +1,46 @@
+{
+  "articles": [
+    {
+      "slug": "mac-native-1-4-2-released",
+      "title": "Mac Native 1.4.2 — Sodium 0.6 and the M1 stutter fix",
+      "excerpt": "We tracked a long-standing frame pacing issue on the original M1 down to a single shader compilation path. Here's what changed.",
+      "body": "After three weeks of profiling with Xcode Instruments, we narrowed the M1 stutter to a synchronous Metal shader compile during chunk loads. The fix shipped in Sodium 0.6 and we've validated it across M1, M1 Pro, and M2 hardware.\n\nFrame times in the 99th percentile dropped from 24ms to 9ms in our standard flythrough test.",
+      "category": "Release Notes",
+      "modpackSlug": "mac-native",
+      "author": "Tomás",
+      "publishedAt": "2025-04-12",
+      "readMinutes": 4,
+      "featured": true,
+      "draft": false,
+      "tags": ["release", "performance", "mac-native"]
+    },
+    {
+      "slug": "astralrinth-beta-impressions",
+      "title": "Astralrinth enters open beta — what to expect",
+      "excerpt": "243 mods, 7 chapters of quest content, and a constellation system that actually feels like progression.",
+      "body": "Astralrinth has been in private testing for four months. We're opening the beta today with a clear roadmap to 1.0 in Q3.",
+      "category": "Announcement",
+      "modpackSlug": "astralrinth",
+      "author": "Sofia",
+      "publishedAt": "2025-04-18",
+      "readMinutes": 6,
+      "featured": true,
+      "draft": false,
+      "tags": ["beta", "astralrinth"]
+    },
+    {
+      "slug": "why-we-pin-mod-versions",
+      "title": "Why we pin every mod version (and you should too)",
+      "excerpt": "A quick note on reproducibility, supply-chain hygiene, and the lockfile workflow we use for every release.",
+      "body": "Every modpack we ship has a lockfile. Here's our reasoning and the tooling we use.",
+      "category": "Engineering",
+      "modpackSlug": null,
+      "author": "Tomás",
+      "publishedAt": "2025-03-28",
+      "readMinutes": 5,
+      "featured": false,
+      "draft": false,
+      "tags": ["engineering", "process"]
+    }
+  ]
+}

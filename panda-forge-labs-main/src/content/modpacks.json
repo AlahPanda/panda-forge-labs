@@ -1,0 +1,136 @@
+{
+  "modpacks": [
+    {
+      "slug": "mac-native",
+      "name": "Mac Native",
+      "tagline": "Apple Silicon, unlocked.",
+      "summary": "A meticulously tuned modpack engineered for Apple Silicon. Native ARM64 paths, Metal-accelerated rendering, zero Rosetta overhead.",
+      "description": "Mac Native is the first modpack designed from the ground up for the M-series chip. Every mod has been audited for ARM64 compatibility, JVM flags are tuned for unified memory, and shaders fall back gracefully on integrated GPUs.",
+      "version": "1.4.2",
+      "mcVersion": "1.21.1",
+      "loader": "Fabric 0.16.5",
+      "modCount": 187,
+      "tags": ["performance", "Mac", "Fabric"],
+      "accent": "190 95% 55%",
+      "featured": true,
+      "trending": true,
+      "downloads": "8.2k",
+      "rating": 4.9,
+      "layoutType": "performance",
+      "downloadLinks": {
+        "modrinth": "https://modrinth.com/modpack/mac-native",
+        "curseforge": "https://www.curseforge.com/minecraft/modpacks/mac-native",
+        "github": "https://github.com/alahpanda/mac-native/releases/latest",
+        "mirror": "https://cdn.alahpandalabs.dev/mac-native-latest.mrpack"
+      },
+      "benchmarks": [
+        { "label": "M1 Pro", "vanilla": 62, "fabulous": 41, "modded": 138 },
+        { "label": "M2", "vanilla": 71, "fabulous": 48, "modded": 156 },
+        { "label": "M3 Max", "vanilla": 92, "fabulous": 64, "modded": 214 },
+        { "label": "M4", "vanilla": 88, "fabulous": 60, "modded": 198 }
+      ],
+      "features": [],
+      "specs": {
+        "minRam": "4 GB",
+        "recommendedRam": "8 GB",
+        "javaVersion": "21",
+        "size": "412 MB"
+      },
+      "installGuide": "## Installation — Mac Native\n\n### 1. Install a launcher\nDownload **Prism Launcher** (recommended) or the official Minecraft launcher.\n\n### 2. Install Java 21 (ARM64)\n```bash\nbrew install --cask temurin@21\n```\n\n### 3. Import the modpack\n- Open Prism → *Add Instance* → *Import from Modrinth*\n- Paste: `https://modrinth.com/modpack/mac-native`\n\n### 4. Allocate RAM\nIn instance settings, set **8 GB** maximum heap.\n\n### 5. Launch\nFirst boot compiles shaders — give it ~60s. Subsequent boots are instant.",
+      "changelog": [
+        { "version": "1.4.2", "date": "2025-04-12", "notes": "Sodium 0.6 update, fixed shader stutter on M1." },
+        { "version": "1.4.0", "date": "2025-03-01", "notes": "Added 12 quality-of-life mods, removed deprecated forks." }
+      ]
+    },
+    {
+      "slug": "crafttoons",
+      "name": "CraftToons",
+      "tagline": "A cel-shaded sandbox.",
+      "summary": "Saturday-morning cartoon vibes meet hardcore mod content. Vivid shaders, custom textures, friendly mobs.",
+      "description": "CraftToons reimagines vanilla Minecraft as a cel-shaded animated world. Bundled with a curated shader, custom resource pack, and 140+ mods that lean into the playful aesthetic without sacrificing depth.",
+      "version": "2.1.0",
+      "mcVersion": "1.20.1",
+      "loader": "Forge 47.3.0",
+      "modCount": 142,
+      "tags": ["aesthetic", "Windows", "Forge"],
+      "accent": "32 95% 60%",
+      "featured": true,
+      "trending": false,
+      "downloads": "3.1k",
+      "rating": 4.7,
+      "layoutType": "immersion",
+      "downloadLinks": {
+        "modrinth": "https://modrinth.com/modpack/crafttoons",
+        "curseforge": "https://www.curseforge.com/minecraft/modpacks/crafttoons",
+        "github": "https://github.com/alahpanda/crafttoons/releases/latest",
+        "mirror": "https://cdn.alahpandalabs.dev/crafttoons-latest.zip"
+      },
+      "benchmarks": [
+        { "label": "GTX 1660", "vanilla": 110, "fabulous": 70, "modded": 78 },
+        { "label": "RTX 3060", "vanilla": 165, "fabulous": 105, "modded": 124 },
+        { "label": "RTX 4070", "vanilla": 240, "fabulous": 160, "modded": 188 },
+        { "label": "M2 Pro", "vanilla": 95, "fabulous": 60, "modded": 72 }
+      ],
+      "features": [
+        { "title": "Custom cel-shader", "description": "A bespoke shader pipeline that strips PBR and replaces lighting with hand-painted gradients.", "icon": "Palette" },
+        { "title": "1024× textures", "description": "Every block re-drawn at 1024px with hand-inked outlines, optimized for Embeddium streaming.", "icon": "Image" },
+        { "title": "Toon mob skins", "description": "All 87 vanilla mobs reskinned with exaggerated proportions and animated facial rigs.", "icon": "Smile" },
+        { "title": "Soundtrack overhaul", "description": "Original 24-track score by indie composer Mira Voss. Dynamic intensity, looping cleanly.", "icon": "Music" },
+        { "title": "World gen tweaks", "description": "Saturated biomes, oversized flora, animated cloud layers. Built on Terralith presets.", "icon": "Mountain" },
+        { "title": "Family-friendly chat", "description": "Built-in profanity filter and child-mode toggle. Perfect for shared family realms.", "icon": "Shield" }
+      ],
+      "specs": {
+        "minRam": "6 GB",
+        "recommendedRam": "10 GB",
+        "javaVersion": "17",
+        "size": "780 MB"
+      },
+      "installGuide": "## Installation — CraftToons\n\n### 1. Get the launcher\nUse the **CurseForge App** for the smoothest experience with Forge modpacks.\n\n### 2. Install Java 17\nIncluded automatically by CurseForge — no extra steps.\n\n### 3. Import\nSearch *CraftToons* in the modpack browser → **Install**.\n\n### 4. Allocate RAM\nSet **10 GB** in profile settings for the full 1024× texture experience.\n\n### 5. Enable shaders\nThe cel-shader is bundled. Open *Video Settings → Shaders* and select **CraftToons.zip**.",
+      "changelog": [
+        { "version": "2.1.0", "date": "2025-04-02", "notes": "New cel-shader, 8 new toon-style mob skins." },
+        { "version": "2.0.0", "date": "2025-01-15", "notes": "Major overhaul, dropped Optifine for Embeddium." }
+      ]
+    },
+    {
+      "slug": "astralrinth",
+      "name": "Astralrinth",
+      "tagline": "Cosmic exploration, refined.",
+      "summary": "Deep space dimensions, magic systems, and progression that respects your time. Built around Ad Astra and Astral Sorcery.",
+      "description": "Astralrinth is a 240-mod expedition through interplanetary travel and constellation-based magic. Carefully balanced quest progression, JEI integration, and a custom main menu skybox.",
+      "version": "0.9.4",
+      "mcVersion": "1.20.1",
+      "loader": "NeoForge 21.1.95",
+      "modCount": 243,
+      "tags": ["exploration", "Windows", "Forge"],
+      "accent": "265 80% 65%",
+      "featured": true,
+      "trending": true,
+      "downloads": "1.1k",
+      "rating": 4.8,
+      "layoutType": "standard",
+      "downloadLinks": {
+        "modrinth": "https://modrinth.com/modpack/astralrinth",
+        "curseforge": "https://www.curseforge.com/minecraft/modpacks/astralrinth",
+        "github": "https://github.com/alahpanda/astralrinth/releases/latest",
+        "mirror": "https://cdn.alahpandalabs.dev/astralrinth-latest.mrpack"
+      },
+      "benchmarks": [
+        { "label": "RTX 3070", "vanilla": 180, "fabulous": 120, "modded": 95 },
+        { "label": "RTX 4080", "vanilla": 280, "fabulous": 190, "modded": 162 },
+        { "label": "RX 7800 XT", "vanilla": 220, "fabulous": 150, "modded": 134 },
+        { "label": "M3 Max", "vanilla": 140, "fabulous": 95, "modded": 88 }
+      ],
+      "features": [],
+      "specs": {
+        "minRam": "8 GB",
+        "recommendedRam": "12 GB",
+        "javaVersion": "21",
+        "size": "1.4 GB"
+      },
+      "installGuide": "## Installation — Astralrinth\n\n### 1. Use Prism Launcher\nNeoForge support is best in **Prism**.\n\n### 2. Install Java 21\nVia your package manager or [Adoptium](https://adoptium.net).\n\n### 3. Import from Modrinth\nPaste the Modrinth URL into Prism's import dialog.\n\n### 4. Allocate 12 GB RAM\nThis pack uses chunky world-gen — don't undershoot.\n\n### 5. Quest book\nFirst spawn → check inventory for the **Cosmic Codex**. Right-click to open.",
+      "changelog": [
+        { "version": "0.9.4", "date": "2025-04-18", "notes": "Beta release. Quest book complete to chapter 7." }
+      ]
+    }
+  ]
+}

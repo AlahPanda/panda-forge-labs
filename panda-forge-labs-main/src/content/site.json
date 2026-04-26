@@ -1,0 +1,31 @@
+{
+  "site": {
+    "name": "AlahPanda Labs",
+    "tagline": "Engineering premium Minecraft modpacks.",
+    "description": "A modern hub for performance-tuned Minecraft modpacks. Built by tinkerers, for tinkerers.",
+    "discordUrl": "https://discord.gg/alahpanda",
+    "githubUrl": "https://github.com/alahpanda",
+    "supportUrl": "https://ko-fi.com/alahpanda",
+    "contactEmail": "hello@alahpandalabs.dev",
+    "social": {
+      "twitter": "https://twitter.com/alahpanda",
+      "youtube": "https://youtube.com/@alahpanda",
+      "twitch": ""
+    },
+    "stats": {
+      "downloads": "12.4k",
+      "modpacks": "3",
+      "members": "2.1k",
+      "buildsShipped": "47"
+    },
+    "ads": {
+      "adsenseEnabled": false,
+      "adsenseClient": "",
+      "showSupportButton": true
+    },
+    "popups": {
+      "discordOnDownload": true,
+      "newsletterDelaySec": 30
+    }
+  }
+}

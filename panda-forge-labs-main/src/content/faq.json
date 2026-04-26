@@ -1,0 +1,29 @@
+{
+  "categories": [
+    {
+      "id": "general",
+      "title": "General",
+      "items": [
+        { "q": "Are AlahPanda modpacks free?", "a": "Yes. Every modpack is free to download. Support buttons exist if you'd like to fund continued development." },
+        { "q": "Do I need a Minecraft account?", "a": "Yes — a paid Java Edition account from Mojang is required." },
+        { "q": "Which launcher should I use?", "a": "Modrinth App or Prism Launcher are recommended. CurseForge App also works for our Forge packs." }
+      ]
+    },
+    {
+      "id": "performance",
+      "title": "Performance",
+      "items": [
+        { "q": "Why does my framerate drop in modded?", "a": "Modded Minecraft is CPU-bound on most systems. Allocate appropriate RAM (see each modpack's specs) and use the recommended Java version." },
+        { "q": "Does Mac Native really run better on Apple Silicon?", "a": "Yes — every mod is tested on ARM64 native paths. Avoid Rosetta-only forks." }
+      ]
+    },
+    {
+      "id": "support",
+      "title": "Support",
+      "items": [
+        { "q": "Where do I report a bug?", "a": "Open an issue on the modpack's GitHub repository, or ping us in Discord." },
+        { "q": "Can I redistribute or stream?", "a": "Streaming is encouraged. Redistribution requires written permission." }
+      ]
+    }
+  ]
+}
