@@ -1,18 +1,24 @@
 import SiteLayout from '@/components/layout/SiteLayout';
 import Seo from '@/components/Seo';
 import { site } from '@/content';
+import { useSearchParams } from 'react-router-dom';
+import type { ReactNode } from 'react';
 
-interface Props { kind: 'privacy' | 'terms' }
+type LegalKind = 'privacy' | 'terms';
 
-function LegalParagraph({ children }: { children: React.ReactNode }) {
+interface Props {
+  kind?: LegalKind;
+}
+
+function LegalParagraph({ children }: { children: ReactNode }) {
   return <p className="mt-3 text-zinc-400">{children}</p>;
 }
 
-function LegalList({ children }: { children: React.ReactNode }) {
+function LegalList({ children }: { children: ReactNode }) {
   return <ul className="mt-3 list-disc space-y-2 pl-6 text-zinc-400">{children}</ul>;
 }
 
-function LegalSection({ title, children }: { title: string; children: React.ReactNode }) {
+function LegalSection({ title, children }: { title: string; children: ReactNode }) {
   return (
     <section className="mt-10">
       <h2 className="text-2xl font-semibold tracking-tight">{title}</h2>
@@ -175,7 +181,12 @@ function TermsContent() {
 }
 
 export default function Legal({ kind }: Props) {
-  const isPrivacy = kind === 'privacy';
+  const [searchParams] = useSearchParams();
+  const kindFromQuery = searchParams.get('kind');
+  const resolvedKind: LegalKind =
+    kind ?? (kindFromQuery === 'privacy' || kindFromQuery === 'terms' ? kindFromQuery : 'privacy');
+
+  const isPrivacy = resolvedKind === 'privacy';
   const contactEmail =
     (import.meta.env.VITE_CONTACT_EMAIL as string | undefined) ||
     (import.meta.env.VITE_SUPPORT_EMAIL as string | undefined) ||

@@ -1,5 +1,5 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import { HelmetProvider } from "react-helmet-async";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { Toaster } from "@/components/ui/toaster";
@@ -41,8 +41,9 @@ const App = () => (
               <Route path="/news/:slug" element={<NewsArticle />} />
               <Route path="/faq" element={<Faq />} />
               <Route path="/about" element={<About />} />
-              <Route path="/legal/privacy" element={<Legal kind="privacy" />} />
-              <Route path="/legal/terms" element={<Legal kind="terms" />} />
+              <Route path="/legal" element={<Legal />} />
+              <Route path="/legal/privacy" element={<Navigate to="/legal?kind=privacy" replace />} />
+              <Route path="/legal/terms" element={<Navigate to="/legal?kind=terms" replace />} />
               <Route path="/support" element={<Support />} />
               <Route path="/admin" element={<AdminLogin />} />
               <Route path="/admin/editor" element={<AdminEditor />} />

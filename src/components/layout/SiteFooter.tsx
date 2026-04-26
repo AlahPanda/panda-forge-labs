@@ -38,8 +38,8 @@ export default function SiteFooter() {
         <div>
           <div className="label-mono mb-3">{t('footer.legal')}</div>
           <ul className="space-y-2 text-sm">
-            <li><Link to="/legal/privacy" className="hover:text-signal transition-colors">{t('footer.privacy')}</Link></li>
-            <li><Link to="/legal/terms" className="hover:text-signal transition-colors">{t('footer.terms')}</Link></li>
+            <li><Link to="/legal?kind=privacy" className="text-zinc-400 hover:text-white transition-colors">{t('footer.privacy')}</Link></li>
+            <li><Link to="/legal?kind=terms" className="text-zinc-400 hover:text-white transition-colors">{t('footer.terms')}</Link></li>
             <li><a href={`mailto:${site.contactEmail}`} className="hover:text-signal transition-colors">{site.contactEmail}</a></li>
           </ul>
         </div>
