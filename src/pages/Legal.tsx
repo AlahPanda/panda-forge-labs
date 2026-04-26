@@ -150,7 +150,7 @@ function TermsContent() {
         </LegalParagraph>
       </LegalSection>
 
-      <LegalSection title="3. Isenção de responsabilidade (\"as is\")">
+      <LegalSection title='3. Isenção de responsabilidade ("as is")'>
         <LegalParagraph>
           O website é disponibilizado <strong>“as is”</strong> e <strong>“conforme disponível”</strong>, sem garantias de qualquer natureza, expressas ou implícitas,
           incluindo, sem limitar, garantias de disponibilidade contínua, ausência de erros ou adequação a um fim específico.
