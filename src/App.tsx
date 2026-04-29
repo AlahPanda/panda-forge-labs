@@ -18,6 +18,7 @@ import About from "./pages/About";
 import Legal from "./pages/Legal";
 import Support from "./pages/Support";
 import Launchers from "./pages/Launchers";
+import LauncherDetail from "./pages/LauncherDetail";
 import AdminLogin from "./pages/admin/AdminLogin";
 import AdminEditor from "./pages/admin/AdminEditor";
 import NotFound from "./pages/NotFound";
@@ -41,6 +42,7 @@ const App = () => (
               <Route path="/news" element={<News />} />
               <Route path="/news/:slug" element={<NewsArticle />} />
               <Route path="/launchers" element={<Launchers />} />
+              <Route path="/launchers/:slug" element={<LauncherDetail />} />
               <Route path="/faq" element={<Faq />} />
               <Route path="/about" element={<About />} />
               <Route path="/legal" element={<Legal />} />

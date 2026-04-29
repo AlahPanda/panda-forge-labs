@@ -1,16 +1,16 @@
 import SiteLayout from '@/components/layout/SiteLayout';
 import Seo from '@/components/Seo';
-import { site } from '@/content';
-import LauncherCard from '@/components/launchers/LauncherCard';
-import AstralDownloadDialog from '@/components/launchers/AstralDownloadDialog';
-import { ASTRAL_DOWNLOADS, launchersCatalog } from '@/lib/launchers';
+import LauncherListCard from '@/components/launchers/LauncherListCard';
+import { launchersForList } from '@/lib/launchers';
 
 export default function Launchers() {
+  const items = launchersForList();
+
   return (
     <SiteLayout>
       <Seo
         title="Launchers — AlahPanda Labs"
-        description="The best Minecraft launchers — AstralRinth recommended. Compare features and download securely."
+        description="Compare Minecraft launchers at a glance. Open any card for downloads, FAQs, and our feature cheat-sheet — AstralRinth stays our recommended default."
       />
 
       <section className="border-b border-hairline relative overflow-hidden">
@@ -19,69 +19,31 @@ export default function Launchers() {
           className="absolute inset-0 pointer-events-none"
           style={{
             background:
-              'radial-gradient(65% 50% at 70% -20%, hsl(var(--signal) / 0.12), transparent 70%)',
+              'radial-gradient(65% 50% at 70% -20%, hsl(var(--signal) / 0.09), transparent 70%)',
           }}
         />
 
-        <div className="container relative py-16">
+        <div className="container relative py-14 md:py-16">
           <div className="label-mono reveal">08 — Launchers</div>
           <h1 className="mt-3 text-4xl md:text-5xl font-semibold tracking-tight reveal">Launchers</h1>
-          <p className="mt-5 max-w-2xl text-muted-foreground reveal">
-            Pick a launcher that matches how you play. We recommend{' '}
-            <span className="text-foreground font-medium">AstralRinth</span> — tuned for clarity, installs on every major
-            desktop, and centered in our tooling story.
+
+          <p className="mt-5 max-w-2xl text-muted-foreground leading-relaxed reveal">
+            Explore launchers side by side — every tile is the same size. Click through for download links tuned to each vendor, FAQs that answer comparisons in plain language,
+            and our feature checklist when you cannot decide blindly.
           </p>
 
-          <div className="mt-10 border border-hairline rounded-lg p-6 bg-elev/80 backdrop-blur-sm reveal">
-            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-              <div>
-                <div className="label-mono">Quick install · AstralRinth</div>
-                <p className="mt-2 text-lg font-semibold tracking-tight">Three steps to start</p>
-              </div>
-              <div className="flex flex-wrap gap-3">
-                <AstralDownloadDialog downloads={ASTRAL_DOWNLOADS} buttonLabel="Download" />
-                <a
-                  href={site.discordUrl}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="inline-flex items-center justify-center px-4 h-11 rounded-md border border-hairline text-sm hover:bg-secondary/60 transition-colors"
-                >
-                  Help on Discord
-                </a>
-              </div>
-            </div>
-
-            <ol className="mt-8 grid md:grid-cols-3 gap-4">
-              <li className="border border-hairline rounded-md p-4 bg-background/50">
-                <div className="label-mono">01</div>
-                <p className="mt-2 font-medium">Download</p>
-                <p className="mt-1 text-sm text-muted-foreground">
-                  Pick your OS (below) — Windows, macOS ARM, or a Linux package. Links open new tabs via ouo.io.
-                </p>
-              </li>
-              <li className="border border-hairline rounded-md p-4 bg-background/50">
-                <div className="label-mono">02</div>
-                <p className="mt-2 font-medium">Install &amp; open</p>
-                <p className="mt-1 text-sm text-muted-foreground">
-                  Run the installer or package manager step, trust the binary if prompted, launch AstralRinth.
-                </p>
-              </li>
-              <li className="border border-hairline rounded-md p-4 bg-background/50">
-                <div className="label-mono">03</div>
-                <p className="mt-2 font-medium">Sign in &amp; create</p>
-                <p className="mt-1 text-sm text-muted-foreground">
-                  Use Microsoft account where required (or offline if your policy allows). Add an instance/modpack profile and go.
-                </p>
-              </li>
-            </ol>
-          </div>
+          <p className="mt-6 max-w-2xl text-sm text-foreground/80 leading-relaxed reveal border border-hairline/80 rounded-lg px-4 py-3 bg-elev/50">
+            <span className="font-medium text-signal">Recommendation:</span> we still prioritize{' '}
+            <strong className="text-foreground font-medium">AstralRinth</strong> internally — tutorials, tooling, and support assume that baseline when possible (look for{' '}
+            <span className="font-mono text-[11px] text-signal/90">&quot;Our pick&quot;</span> badge).
+          </p>
         </div>
       </section>
 
-      <section className="container py-14 pb-24">
-        <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
-          {launchersCatalog.map((launcher) => (
-            <LauncherCard key={launcher.id} launcher={launcher} />
+      <section className="container py-12 pb-24">
+        <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+          {items.map((launcher) => (
+            <LauncherListCard key={launcher.id} launcher={launcher} />
           ))}
         </div>
       </section>
