@@ -29,6 +29,7 @@ export default function SiteFooter() {
           <div className="label-mono mb-3">Hub</div>
           <ul className="space-y-2 text-sm">
             <li><Link to="/modpacks" className="hover:text-signal transition-colors">{t('nav.modpacks')}</Link></li>
+            <li><Link to="/launchers" className="hover:text-signal transition-colors">{t('nav.launchers')}</Link></li>
             <li><Link to="/news" className="hover:text-signal transition-colors">{t('nav.news')}</Link></li>
             <li><Link to="/about" className="hover:text-signal transition-colors">{t('nav.about')}</Link></li>
             <li><Link to="/faq" className="hover:text-signal transition-colors">{t('nav.faq')}</Link></li>

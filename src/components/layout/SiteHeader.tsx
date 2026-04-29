@@ -16,6 +16,7 @@ export default function SiteHeader() {
   const links = [
     { to: '/', label: t('nav.home') },
     { to: '/modpacks', label: t('nav.modpacks') },
+    { to: '/launchers', label: t('nav.launchers') },
     { to: '/news', label: t('nav.news') },
     { to: '/about', label: t('nav.about') },
     { to: '/faq', label: t('nav.faq') },

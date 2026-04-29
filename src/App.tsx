@@ -17,6 +17,7 @@ import Faq from "./pages/Faq";
 import About from "./pages/About";
 import Legal from "./pages/Legal";
 import Support from "./pages/Support";
+import Launchers from "./pages/Launchers";
 import AdminLogin from "./pages/admin/AdminLogin";
 import AdminEditor from "./pages/admin/AdminEditor";
 import NotFound from "./pages/NotFound";
@@ -39,6 +40,7 @@ const App = () => (
               <Route path="/modpacks/:slug" element={<ModpackDetail />} />
               <Route path="/news" element={<News />} />
               <Route path="/news/:slug" element={<NewsArticle />} />
+              <Route path="/launchers" element={<Launchers />} />
               <Route path="/faq" element={<Faq />} />
               <Route path="/about" element={<About />} />
               <Route path="/legal" element={<Legal />} />
