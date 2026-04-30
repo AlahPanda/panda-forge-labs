@@ -19,4 +19,21 @@ export default defineConfig(({ mode }) => ({
     },
     dedupe: ["react", "react-dom", "react/jsx-runtime", "react/jsx-dev-runtime", "@tanstack/react-query", "@tanstack/query-core"],
   },
+  build: {
+    minify: "esbuild",
+    cssMinify: true,
+    target: "es2020",
+    reportCompressedSize: false,
+    chunkSizeWarningLimit: 650,
+    rollupOptions: {
+      output: {
+        assetFileNames: "assets/[name]-[hash][extname]",
+        chunkFileNames: "assets/[name]-[hash].js",
+        entryFileNames: "assets/[name]-[hash].js",
+      },
+    },
+  },
+  esbuild: {
+    legalComments: "none",
+  },
 }));

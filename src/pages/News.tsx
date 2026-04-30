@@ -1,4 +1,3 @@
-import SiteLayout from '@/components/layout/SiteLayout';
 import Seo from '@/components/Seo';
 import NewsCard from '@/components/NewsCard';
 import AdSlot from '@/components/AdSlot';
@@ -10,7 +9,7 @@ export default function News() {
   const { t } = useI18n();
   const items = publishedArticles();
   return (
-    <SiteLayout>
+    <>
       <Seo title="News — AlahPanda Labs" description="Release notes, engineering posts and announcements." />
       <section className="container py-16">
         <div className="label-mono reveal">04 — Notebook</div>
@@ -30,6 +29,6 @@ export default function News() {
           ))}
         </div>
       </section>
-    </SiteLayout>
+    </>
   );
 }

@@ -1,13 +1,5 @@
 import type { LauncherFeatureRow } from '@/lib/launchers';
-
-const ROWS: Array<{ key: keyof LauncherFeatureRow; label: string }> = [
-  { key: 'platforms', label: 'Windows/macOS/Linux Support' },
-  { key: 'modpackFormats', label: 'Modpack Support (.mrpack / CurseForge)' },
-  { key: 'perfInstances', label: 'Performance Friendly / Multiple Instances' },
-  { key: 'authOffline', label: 'Official Microsoft Login / Offline Mode' },
-  { key: 'openSafe', label: 'Open Source / Safe Reputation' },
-  { key: 'beginnerAdvanced', label: 'Beginner Friendly / Advanced Controls' },
-];
+import { LAUNCHER_FEATURE_ROWS } from '@/lib/launcherFeatureMeta';
 
 export default function LauncherFeaturesTable({ features }: { features: LauncherFeatureRow }) {
   return (
@@ -17,7 +9,7 @@ export default function LauncherFeaturesTable({ features }: { features: Launcher
       </div>
       <table className="w-full text-sm">
         <tbody className="divide-y divide-hairline">
-          {ROWS.map((r) => (
+          {LAUNCHER_FEATURE_ROWS.map((r) => (
             <tr key={r.key}>
               <th scope="row" className="px-4 py-3 text-left font-normal text-foreground/90 align-middle max-w-[min(100%,20rem)]">
                 {r.label}

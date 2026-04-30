@@ -7,6 +7,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { ThemeProvider } from "@/lib/theme";
 import { I18nProvider } from "@/lib/i18n";
 import CookieConsent from "@/components/CookieConsent";
+import BackToTopNews from "@/components/BackToTopNews";
 
 import Home from "./pages/Home";
 import Modpacks from "./pages/Modpacks";
@@ -19,6 +20,8 @@ import Legal from "./pages/Legal";
 import Support from "./pages/Support";
 import Launchers from "./pages/Launchers";
 import LauncherDetail from "./pages/LauncherDetail";
+import LauncherRoutesLayout from "./pages/launchers/LauncherRoutesLayout";
+import NewsRoutesLayout from "./pages/news/NewsRoutesLayout";
 import AdminLogin from "./pages/admin/AdminLogin";
 import AdminEditor from "./pages/admin/AdminEditor";
 import NotFound from "./pages/NotFound";
@@ -35,14 +38,19 @@ const App = () => (
           <Sonner />
           <CookieConsent />
           <BrowserRouter>
+            <BackToTopNews />
             <Routes>
               <Route path="/" element={<Home />} />
               <Route path="/modpacks" element={<Modpacks />} />
               <Route path="/modpacks/:slug" element={<ModpackDetail />} />
-              <Route path="/news" element={<News />} />
-              <Route path="/news/:slug" element={<NewsArticle />} />
-              <Route path="/launchers" element={<Launchers />} />
-              <Route path="/launchers/:slug" element={<LauncherDetail />} />
+              <Route path="/news" element={<NewsRoutesLayout />}>
+                <Route index element={<News />} />
+                <Route path=":slug" element={<NewsArticle />} />
+              </Route>
+              <Route path="/launchers" element={<LauncherRoutesLayout />}>
+                <Route index element={<Launchers />} />
+                <Route path=":slug" element={<LauncherDetail />} />
+              </Route>
               <Route path="/faq" element={<Faq />} />
               <Route path="/about" element={<About />} />
               <Route path="/legal" element={<Legal />} />

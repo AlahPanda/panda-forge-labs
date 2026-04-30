@@ -19,8 +19,18 @@ export interface LauncherFAQ {
 export interface LauncherItem {
   id: string;
   name: string;
+  /** One-line subtitle shown on detail hero + cards */
+  tagline: string;
+  /** Tint for radial hero gradient (hue 0–360) */
+  accentHue: number;
+  /** Favicon / brand glyph from vendor domain (skipped for Astral — uses Panda mark in UI) */
+  logoUrl?: string;
   /** Our subtle pick flag — only AstralRinth today */
   recommended?: boolean;
+  /** Community rating 0–5 (fixed editorial score for the grid) */
+  communityRating: number;
+  /** Short functional tags for filtering / scan */
+  tags: string[];
   /** Card blurb (~2 lines) */
   summary: string;
   /** Lead paragraph on detail page */
@@ -45,6 +55,10 @@ export const launchersCatalog: LauncherItem[] = [
     id: 'astralrinth',
     name: 'AstralRinth',
     recommended: true,
+    communityRating: 5,
+    tags: ['Highly customizable', 'Lightweight', 'Our ecosystem'],
+    tagline: 'Player favourite · tuned for everyday modded play.',
+    accentHue: 42,
     summary:
       'The launcher we recommend for everyday modded play — clear installs, desktop packages for Win/macOS/Linux, and workflows we align tutorials with.',
     detailIntro:
@@ -85,6 +99,11 @@ export const launchersCatalog: LauncherItem[] = [
   {
     id: 'prism',
     name: 'Prism Launcher',
+    communityRating: 4.8,
+    tags: ['Open source', 'Highly customizable'],
+    tagline: 'Open-source lineage · obsessive about cleanly split instances.',
+    accentHue: 205,
+    logoUrl: 'https://icon.horse/icon/prismlauncher.org',
     summary:
       'Open-source, instance-first launcher — excellent if you crave transparent profiles across Fabric, Forge, and endless split environments.',
     detailIntro:
@@ -121,6 +140,11 @@ export const launchersCatalog: LauncherItem[] = [
   {
     id: 'modrinth-app',
     name: 'Modrinth App',
+    communityRating: 4.5,
+    tags: ['Open source', 'Lightweight'],
+    tagline: 'The Modrinth UI — installs & updates glued to MR.',
+    accentHue: 150,
+    logoUrl: 'https://icon.horse/icon/modrinth.com',
     summary:
       'Purpose-built surfacing for Modrinth-hosted projects — strong when Modrinth is already your canon for packs and updates.',
     detailIntro:
@@ -152,6 +176,11 @@ export const launchersCatalog: LauncherItem[] = [
   {
     id: 'sklauncher',
     name: 'SKLauncher',
+    communityRating: 3.8,
+    tags: ['Lightweight'],
+    tagline: 'Lean installs · skips the fluff until you dig.',
+    accentHue: 265,
+    logoUrl: 'https://icon.horse/icon/skmedix.pl',
     summary:
       'Straightforward SK distribution channel — helpful when simplicity beats toggling ten advanced dialogs before first launch.',
     detailIntro:
@@ -183,6 +212,11 @@ export const launchersCatalog: LauncherItem[] = [
   {
     id: 'atlauncher',
     name: 'ATLauncher',
+    communityRating: 4.2,
+    tags: ['Highly customizable'],
+    tagline: 'Pack-first scripting · longtime community darling.',
+    accentHue: 285,
+    logoUrl: 'https://icon.horse/icon/atlauncher.com',
     summary:
       'Battle-tested launcher for bouncing between community packs hosted on myriad platforms.',
     detailIntro:
@@ -214,6 +248,11 @@ export const launchersCatalog: LauncherItem[] = [
   {
     id: 'curseforge-app',
     name: 'CurseForge App',
+    communityRating: 4.1,
+    tags: ['Highly customizable'],
+    tagline: 'Official CF client · catalog-heavy discovery flows.',
+    accentHue: 22,
+    logoUrl: 'https://icon.horse/icon/curseforge.com',
     summary:
       'Official CurseForge client — unbeatable when catalogs, addons, or teams already anchor on CF metadata.',
     detailIntro:
@@ -245,6 +284,11 @@ export const launchersCatalog: LauncherItem[] = [
   {
     id: 'multimc',
     name: 'MultiMC',
+    communityRating: 4.3,
+    tags: ['Open source', 'Lightweight'],
+    tagline: 'Classic profile splitter · minimal chrome, max control.',
+    accentHue: 214,
+    logoUrl: 'https://icon.horse/icon/multimc.org',
     summary:
       'Legendary launcher for ruthless instance separation — minimalist chrome, maximal control.',
     detailIntro:
@@ -276,6 +320,11 @@ export const launchersCatalog: LauncherItem[] = [
   {
     id: 'gdlauncher',
     name: 'GDLauncher',
+    communityRating: 4.0,
+    tags: ['Highly customizable', 'Lightweight'],
+    tagline: 'Polished cards · friendly mod & instance dashboards.',
+    accentHue: 320,
+    logoUrl: 'https://icon.horse/icon/gdlauncher.com',
     summary:
       'Friendly UI emphasizing discoverability and mod/instance cards — helpful when onboarding friends allergic to monospace logs.',
     detailIntro:

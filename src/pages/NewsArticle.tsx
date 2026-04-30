@@ -1,5 +1,4 @@
 import { useParams, Link } from 'react-router-dom';
-import SiteLayout from '@/components/layout/SiteLayout';
 import Seo from '@/components/Seo';
 import RichMarkdown from '@/components/RichMarkdown';
 import SmartImage from '@/components/SmartImage';
@@ -12,7 +11,8 @@ export default function NewsArticle() {
 
   if (!article) {
     return (
-      <SiteLayout>
+      <>
+        <Seo title="Article not found — AlahPanda Labs" description="Unknown news entry." />
         <div className="container py-32 text-center">
           <div className="label-mono">404</div>
           <h1 className="mt-3 text-3xl font-semibold">Article not found</h1>
@@ -20,12 +20,12 @@ export default function NewsArticle() {
             <ArrowLeft className="h-4 w-4" /> Back to news
           </Link>
         </div>
-      </SiteLayout>
+      </>
     );
   }
 
   return (
-    <SiteLayout>
+    <>
       <Seo
         title={`${article.title} — AlahPanda Labs`}
         description={article.excerpt}
@@ -59,6 +59,6 @@ export default function NewsArticle() {
           <span className="font-mono tabular">{article.readMinutes} min read</span>
         </div>
       </article>
-    </SiteLayout>
+    </>
   );
 }
