@@ -7,7 +7,6 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { ThemeProvider } from "@/lib/theme";
 import { I18nProvider } from "@/lib/i18n";
 import CookieConsent from "@/components/CookieConsent";
-import BackToTopNews from "@/components/BackToTopNews";
 
 import Home from "./pages/Home";
 import Modpacks from "./pages/Modpacks";
@@ -31,40 +30,39 @@ const queryClient = new QueryClient();
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <HelmetProvider>
-    <ThemeProvider>
-      <I18nProvider>
-        <TooltipProvider>
-          <Toaster />
-          <Sonner />
-          <CookieConsent />
-          <BrowserRouter>
-            <BackToTopNews />
-            <Routes>
-              <Route path="/" element={<Home />} />
-              <Route path="/modpacks" element={<Modpacks />} />
-              <Route path="/modpacks/:slug" element={<ModpackDetail />} />
-              <Route path="/news" element={<NewsRoutesLayout />}>
-                <Route index element={<News />} />
-                <Route path=":slug" element={<NewsArticle />} />
-              </Route>
-              <Route path="/launchers" element={<LauncherRoutesLayout />}>
-                <Route index element={<Launchers />} />
-                <Route path=":slug" element={<LauncherDetail />} />
-              </Route>
-              <Route path="/faq" element={<Faq />} />
-              <Route path="/about" element={<About />} />
-              <Route path="/legal" element={<Legal />} />
-              <Route path="/legal/privacy" element={<Navigate to="/legal?kind=privacy" replace />} />
-              <Route path="/legal/terms" element={<Navigate to="/legal?kind=terms" replace />} />
-              <Route path="/support" element={<Support />} />
-              <Route path="/admin" element={<AdminLogin />} />
-              <Route path="/admin/editor" element={<AdminEditor />} />
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-          </BrowserRouter>
-        </TooltipProvider>
-      </I18nProvider>
-    </ThemeProvider>
+      <ThemeProvider>
+        <I18nProvider>
+          <TooltipProvider>
+            <Toaster />
+            <Sonner />
+            <CookieConsent />
+            <BrowserRouter>
+              <Routes>
+                <Route path="/" element={<Home />} />
+                <Route path="/modpacks" element={<Modpacks />} />
+                <Route path="/modpacks/:slug" element={<ModpackDetail />} />
+                <Route path="/news" element={<NewsRoutesLayout />}>
+                  <Route index element={<News />} />
+                  <Route path=":slug" element={<NewsArticle />} />
+                </Route>
+                <Route path="/launchers" element={<LauncherRoutesLayout />}>
+                  <Route index element={<Launchers />} />
+                  <Route path=":slug" element={<LauncherDetail />} />
+                </Route>
+                <Route path="/faq" element={<Faq />} />
+                <Route path="/about" element={<About />} />
+                <Route path="/legal" element={<Legal />} />
+                <Route path="/legal/privacy" element={<Navigate to="/legal?kind=privacy" replace />} />
+                <Route path="/legal/terms" element={<Navigate to="/legal?kind=terms" replace />} />
+                <Route path="/support" element={<Support />} />
+                <Route path="/admin" element={<AdminLogin />} />
+                <Route path="/admin/editor" element={<AdminEditor />} />
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+            </BrowserRouter>
+          </TooltipProvider>
+        </I18nProvider>
+      </ThemeProvider>
     </HelmetProvider>
   </QueryClientProvider>
 );
