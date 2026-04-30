@@ -4,6 +4,7 @@ import { faq } from '@/content';
 import { useI18n } from '@/lib/i18n';
 import { useState } from 'react';
 import { ChevronDown } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 
 export default function Faq() {
   const { t } = useI18n();
@@ -18,7 +19,7 @@ export default function Faq() {
           {faq.map((cat) => (
             <div key={cat.id} className="reveal">
               <h2 className="text-sm font-mono uppercase tracking-[0.2em] text-signal mb-4">{cat.title}</h2>
-              <div className="border border-hairline rounded-lg divide-y divide-hairline">
+              <div className="border border-hairline rounded-lg divide-y divide-hairline overflow-hidden">
                 {cat.items.map((item, idx) => (
                   <FaqItem key={idx} q={item.q} a={item.a} />
                 ))}
@@ -34,15 +35,30 @@ export default function Faq() {
 function FaqItem({ q, a }: { q: string; a: string }) {
   const [open, setOpen] = useState(false);
   return (
-    <button
-      onClick={() => setOpen((v) => !v)}
-      className="w-full text-left p-5 hover:bg-secondary/40 transition-colors"
-    >
-      <div className="flex items-center justify-between gap-4">
+    <div className="border-hairline">
+      <button
+        onClick={() => setOpen((v) => !v)}
+        className="w-full text-left p-5 hover:bg-secondary/40 transition-colors flex items-center justify-between gap-4"
+      >
         <span className="font-medium">{q}</span>
-        <ChevronDown className={`h-4 w-4 text-muted-foreground transition-transform ${open ? 'rotate-180' : ''}`} />
-      </div>
-      {open && <p className="mt-3 text-sm text-muted-foreground">{a}</p>}
-    </button>
+        <ChevronDown className={`h-4 w-4 text-muted-foreground transition-transform duration-300 ${open ? 'rotate-180' : ''}`} />
+      </button>
+      
+      <AnimatePresence initial={false}>
+        {open && (
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: "auto", opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.3, ease: "easeInOut" }}
+            className="overflow-hidden"
+          >
+            <div className="px-5 pb-5 text-sm text-muted-foreground leading-relaxed">
+              {a}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
   );
 }
