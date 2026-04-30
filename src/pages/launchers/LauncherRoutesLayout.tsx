@@ -7,7 +7,8 @@ export default function LauncherRoutesLayout() {
 
   return (
     <SiteLayout>
-      <AnimatePresence mode="wait">
+      {/* Removemos o mode="wait" para evitar o ecrã vazio entre transições */}
+      <AnimatePresence>
         <motion.div
           key={location.pathname}
           initial={{ opacity: 0, y: 18 }}
