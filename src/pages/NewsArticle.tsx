@@ -42,7 +42,7 @@ export default function NewsArticle() {
           <time className="tabular">{article.publishedAt}</time>
         </div>
         <h1 className="mt-4 text-4xl md:text-5xl font-semibold tracking-tight reveal">{article.title}</h1>
-        <p className="mt-4 text-xl text-muted-foreground reveal">{article.excerpt}</p>
+        <p className="mt-4 text-xl text-muted-foreground reveal italic leading-relaxed">{article.excerpt}</p>
 
         {article.image && (
           <div className="mt-8 reveal">
