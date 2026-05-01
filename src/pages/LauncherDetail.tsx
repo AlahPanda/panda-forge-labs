@@ -10,7 +10,7 @@ import LauncherCompareTable from '@/components/launchers/LauncherCompareTable';
 import LauncherGlassDownload from '@/components/launchers/LauncherGlassDownload';
 import { getLauncher } from '@/lib/launchers';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight, Download } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 export default function LauncherDetail() {
@@ -45,7 +45,6 @@ export default function LauncherDetail() {
 
       {isAstral ? (
         <>
-          {/* AstralRinth — software showcase */}
           <section className="border-b border-hairline relative overflow-hidden">
             <div className="absolute inset-0 grid-bg opacity-[0.35]" />
             <div
@@ -80,12 +79,11 @@ export default function LauncherDetail() {
             </div>
           </section>
 
+          {/* Download Matrix movida para cima para impacto imediato */}
           <section className="container py-14 md:py-16 space-y-4">
-            <div>
-              <h2 className="text-xl font-semibold tracking-tight">Download matrix</h2>
-              <p className="mt-1 text-sm text-muted-foreground max-w-2xl">
-                Clean grid — pick your OS family first, then the installer flavour. All links open in a new tab.
-              </p>
+            <div className="flex items-center gap-3 mb-2">
+               <Download className="h-5 w-5 text-signal" />
+               <h2 className="text-xl font-semibold tracking-tight">Download matrix</h2>
             </div>
             <AstralDownloadGrid downloads={launcher.downloads} />
           </section>
@@ -97,16 +95,12 @@ export default function LauncherDetail() {
           <section className="border-t border-hairline bg-elev/20">
             <div className="container py-14 md:py-16 max-w-3xl">
               <h2 className="text-xl font-semibold tracking-tight">Compatibility snapshot</h2>
-              <p className="mt-2 text-sm text-muted-foreground mb-2">
-                Honest marks for how AstralRinth fits day-to-day modded play — not a marketing scorecard.
-              </p>
               <LauncherFeaturesTable features={launcher.features} />
             </div>
           </section>
         </>
       ) : (
         <>
-          {/* Third-party — technical dossier + compare */}
           <section className="border-b border-hairline relative overflow-hidden">
             <div className="absolute inset-0 grid-bg opacity-[0.32]" />
             <div
@@ -123,7 +117,14 @@ export default function LauncherDetail() {
                   <div className="label-mono text-[11px]">Third-party client</div>
                   <h1 className="text-3xl md:text-5xl font-semibold tracking-tight">{launcher.name}</h1>
                   <p className="text-lg text-muted-foreground">{launcher.tagline}</p>
-                  <p className="text-[15px] leading-relaxed text-foreground/90 max-w-prose">{launcher.detailIntro}</p>
+                  
+                  {/* Botão de Download principal inserido diretamente no Hero para launchers comuns */}
+                  <div className="pt-4">
+                    <LauncherGlassDownload launcher={launcher} variant="hero" />
+                    <p className="mt-3 text-[12px] text-muted-foreground italic">
+                      * Official third-party binaries — check vendor for integrity.
+                    </p>
+                  </div>
                 </div>
               </div>
             </div>
@@ -140,7 +141,6 @@ export default function LauncherDetail() {
 
           <section className="container pb-12 max-w-3xl">
             <h2 className="text-lg font-semibold tracking-tight">Feature checklist</h2>
-            <p className="mt-2 text-sm text-muted-foreground mb-1">Single-launcher view — ✔ · ⚠ · ✖ legend unchanged.</p>
             <LauncherFeaturesTable features={launcher.features} />
           </section>
 
@@ -148,9 +148,6 @@ export default function LauncherDetail() {
             <section className="border-y border-hairline bg-elev/15">
               <div className="container py-12 md:py-14 max-w-4xl">
                 <h2 className="text-lg font-semibold tracking-tight">Side-by-side with AstralRinth</h2>
-                <p className="mt-2 text-sm text-muted-foreground">
-                  Quick comparative matrix versus our lab pick — same rows, two columns.
-                </p>
                 <LauncherCompareTable
                   nameA={launcher.name}
                   featuresA={launcher.features}
@@ -160,26 +157,12 @@ export default function LauncherDetail() {
               </div>
             </section>
           )}
-
-          <section className="container py-12 max-w-3xl">
-            <h2 className="text-lg font-semibold tracking-tight">Official download</h2>
-            <p className="mt-2 text-sm text-muted-foreground mb-5">
-              We do not mirror third-party binaries here — use the vendor page for integrity and updates.
-            </p>
-            <LauncherGlassDownload launcher={launcher} variant="hero" />
-          </section>
         </>
       )}
 
+      {/* Secção de FAQ com animação garantida pelo Accordion do shadcn */}
       <section className="container py-14 pb-24 max-w-3xl">
-        <motion.h2
-          initial={{ opacity: 0, y: 8 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="text-lg font-semibold tracking-tight"
-        >
-          FAQ
-        </motion.h2>
+        <h2 className="text-lg font-semibold tracking-tight">FAQ</h2>
         <p className="mt-2 text-sm text-muted-foreground mb-6">Short answers — expand what applies to you.</p>
         <Accordion type="single" collapsible className="divide-y divide-hairline border border-hairline rounded-xl bg-elev/30 px-2">
           {launcher.faqs.map((faq, idx) => (
@@ -187,30 +170,12 @@ export default function LauncherDetail() {
               <AccordionTrigger className="text-left text-[15px] hover:no-underline py-4 px-2">
                 {faq.q}
               </AccordionTrigger>
-              <AccordionContent className="pb-4 px-2 text-muted-foreground leading-relaxed">{faq.a}</AccordionContent>
+              <AccordionContent className="pb-4 px-2 text-muted-foreground leading-relaxed">
+                {faq.a}
+              </AccordionContent>
             </AccordionItem>
           ))}
         </Accordion>
-
-        {!isAstral && astral && (
-          <div
-            className={cn(
-              'mt-12 rounded-xl border p-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4',
-              'border-orange-500/25 bg-gradient-to-br from-orange-500/12 via-transparent to-transparent'
-            )}
-          >
-            <p className="text-sm text-foreground/90 max-w-lg">
-              Want the launcher we tune tutorials and defaults around?{' '}
-              <span className="text-muted-foreground">AstralRinth stays the community heat-map pick.</span>
-            </p>
-            <Link
-              to="/launchers/astralrinth"
-              className="inline-flex shrink-0 items-center justify-center gap-2 px-6 h-11 rounded-full bg-orange-500/90 hover:bg-orange-400 text-black font-semibold text-sm group/cta"
-            >
-              Open AstralRinth <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover/cta:translate-x-0.5" aria-hidden />
-            </Link>
-          </div>
-        )}
       </section>
     </>
   );
