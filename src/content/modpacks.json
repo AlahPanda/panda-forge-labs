@@ -24,10 +24,10 @@
         "mirror": "https://cdn.alahpandalabs.dev/mac-native-latest.mrpack"
       },
       "benchmarks": [
-        { "Label": "M2", "Vanilla": 141, "Other": 354, "Mac Native": 592 },
-        { "Label": "M3", "Vanilla": 165, "Other": 414, "Mac Native": 692 },
-        { "Label": "M4", "Vanilla": 194, "Other": 486, "Mac Native": 813 },
-        { "Label": "M5", "Vanilla": 225, "Other": 564, "Mac Native": 943 }
+        { "label": "M2", "vanilla": 141, "fabulous": 354, "modded": 592 },
+        { "label": "M3", "vanilla": 165, "fabulous": 414, "modded": 692 },
+        { "label": "M4", "vanilla": 194, "fabulous": 486, "modded": 813 },
+        { "label": "M5", "vanilla": 225, "fabulous": 564, "modded": 943 }
       ],
       "features": [],
       "specs": {

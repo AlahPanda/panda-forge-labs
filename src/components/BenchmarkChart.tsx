@@ -1,7 +1,7 @@
 interface Bench {
   label: string;
   vanilla: number;
-  /** "Performance King" reference (e.g., Fabulously Optimized) */
+  /** "Other" reference (e.g., Other modpacks) */
   fabulous?: number;
   modded: number;
 }
@@ -22,7 +22,7 @@ export default function BenchmarkChart({ data, modpackName = 'This Modpack' }: P
           <span className="h-2 w-2 rounded-sm bg-muted-foreground/50" /> Vanilla
         </span>
         <span className="flex items-center gap-1.5">
-          <span className="h-2 w-2 rounded-sm bg-warn" /> Performance King
+          <span className="h-2 w-2 rounded-sm bg-warn" /> Other
         </span>
         <span className="flex items-center gap-1.5">
           <span className="h-2 w-2 rounded-sm bg-signal" /> {modpackName}
