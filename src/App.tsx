@@ -28,6 +28,7 @@ import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
 
+// Componente para resetar o scroll automaticamente
 const ScrollToTop = () => {
   const { pathname } = useLocation();
   useLayoutEffect(() => {
