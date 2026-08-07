@@ -6,15 +6,15 @@
       "tagline": "Apple Silicon, unlocked.",
       "summary": "A meticulously tuned modpack engineered for Apple Silicon. Native ARM64 paths, Metal-accelerated rendering, zero Rosetta overhead.",
       "description": "Mac Native is the first modpack designed from the ground up for the M-series chip. Every mod has been audited for ARM64 compatibility, JVM flags are tuned for unified memory, and shaders fall back gracefully on integrated GPUs.",
-      "version": "1.4.2",
-      "mcVersion": "1.21.1",
-      "loader": "Fabric 0.16.5",
-      "modCount": 187,
+      "version": "0.3.1",
+      "mcVersion": "1.21.11",
+      "loader": "Fabric 0.141.3",
+      "modCount": 23,
       "tags": ["performance", "Mac", "Fabric"],
       "accent": "190 95% 55%",
       "featured": true,
       "trending": true,
-      "downloads": "8.2k",
+      "downloads": "24",
       "rating": 4.9,
       "layoutType": "performance",
       "downloadLinks": {
@@ -24,11 +24,11 @@
         "mirror": "https://cdn.alahpandalabs.dev/mac-native-latest.mrpack"
       },
       "benchmarks": [
-        { "label": "M1 Pro", "vanilla": 62, "fabulous": 41, "modded": 138 },
-        { "label": "M2", "vanilla": 71, "fabulous": 48, "modded": 156 },
-        { "label": "M3 Max", "vanilla": 92, "fabulous": 64, "modded": 214 },
-        { "label": "M4", "vanilla": 88, "fabulous": 60, "modded": 198 }
-      ],
+        { "Label": "M2", "Vanilla": 141, "Other": 354, "Mac Native": 592 },
+        { "Label": "M3", "Vanilla": 165, "Other": 414, "Mac Native": 692 },
+        { "Label": "M4", "Vanilla": 194, "Other": 486, "Mac Native": 813 },
+        { "Label": "M5", "Vanilla": 225, "Other": 564, "Mac Native": 943 }
+      ]
       "features": [],
       "specs": {
         "minRam": "4 GB",
@@ -48,15 +48,15 @@
       "tagline": "A cel-shaded sandbox.",
       "summary": "Saturday-morning cartoon vibes meet hardcore mod content. Vivid shaders, custom textures, friendly mobs.",
       "description": "CraftToons reimagines vanilla Minecraft as a cel-shaded animated world. Bundled with a curated shader, custom resource pack, and 140+ mods that lean into the playful aesthetic without sacrificing depth.",
-      "version": "2.1.0",
-      "mcVersion": "1.20.1",
-      "loader": "Forge 47.3.0",
+      "version": "0.3",
+      "mcVersion": "Not Available",
+      "loader": "Not Available",
       "modCount": 142,
       "tags": ["aesthetic", "Windows", "Forge"],
       "accent": "32 95% 60%",
       "featured": true,
       "trending": false,
-      "downloads": "3.1k",
+      "downloads": "Not Available",
       "rating": 4.7,
       "layoutType": "immersion",
       "downloadLinks": {
@@ -81,8 +81,8 @@
       ],
       "specs": {
         "minRam": "6 GB",
-        "recommendedRam": "10 GB",
-        "javaVersion": "17",
+        "recommendedRam": "16 GB",
+        "javaVersion": "21",
         "size": "780 MB"
       },
       "installGuide": "## Installation — CraftToons\n\n### 1. Get the launcher\nUse the **CurseForge App** for the smoothest experience with Forge modpacks.\n\n### 2. Install Java 17\nIncluded automatically by CurseForge — no extra steps.\n\n### 3. Import\nSearch *CraftToons* in the modpack browser → **Install**.\n\n### 4. Allocate RAM\nSet **10 GB** in profile settings for the full 1024× texture experience.\n\n### 5. Enable shaders\nThe cel-shader is bundled. Open *Video Settings → Shaders* and select **CraftToons.zip**.",
@@ -92,20 +92,20 @@
       ]
     },
     {
-      "slug": "astralrinth",
-      "name": "Astralrinth",
-      "tagline": "Cosmic exploration, refined.",
-      "summary": "Deep space dimensions, magic systems, and progression that respects your time. Built around Ad Astra and Astral Sorcery.",
-      "description": "Astralrinth is a 240-mod expedition through interplanetary travel and constellation-based magic. Carefully balanced quest progression, JEI integration, and a custom main menu skybox.",
-      "version": "0.9.4",
-      "mcVersion": "1.20.1",
-      "loader": "NeoForge 21.1.95",
+      "slug": "Soon",
+      "name": "Soon",
+      "tagline": "Not Available, check tomorrow.",
+      "summary": "Soon",
+      "description": "Not Available",
+      "version": "Not Available",
+      "mcVersion": "Not Available",
+      "loader": "Not Available",
       "modCount": 243,
       "tags": ["exploration", "Windows", "Forge"],
       "accent": "265 80% 65%",
       "featured": true,
       "trending": true,
-      "downloads": "1.1k",
+      "downloads": "Not Available",
       "rating": 4.8,
       "layoutType": "standard",
       "downloadLinks": {
@@ -129,7 +129,7 @@
       },
       "installGuide": "## Installation — Astralrinth\n\n### 1. Use Prism Launcher\nNeoForge support is best in **Prism**.\n\n### 2. Install Java 21\nVia your package manager or [Adoptium](https://adoptium.net).\n\n### 3. Import from Modrinth\nPaste the Modrinth URL into Prism's import dialog.\n\n### 4. Allocate 12 GB RAM\nThis pack uses chunky world-gen — don't undershoot.\n\n### 5. Quest book\nFirst spawn → check inventory for the **Cosmic Codex**. Right-click to open.",
       "changelog": [
-        { "version": "0.9.4", "date": "2025-04-18", "notes": "Beta release. Quest book complete to chapter 7." }
+        { "version": "0.9.4", "date": "2026-07-07", "notes": "Beta release. Quest book complete to chapter 7." }
       ]
     }
   ]
