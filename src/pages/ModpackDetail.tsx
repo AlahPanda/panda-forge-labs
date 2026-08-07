@@ -159,7 +159,7 @@ export default function ModpackDetail() {
                   ) : (
                     <div>
                       <h2 className="text-2xl font-semibold tracking-tight mb-2">
-                        Single-machine FPS · Vanilla vs Performance King vs {modpack.name}
+                        Single-machine FPS · Vanilla vs Other Modpacks vs {modpack.name}
                       </h2>
                       <p className="text-sm text-muted-foreground mb-5">
                         Same hardware, same world seed, same render distance. Higher is better.
