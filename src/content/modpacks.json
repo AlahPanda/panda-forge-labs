@@ -28,7 +28,7 @@
         { "Label": "M3", "Vanilla": 165, "Other": 414, "Mac Native": 692 },
         { "Label": "M4", "Vanilla": 194, "Other": 486, "Mac Native": 813 },
         { "Label": "M5", "Vanilla": 225, "Other": 564, "Mac Native": 943 }
-      ]
+      ],
       "features": [],
       "specs": {
         "minRam": "4 GB",
