@@ -25,27 +25,10 @@ import NewsRoutesLayout from "./pages/news/NewsRoutesLayout";
 import AdminLogin from "./pages/admin/AdminLogin";
 import AdminEditor from "./pages/admin/AdminEditor";
 import NotFound from "./pages/NotFound";
-import Script from 'next/script';
-
-export default function RootLayout({ children }) {
-  return (
-    <html lang="en">
-      <head>
-        <Script
-          async
-          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1826086897592568"
-          crossOrigin="anonymous"
-          strategy="afterInteractive"
-        />
-      </head>
-      <body>{children}</body>
-    </html>
-  );
-}
 
 const queryClient = new QueryClient();
 
-// Componente para resetar o scroll automaticamente - Corrigido para useLayoutEffect
+// Componente para resetar o scroll automaticamente
 const ScrollToTop = () => {
   const { pathname } = useLocation();
   useLayoutEffect(() => {
