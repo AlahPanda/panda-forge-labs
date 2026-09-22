@@ -3,11 +3,6 @@ import { useNavigate, Link } from 'react-router-dom';
 import SiteLayout from '@/components/layout/SiteLayout';
 import Seo from '@/components/Seo';
 import { adminApi, adminAuth } from '@/lib/adminApi';
-import siteJson from '@/content/site.json';
-import modpacksJson from '@/content/modpacks.json';
-import newsJson from '@/content/news.json';
-import faqJson from '@/content/faq.json';
-import reviewsJson from '@/content/reviews.json';
 import { Save, Rocket, Loader2, LogOut, Plus, Trash2, Pencil, X, ChevronLeft, Box, Newspaper, HelpCircle, Star, Settings as SettingsIcon } from 'lucide-react';
 import MarkdownEditor from '@/components/MarkdownEditor';
 import { toast } from 'sonner';
@@ -28,14 +23,37 @@ export default function AdminEditor() {
   const [redeploying, setRedeploying] = useState(false);
 
   // Draft state for each content file
-  const [modpacks, setModpacks] = useState<any[]>(modpacksJson.modpacks);
-  const [articles, setArticles] = useState<any[]>(newsJson.articles);
-  const [faqCats, setFaqCats] = useState<any[]>(faqJson.categories);
-  const [reviews, setReviews] = useState<any[]>(reviewsJson.reviews);
-  const [siteCfg, setSiteCfg] = useState<any>(siteJson.site);
+  const [modpacks, setModpacks] = useState<any[]>([]);
+  const [articles, setArticles] = useState<any[]>([]);
+  const [faqCats, setFaqCats] = useState<any[]>([]);
+  const [reviews, setReviews] = useState<any[]>([]);
+  const [siteCfg, setSiteCfg] = useState<any>(null);
+  const [ready, setReady] = useState(false);
+  const [loadError, setLoadError] = useState('');
 
   useEffect(() => {
-    if (!adminAuth.isLoggedIn()) nav('/admin', { replace: true });
+    if (!adminAuth.isLoggedIn()) { nav('/admin', { replace: true }); return; }
+    let active = true;
+    (async () => {
+      try {
+        await adminApi.me();
+        const paths = ['src/content/modpacks.json', 'src/content/news.json', 'src/content/faq.json', 'src/content/reviews.json', 'src/content/site.json'];
+        const files = await Promise.all(paths.map((path) => adminApi.read(path)));
+        if (!active) return;
+        files.forEach((file, index) => versions.set(paths[index], file.sha));
+        setModpacks(JSON.parse(files[0].content).modpacks);
+        setArticles(JSON.parse(files[1].content).articles);
+        setFaqCats(JSON.parse(files[2].content).categories);
+        setReviews(JSON.parse(files[3].content).reviews);
+        setSiteCfg(JSON.parse(files[4].content).site);
+        setReady(true);
+      } catch (error) {
+        if (!active) return;
+        if (!adminAuth.isLoggedIn()) nav('/admin', { replace: true });
+        else setLoadError(error instanceof Error ? error.message : 'Failed to load content');
+      }
+    })();
+    return () => { active = false; };
   }, [nav]);
 
   const redeploy = async () => {
@@ -87,7 +105,9 @@ export default function AdminEditor() {
           ))}
         </div>
 
-        <div className="mt-8">
+        {loadError && <p role="alert" className="mt-8 text-destructive">{loadError}</p>}
+        {!ready && !loadError && <p className="mt-8">Loading content…</p>}
+        {ready && <div className="mt-8">
           {tab === 'modpacks' && (
             <ModpacksTab items={modpacks} setItems={setModpacks} />
           )}
@@ -103,7 +123,7 @@ export default function AdminEditor() {
           {tab === 'settings' && (
             <SettingsTab cfg={siteCfg} setCfg={setSiteCfg} />
           )}
-        </div>
+        </div>}
 
         <p className="mt-10 text-xs text-muted-foreground">
           Saving commits to GitHub. Trigger a redeploy to publish.
@@ -117,9 +137,14 @@ export default function AdminEditor() {
 /* =========================================================================
    Save helper — commits the wrapped object to the right path
    ========================================================================= */
+const versions = new Map<string, string>();
+
 async function commitFile(path: string, obj: any, msg: string) {
   const content = JSON.stringify(obj, null, 2) + '\n';
-  await adminApi.save(path, content, msg);
+  const sha = versions.get(path);
+  if (!sha) throw new Error('Missing content version. Reload before saving.');
+  const result = await adminApi.save(path, content, sha, msg);
+  versions.set(path, result.sha);
 }
 
 /* =========================================================================

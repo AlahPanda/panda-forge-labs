@@ -22,3 +22,8 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Local environment values (including accidental future secrets)
+.env
+.env.*
+!.env.example
