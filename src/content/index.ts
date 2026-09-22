@@ -1,6 +1,6 @@
 import siteData from '@/content/site.json';
 import modpacksData from '@/content/modpacks.json';
-import newsData from '@/content/news.json';
+import newsData from 'virtual:published-news';
 import faqData from '@/content/faq.json';
 import i18nData from '@/content/i18n.json';
 import reviewsData from '@/content/reviews.json';
@@ -111,7 +111,7 @@ export const reviews = (reviewsData.reviews as Review[]).slice();
 export const i18n = i18nData as Record<Locale, Record<string, string>>;
 
 export const getModpack = (slug: string) => modpacks.find((m) => m.slug === slug);
-export const getArticle = (slug: string) => articles.find((a) => a.slug === slug);
+export const getArticle = (slug: string) => articles.find((a) => a.slug === slug && !a.draft);
 export const featuredModpacks = () => modpacks.filter((m) => m.featured);
 export const featuredArticles = () => articles.filter((a) => a.featured && !a.draft);
 export const publishedArticles = () => articles.filter((a) => !a.draft);

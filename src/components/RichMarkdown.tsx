@@ -7,11 +7,15 @@
  *   - Plus standard MD: # ## ###, **bold**, `code`, lists, code fences, links, images.
  */
 import { useMemo } from 'react';
+import DOMPurify from 'dompurify';
 
 interface Props { markdown: string; className?: string; }
 
 export default function RichMarkdown({ markdown, className = '' }: Props) {
-  const html = useMemo(() => render(markdown ?? ''), [markdown]);
+  const html = useMemo(() => DOMPurify.sanitize(renderMarkdown(markdown ?? ''), {
+    ADD_TAGS: ['iframe'],
+    ADD_ATTR: ['allowfullscreen', 'allow', 'data-lang'],
+  }), [markdown]);
   if (!markdown?.trim()) return null;
   return (
     <article
@@ -26,12 +30,24 @@ function escapeHtml(s: string) {
   return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 }
 
+export function safeMarkdownUrl(value: string, image = false): string | null {
+  const url = value.trim();
+  if (url.startsWith('/') && !url.startsWith('//') && !url.includes('\\')) return url;
+  if (!image && url.startsWith('#')) return url;
+  try {
+    const parsed = new URL(url);
+    if (parsed.protocol === 'https:' || parsed.protocol === 'http:' ||
+      (!image && parsed.protocol === 'mailto:')) return url;
+  } catch { /* relative or malformed */ }
+  return null;
+}
+
 function ytId(url: string): string | null {
   const m = url.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|shorts\/))([\w-]{11})/);
   return m ? m[1] : null;
 }
 
-function inline(s: string) {
+export function inline(s: string) {
   let out = escapeHtml(s);
 
   // Badges: [badge:Label:Value]
@@ -40,14 +56,16 @@ function inline(s: string) {
   );
 
   // Images ![alt](url) — must run before links
-  out = out.replace(/!\[([^\]]*)\]\(([^)]+)\)/g, (_m, alt, url) =>
-    `<img src="${url}" alt="${alt}" loading="lazy" class="apl-img" />`
-  );
+  out = out.replace(/!\[([^\]]*)\]\(([^)]+)\)/g, (_m, alt, url) => {
+    const safe = safeMarkdownUrl(url, true);
+    return safe ? `<img src="${escapeHtml(safe)}" alt="${alt}" loading="lazy" class="apl-img" />` : alt;
+  });
 
   // Links
-  out = out.replace(/\[([^\]]+)\]\(([^)]+)\)/g, (_m, text, url) =>
-    `<a href="${url}" target="_blank" rel="noreferrer">${text}</a>`
-  );
+  out = out.replace(/\[([^\]]+)\]\(([^)]+)\)/g, (_m, label, url) => {
+    const safe = safeMarkdownUrl(url);
+    return safe ? `<a href="${escapeHtml(safe)}" target="_blank" rel="noopener noreferrer">${label}</a>` : label;
+  });
 
   // Inline code, bold, italic
   out = out.replace(/`([^`]+)`/g, '<code>$1</code>');
@@ -65,7 +83,7 @@ function calloutClass(kind: string) {
   return 'apl-callout info';
 }
 
-function render(md: string): string {
+export function renderMarkdown(md: string): string {
   const lines = md.replace(/\r\n/g, '\n').split('\n');
   const out: string[] = [];
   let i = 0;
@@ -88,7 +106,7 @@ function render(md: string): string {
       while (i < lines.length && !/^:::\s*$/.test(lines[i])) { buf.push(lines[i]); i++; }
       i++; // skip closing :::
       // split by blank line into columns
-      const blocks = buf.join('\n').split(/\n{2,}/).map((b) => render(b));
+      const blocks = buf.join('\n').split(/\n{2,}/).map((b) => renderMarkdown(b));
       out.push(`<div class="apl-grid cols-${cols}">${blocks.map(b => `<div>${b}</div>`).join('')}</div>`);
       continue;
     }
@@ -101,7 +119,7 @@ function render(md: string): string {
       const buf: string[] = [];
       while (i < lines.length && !/^```/.test(lines[i])) { buf.push(lines[i]); i++; }
       i++;
-      out.push(`<pre><code${lang ? ` data-lang="${lang}"` : ''}>${escapeHtml(buf.join('\n'))}</code></pre>`);
+      out.push(`<pre><code${lang ? ` data-lang="${escapeHtml(lang)}"` : ''}>${escapeHtml(buf.join('\n'))}</code></pre>`);
       continue;
     }
 
