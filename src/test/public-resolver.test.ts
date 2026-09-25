@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { publicProject, publicProjects, publicReleasesFor, publicLauncher, publicArticle, publicGuides, publicGuide, publicHomepage, validatedPublicItems, resolveEntries } from '@/content/publicResolver';
+import { publicProject, publicProjects, publicReleasesFor, publicLauncher, publicLaunchers, publicArticles, publicFaq, publicSettings, publicArticle, publicGuides, publicGuide, publicHomepage, validatedPublicItems, resolveEntries } from '@/content/publicResolver';
 
 describe('public Content V2 resolution', () => {
   const v2 = { slug: 'known', name: 'Reviewed' };
@@ -61,7 +61,22 @@ describe('public Content V2 resolution', () => {
   });
 
   it('keeps legacy routes for launchers and articles pending editorial migration', () => {
-    expect(publicLauncher('prism')?.source).toBe('legacy');
+    const migrated = ['prism', 'modrinth-app', 'atlauncher', 'curseforge-app', 'multimc', 'gdlauncher'];
+    for (const slug of migrated) {
+      const entry = publicLauncher(slug);
+      expect(entry?.source).toBe('v2');
+      expect(entry?.slug).toBe(slug);
+      if (entry?.source === 'v2') {
+        expect(entry.item.officialLinks?.[0]?.url).toMatch(/^https:\/\//);
+        expect('communityRating' in entry.item).toBe(false);
+        expect(entry.item.recommendations).toBeUndefined();
+      }
+    }
+    expect(publicLaunchers().filter((entry) => entry.source === 'legacy').map((entry) => entry.slug).sort()).toEqual(['astralrinth', 'sklauncher']);
+    expect(publicSettings()?.name).toBe('AlahPanda Labs');
+    expect(publicSettings()?.contactEmail).toBeUndefined();
+    expect(publicFaq().filter((entry) => entry.source === 'legacy').map((entry) => entry.slug)).toEqual(['general', 'performance', 'support']);
+    expect(publicArticles().filter((entry) => entry.source === 'legacy')).toHaveLength(5);
     expect(publicArticle('missing')).toBeUndefined();
     expect(publicGuides()).toEqual([]);
     expect(publicHomepage()?.sections).toEqual([{ id: 'metrics', visible: false }]);

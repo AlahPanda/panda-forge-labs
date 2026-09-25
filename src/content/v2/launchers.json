@@ -1,1 +1,11 @@
-{"schemaVersion":2,"items":[]}
+{
+  "schemaVersion": 2,
+  "items": [
+    {"slug":"prism","name":"Prism Launcher","sourceLocale":"en","translations":{},"summary":"An open-source Minecraft launcher for managing separate instances, accounts and mods.","platforms":[],"officialLinks":[{"label":"Official Prism Launcher website","url":"https://prismlauncher.org/"}]},
+    {"slug":"modrinth-app","name":"Modrinth App","sourceLocale":"en","translations":{},"summary":"Modrinth's open-source app for installing mods and keeping them up to date.","platforms":[],"officialLinks":[{"label":"Official Modrinth App page","url":"https://modrinth.com/app"}]},
+    {"slug":"atlauncher","name":"ATLauncher","sourceLocale":"en","translations":{},"platforms":[],"officialLinks":[{"label":"Official ATLauncher downloads","url":"https://atlauncher.com/downloads"}]},
+    {"slug":"curseforge-app","name":"CurseForge App","sourceLocale":"en","translations":{},"platforms":[],"officialLinks":[{"label":"Official CurseForge App page","url":"https://www.curseforge.com/download/app"}]},
+    {"slug":"multimc","name":"MultiMC","sourceLocale":"en","translations":{},"summary":"A Minecraft launcher for managing separate instances.","platforms":[],"officialLinks":[{"label":"Official MultiMC website","url":"https://multimc.org/"}]},
+    {"slug":"gdlauncher","name":"GDLauncher","sourceLocale":"en","translations":{},"platforms":[],"officialLinks":[{"label":"Official GDLauncher website","url":"https://gdlauncher.com/"}]}
+  ]
+}

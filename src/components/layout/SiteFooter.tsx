@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom';
 import { site } from '@/content';
 import { useI18n } from '@/lib/i18n';
 import { Lock, Coffee } from 'lucide-react';
-import { publicContactEmail } from '@/content/publicResolver';
+import { publicContactEmail, publicSettings } from '@/content/publicResolver';
 
 export default function SiteFooter() {
   const { t } = useI18n();
@@ -13,7 +13,7 @@ export default function SiteFooter() {
     <footer className="border-t border-hairline mt-24">
       <div className="container py-12 grid grid-cols-1 md:grid-cols-4 gap-10">
         <div className="md:col-span-2">
-          <div className="text-sm font-semibold tracking-tight">AlahPanda Labs</div>
+          <div className="text-sm font-semibold tracking-tight">{publicSettings()?.name || site.name}</div>
           <p className="mt-2 text-sm text-muted-foreground max-w-sm">{t('footer.tagline')}</p>
 
           {site.ads.showSupportButton && (
