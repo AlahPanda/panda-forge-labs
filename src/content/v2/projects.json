@@ -7,7 +7,9 @@
       "sourceLocale": "pt-PT",
       "translations": {},
       "status": "beta",
-      "releaseSlugs": []
+      "releaseSlugs": ["mac-native-0-3-1"],
+      "compatibility": {"minecraft": ["1.21.11"], "loaders": ["Fabric"], "platforms": ["macOS"]},
+      "distribution": [{"provider": "modrinth", "state": "active", "priority": "primary", "url": "https://modrinth.com/modpack/mac-native"}]
     },
     {
       "slug": "crafttoons",
@@ -15,6 +17,7 @@
       "sourceLocale": "pt-PT",
       "translations": {},
       "status": "internal-prototype",
+      "summary": "Um novo projeto de Minecraft está em desenvolvimento.",
       "releaseSlugs": []
     }
   ]

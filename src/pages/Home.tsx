@@ -5,7 +5,7 @@ import ModpackCard from '@/components/ModpackCard';
 import NewsCard from '@/components/NewsCard';
 import { site } from '@/content';
 import { useI18n } from '@/lib/i18n';
-import { ArrowRight, Activity, Boxes, Users, Rocket } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 import logo from '@/assets/logo.png';
 import AdSlot from '@/components/AdSlot';
 import { publicHomepage, publicFeaturedProjects, publicFeaturedArticles, publicSiteDescription } from '@/content/publicResolver';
@@ -107,18 +107,6 @@ export default function Home() {
         </div>
       </section>
 
-      {config?.sections?.find((section) => section.id === 'metrics')?.visible !== false && <section className="border-b border-hairline">
-        <div className="container py-10">
-          <div className="label-mono mb-6 reveal">{t('home.metrics')}</div>
-          <div className="grid grid-cols-2 md:grid-cols-4 divide-x divide-hairline border border-hairline rounded-lg overflow-hidden">
-            <Metric icon={<Activity className="h-4 w-4" />} value={site.stats.downloads} label={t('metrics.downloads')} />
-            <Metric icon={<Boxes className="h-4 w-4" />} value={site.stats.modpacks} label={t('metrics.modpacks')} />
-            <Metric icon={<Users className="h-4 w-4" />} value={site.stats.members} label={t('metrics.members')} />
-            <Metric icon={<Rocket className="h-4 w-4" />} value={site.stats.buildsShipped} label={t('metrics.builds')} />
-          </div>
-        </div>
-      </section>}
-
       {/* FEATURED MODPACKS */}
       {config?.sections?.find((section) => section.id === 'featured-projects')?.visible !== false && <section className="border-b border-hairline">
         <div className="container py-20">
@@ -155,17 +143,5 @@ export default function Home() {
         </div>
       </section>}
     </SiteLayout>
-  );
-}
-
-function Metric({ icon, value, label }: { icon: React.ReactNode; value: string; label: string }) {
-  return (
-    <div className="p-6 reveal">
-      <div className="flex items-center gap-2 text-muted-foreground">
-        {icon}
-        <span className="label-mono">{label}</span>
-      </div>
-      <div className="mt-3 font-mono tabular text-3xl font-semibold tracking-tight">{value}</div>
-    </div>
   );
 }

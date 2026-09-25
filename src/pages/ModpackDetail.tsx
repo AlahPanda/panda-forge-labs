@@ -27,7 +27,7 @@ export default function ModpackDetail() {
 function LegacyModpackDetail() {
   const { slug } = useParams();
   const { t } = useI18n();
-  const modpack = slug ? getModpack(slug) : undefined;
+  const modpack = slug && slug !== 'Soon' ? getModpack(slug) : undefined;
   const [showDownload, setShowDownload] = useState(false);
   const [showDiscord, setShowDiscord] = useState(false);
   const [tab, setTab] = useState<TabKey>('showcase');

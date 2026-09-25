@@ -6,7 +6,7 @@ import releasesJson from './v2/releases.json';
 import faqJson from './v2/faq.json';
 import homepageJson from './v2/homepage.json';
 import settingsJson from './v2/settings.json';
-import { parseItem, type ContentKind, type ProjectV2, type LauncherV2, type ArticleV2, type FAQV2, type HomepageV2, type SiteSettingsV2, type GuideV2 } from './v2/schema';
+import { parseItem, type ContentKind, type ProjectV2, type LauncherV2, type ArticleV2, type FAQV2, type HomepageV2, type SiteSettingsV2, type GuideV2, type ReleaseV2 } from './v2/schema';
 import { modpacks, articles, faq, site, type Modpack, type Article, type FaqCategory } from './index';
 import { launchersForList } from '@/lib/launchers';
 
@@ -39,14 +39,21 @@ export function resolveEntries<T extends { slug?: string }, L>(v2: T[], legacy: 
   return [...current, ...legacy.filter((item) => !slugs.has(legacySlug(item))).map((item): PublicEntry<T, L> => ({ source: 'legacy', item, slug: legacySlug(item) }))];
 }
 
-export const publicProjects = () => resolveEntries(validatedPublicItems<ProjectV2>('projects', sources.projects), modpacks, (m) => m.slug);
+// The legacy `Soon` record is retained for migration history but is not public.
+export const publicProjects = () => resolveEntries(validatedPublicItems<ProjectV2>('projects', sources.projects), modpacks.filter((m) => m.slug !== 'Soon'), (m) => m.slug);
 export const publicProject = (slug: string) => publicProjects().find((entry) => entry.slug === slug);
+export const publicReleasesFor = (project: ProjectV2): ReleaseV2[] => {
+  if (project.status === 'internal-prototype') return [];
+  const slugs = new Set(project.releaseSlugs || []);
+  return validatedPublicItems<ReleaseV2>('releases', sources.releases).filter((release) => release.projectSlug === project.slug && slugs.has(release.slug));
+};
 export const publicLaunchers = () => resolveEntries(validatedPublicItems<LauncherV2>('launchers', sources.launchers), launchersForList(), (l) => l.id);
 export const publicLauncher = (slug: string) => publicLaunchers().find((entry) => entry.slug === slug);
 export const publicArticles = () => resolveEntries(validatedPublicItems<ArticleV2>('articles', sources.articles), articles.filter((a) => !a.draft), (a) => a.slug);
 export const publicArticle = (slug: string) => publicArticles().find((entry) => entry.slug === slug);
 export const publicFaq = (): PublicEntry<FAQV2, FaqCategory>[] => resolveEntries(validatedPublicItems<FAQV2>('faq', sources.faq), faq, (cat) => cat.id);
 export const publicGuides = (): GuideV2[] => validatedPublicItems<GuideV2>('guides', sources.guides);
+export const publicGuide = (slug: string): GuideV2 | undefined => publicGuides().find((guide) => guide.slug === slug);
 export const publicHomepage = (): HomepageV2 | undefined => validatedPublicItems<HomepageV2>('homepage', sources.homepage)[0];
 export const publicSettings = (): SiteSettingsV2 | undefined => validatedPublicItems<SiteSettingsV2>('settings', sources.settings)[0];
 export const publicSiteDescription = () => publicSettings()?.description || site.description;

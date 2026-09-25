@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { publicProject, publicProjects, publicLauncher, publicArticle, publicGuides, publicHomepage, validatedPublicItems, resolveEntries } from '@/content/publicResolver';
+import { publicProject, publicProjects, publicReleasesFor, publicLauncher, publicArticle, publicGuides, publicGuide, publicHomepage, validatedPublicItems, resolveEntries } from '@/content/publicResolver';
 
 describe('public Content V2 resolution', () => {
   const v2 = { slug: 'known', name: 'Reviewed' };
@@ -30,15 +30,40 @@ describe('public Content V2 resolution', () => {
     expect(project.item.releaseSlugs).toEqual([]);
     expect(project.item.distribution).toBeUndefined();
     expect(project.item.benchmarks).toBeUndefined();
-    expect(project.item.summary).toBeUndefined();
+    expect(project.item.summary).toBe('Um novo projeto de Minecraft está em desenvolvimento.');
+    expect(publicReleasesFor(project.item)).toEqual([]);
     expect('version' in project.item).toBe(false);
-    expect(publicProjects().find((item) => item.slug === 'Soon')?.source).toBe('legacy');
+    expect(publicProjects().some((item) => item.slug === 'Soon')).toBe(false);
+    expect(publicProject('Soon')).toBeUndefined();
+  });
+
+  it('uses the verified Modrinth release in V2, without legacy metrics', () => {
+    const project = publicProject('mac-native');
+    expect(project?.source).toBe('v2');
+    if (project?.source !== 'v2') throw new Error('Expected checked-in V2 project');
+    expect(project.item.status).toBe('beta');
+    expect(project.item.compatibility?.minecraft).toEqual(['1.21.11']);
+    expect(project.item.compatibility?.loaders).toEqual(['Fabric']);
+    expect(publicReleasesFor(project.item).map((release) => [release.version, release.channel, release.distribution?.[0]?.url])).toEqual([['0.3.1', 'beta', 'https://modrinth.com/modpack/mac-native/version/0.3.1']]);
+    for (const field of ['downloads', 'rating', 'benchmarks', 'reviews']) expect(field in project.item).toBe(false);
+    expect(publicProject('mac-native')?.slug).toBe('mac-native');
+  });
+
+  it('serves only published, valid guides and a safe empty collection', () => {
+    expect(publicGuides()).toEqual([]);
+    expect(publicGuide('missing')).toBeUndefined();
+    const entries = validatedPublicItems<{ slug: string }>('guides', { schemaVersion: 2, items: [
+      { slug: 'starting-out', name: 'Starting out', sourceLocale: 'pt-PT', body: 'Step one' },
+      { slug: 'private-guide', name: 'Private', body: 'Private', draft: true },
+    ] });
+    expect(entries.map((item) => item.slug)).toEqual(['starting-out']);
+    expect(`/guides/${entries[0].slug}`).toBe('/guides/starting-out');
   });
 
   it('keeps legacy routes for launchers and articles pending editorial migration', () => {
     expect(publicLauncher('prism')?.source).toBe('legacy');
     expect(publicArticle('missing')).toBeUndefined();
     expect(publicGuides()).toEqual([]);
-    expect(publicHomepage()).toBeUndefined();
+    expect(publicHomepage()?.sections).toEqual([{ id: 'metrics', visible: false }]);
   });
 });

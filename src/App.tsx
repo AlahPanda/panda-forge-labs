@@ -12,6 +12,8 @@ import CookieConsent from "@/components/CookieConsent";
 import Home from "./pages/Home";
 import Modpacks from "./pages/Modpacks";
 import ModpackDetail from "./pages/ModpackDetail";
+import Guides from "./pages/Guides";
+import GuideDetail from "./pages/GuideDetail";
 import News from "./pages/News";
 import NewsArticle from "./pages/NewsArticle";
 import Faq from "./pages/Faq";
@@ -52,6 +54,8 @@ const App = () => (
                 <Route path="/" element={<Home />} />
                 <Route path="/modpacks" element={<Modpacks />} />
                 <Route path="/modpacks/:slug" element={<ModpackDetail />} />
+                <Route path="/guides" element={<Guides />} />
+                <Route path="/guides/:slug" element={<GuideDetail />} />
                 <Route path="/news" element={<NewsRoutesLayout />}>
                   <Route index element={<News />} />
                   <Route path=":slug" element={<NewsArticle />} />

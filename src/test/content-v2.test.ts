@@ -7,7 +7,7 @@ const kinds: ContentKind[] = ['projects', 'releases', 'launchers', 'articles', '
 const base = { slug: 'new-project', name: 'New Project', sourceLocale: 'pt-PT', translations: {} };
 
 describe('Content Model V2', () => {
-  it('accepts all eight empty versioned collections and the factual project classification', async () => {
+  it('accepts all eight versioned collections and the factual project classification', async () => {
     for (const kind of kinds) {
       const file = await import(`../content/v2/${kind}.json`);
       expect(parseCollection(kind, file.default).schemaVersion).toBe(2);
@@ -17,7 +17,7 @@ describe('Content Model V2', () => {
     expect(current.map((project) => [project.slug, project.status])).toEqual([
       ['mac-native', 'beta'], ['crafttoons', 'internal-prototype'],
     ]);
-    expect(current.every((project) => Array.isArray(project.releaseSlugs) && project.releaseSlugs.length === 0)).toBe(true);
+    expect(current.map((project) => project.releaseSlugs)).toEqual([['mac-native-0-3-1'], []]);
   });
   it('allows a prototype without public version, downloads, or translations', () => {
     const project = projectSchema.parse({ ...base, status: 'internal-prototype' });
