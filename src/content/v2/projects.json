@@ -1,0 +1,21 @@
+{
+  "schemaVersion": 2,
+  "items": [
+    {
+      "slug": "mac-native",
+      "name": "Mac Native",
+      "sourceLocale": "pt-PT",
+      "translations": {},
+      "status": "beta",
+      "releaseSlugs": []
+    },
+    {
+      "slug": "crafttoons",
+      "name": "CraftToons",
+      "sourceLocale": "pt-PT",
+      "translations": {},
+      "status": "internal-prototype",
+      "releaseSlugs": []
+    }
+  ]
+}

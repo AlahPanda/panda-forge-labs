@@ -6,8 +6,10 @@ import { adminApi, adminAuth } from '@/lib/adminApi';
 import { Save, Rocket, Loader2, LogOut, Plus, Trash2, Pencil, X, ChevronLeft, Box, Newspaper, HelpCircle, Star, Settings as SettingsIcon } from 'lucide-react';
 import MarkdownEditor from '@/components/MarkdownEditor';
 import { toast } from 'sonner';
+import V2Workspace from './V2Workspace';
+import { type ContentKind } from '@/content/v2/schema';
 
-type TabKey = 'modpacks' | 'news' | 'faq' | 'reviews' | 'settings';
+type TabKey = 'dashboard' | 'v2' | 'drafts' | 'system' | 'modpacks' | 'news' | 'faq' | 'reviews' | 'settings';
 
 const TABS: { key: TabKey; label: string; icon: React.ReactNode }[] = [
   { key: 'modpacks', label: 'Modpacks', icon: <Box className="h-4 w-4" /> },
@@ -19,7 +21,9 @@ const TABS: { key: TabKey; label: string; icon: React.ReactNode }[] = [
 
 export default function AdminEditor() {
   const nav = useNavigate();
-  const [tab, setTab] = useState<TabKey>('modpacks');
+  const [tab, setTab] = useState<TabKey>('dashboard');
+  const [kind, setKind] = useState<ContentKind>('projects');
+  const [systemStatus, setSystemStatus] = useState<{ repo: string; branch: string; draftStorageConfigured: boolean; deployHookConfigured: boolean } | null>(null);
   const [redeploying, setRedeploying] = useState(false);
 
   // Draft state for each content file
@@ -47,6 +51,7 @@ export default function AdminEditor() {
         setReviews(JSON.parse(files[3].content).reviews);
         setSiteCfg(JSON.parse(files[4].content).site);
         setReady(true);
+        adminApi.status().then(setSystemStatus).catch(() => { /* status is optional */ });
       } catch (error) {
         if (!active) return;
         if (!adminAuth.isLoggedIn()) nav('/admin', { replace: true });
@@ -90,24 +95,21 @@ export default function AdminEditor() {
           </div>
         </div>
 
-        {/* Tabs */}
-        <div className="border border-hairline rounded-md p-1 bg-elev w-full overflow-x-auto flex gap-1">
-          {TABS.map((t) => (
-            <button
-              key={t.key}
-              onClick={() => setTab(t.key)}
-              className={`inline-flex items-center gap-2 px-4 h-10 rounded text-sm font-medium whitespace-nowrap transition-colors active:scale-[0.98] ${
-                tab === t.key ? 'bg-background text-foreground shadow-sm' : 'text-muted-foreground hover:text-foreground'
-              }`}
-            >
-              {t.icon} {t.label}
-            </button>
-          ))}
-        </div>
+        <nav aria-label="CMS sections" className="border border-hairline rounded-md p-4 bg-elev space-y-3">
+          <div><span className="label-mono mr-3">Dashboard</span><button className={tab === 'dashboard' ? 'text-signal' : ''} onClick={() => setTab('dashboard')}>Overview</button></div>
+          <div className="flex flex-wrap gap-3 items-center"><span className="label-mono">Content</span>{(['projects', 'launchers', 'articles', 'guides', 'faq', 'releases'] as ContentKind[]).map((section) => <button key={section} className={tab === 'v2' && kind === section ? 'text-signal' : ''} onClick={() => { setKind(section); setTab('v2'); }}>{section}</button>)}</div>
+          <div className="flex flex-wrap gap-3 items-center"><span className="label-mono">Website</span>{(['homepage', 'settings'] as ContentKind[]).map((section) => <button key={section} className={tab === 'v2' && kind === section ? 'text-signal' : ''} onClick={() => { setKind(section); setTab('v2'); }}>{section}</button>)}</div>
+          <div className="flex flex-wrap gap-3 items-center"><span className="label-mono">System</span><button onClick={() => setTab('drafts')}>Drafts</button><button onClick={() => setTab('system')}>Deployments / session</button></div>
+          <div className="flex flex-wrap gap-3 items-center"><span className="label-mono">Legacy editing</span>{TABS.map((t) => <button key={t.key} className={tab === t.key ? 'text-signal' : ''} onClick={() => setTab(t.key)}>{t.label}</button>)}</div>
+        </nav>
 
         {loadError && <p role="alert" className="mt-8 text-destructive">{loadError}</p>}
         {!ready && !loadError && <p className="mt-8">Loading content…</p>}
         {ready && <div className="mt-8">
+          {tab === 'dashboard' && <div className="border border-hairline rounded-lg p-6 space-y-3"><h2 className="text-xl font-semibold">Content overview</h2><p>Legacy: {modpacks.length} modpacks, {articles.length} articles, {faqCats.length} FAQ groups. V2 collections are managed under Content and Website.</p><p className="text-sm text-muted-foreground">New entries start as private drafts. Published V2 data does not yet replace public legacy pages.</p></div>}
+          {tab === 'v2' && <V2Workspace kind={kind} />}
+          {tab === 'drafts' && <><label className="block text-sm mb-4">Draft collection <select className="ml-2 border border-hairline bg-elev rounded p-2" value={kind} onChange={(event) => setKind(event.target.value as ContentKind)}>{(['projects', 'launchers', 'articles', 'guides', 'faq', 'releases', 'homepage', 'settings'] as ContentKind[]).map((section) => <option key={section} value={section}>{section}</option>)}</select></label><V2Workspace kind={kind} draftsOnly /></>}
+          {tab === 'system' && <div className="border border-hairline rounded-lg p-6 space-y-3"><h2 className="text-xl font-semibold">Deployment and session</h2><p>Repository: {systemStatus?.repo || 'Unknown'}</p><p>Branch: {systemStatus?.branch || 'Unknown'}</p><p>Private draft storage: {systemStatus?.draftStorageConfigured ? 'Configured' : 'Not configured'}</p><p>Deploy hook: {systemStatus?.deployHookConfigured ? 'Configured' : 'Not configured'}</p><p>Authentication: active browser session; sign out to end it.</p></div>}
           {tab === 'modpacks' && (
             <ModpacksTab items={modpacks} setItems={setModpacks} />
           )}
@@ -508,23 +510,6 @@ function ChangelogEditor({ data, onChange }: { data: any[]; onChange: (n: any[])
 /* =========================================================================
    NEWS TAB
    ========================================================================= */
-function blankArticle() {
-  return {
-    slug: 'new-article',
-    title: 'New article',
-    excerpt: '',
-    body: '',
-    category: 'Engineering',
-    modpackSlug: null,
-    author: 'AlahPanda',
-    publishedAt: new Date().toISOString().slice(0, 10),
-    readMinutes: 3,
-    featured: false,
-    draft: true,
-    tags: [],
-    image: '',
-  };
-}
 function NewsTab({ items, setItems }: { items: any[]; setItems: (n: any[]) => void }) {
   const [editingSlug, setEditingSlug] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
@@ -535,14 +520,7 @@ function NewsTab({ items, setItems }: { items: any[]; setItems: (n: any[]) => vo
     setItems(items.map((a) => (a.slug === editing.slug ? { ...a, ...patch } : a)));
     if (patch.slug && patch.slug !== editing.slug) setEditingSlug(patch.slug);
   };
-  const create = () => {
-    const np = blankArticle();
-    let slug = np.slug; let i = 1;
-    while (items.some((a) => a.slug === slug)) slug = `${np.slug}-${i++}`;
-    np.slug = slug;
-    setItems([np, ...items]);
-    setEditingSlug(slug);
-  };
+  const create = () => toast('Create new articles under Content → articles to keep drafts private.');
   const remove = (slug: string) => {
     if (!confirm(`Delete "${slug}"?`)) return;
     setItems(items.filter((a) => a.slug !== slug));

@@ -1,4 +1,4 @@
-import { ALLOWED_PATHS, validateContent, validateClaims, canSave } from "./policy.ts";
+import { ALLOWED_PATHS, validateContent, validateClaims, canSave, isContentKind, parseItem, parseCollection, collectionPath, type ContentKind } from "./policy.ts";
 // Admin CMS edge function
 // - POST /login         { password } -> { token }
 // - POST /read          { path } (Bearer token) -> current JSON and blob SHA
@@ -23,6 +23,8 @@ const GITHUB_TOKEN = Deno.env.get('GITHUB_TOKEN') ?? '';
 const GITHUB_REPO = Deno.env.get('GITHUB_REPO') ?? '';
 const GITHUB_BRANCH = Deno.env.get('GITHUB_BRANCH') ?? '';
 const VERCEL_DEPLOY_HOOK = Deno.env.get('VERCEL_DEPLOY_HOOK') ?? '';
+const SUPABASE_URL = Deno.env.get('SUPABASE_URL') ?? '';
+const SERVICE_ROLE_KEY = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? '';
 
 // ---------- Minimal HMAC-SHA256 JWT (HS256) ----------
 function b64url(input: ArrayBuffer | Uint8Array | string): string {
@@ -69,6 +71,34 @@ async function verifyJwt(token: string): Promise<Record<string, unknown> | null>
   } catch { return null; }
 }
 
+type DraftRow = { kind: ContentKind; slug: string; content: unknown; base_sha: string; revision: number; updated_at: string };
+function draftQuery(kind: ContentKind, slug?: string, revision?: number) {
+  const query = new URLSearchParams({ kind: `eq.${kind}` });
+  if (slug) query.set('slug', `eq.${slug}`);
+  if (revision !== undefined) query.set('revision', `eq.${revision}`);
+  return query.toString();
+}
+async function draftsRequest(method: string, query: string, body?: unknown): Promise<unknown[]> {
+  if (!SUPABASE_URL || !SERVICE_ROLE_KEY) throw new Error('Private draft storage is not configured');
+  const response = await fetch(`${SUPABASE_URL}/rest/v1/cms_drafts?${query}`, {
+    method,
+    headers: {
+      apikey: SERVICE_ROLE_KEY, Authorization: `Bearer ${SERVICE_ROLE_KEY}`,
+      'Content-Type': 'application/json', Prefer: 'return=representation',
+    },
+    body: body === undefined ? undefined : JSON.stringify(body),
+  });
+  if (!response.ok) {
+    if (response.status === 409) throw new ConflictError();
+    throw new Error(`Private draft storage failed (${response.status})`);
+  }
+  return await response.json();
+}
+async function getDraft(kind: ContentKind, slug: string): Promise<DraftRow | null> {
+  const rows = await draftsRequest('GET', `${draftQuery(kind, slug)}&select=*`) as DraftRow[];
+  return rows[0] ?? null;
+}
+
 // ---------- GitHub commit ----------
 function ghHeaders(extra: Record<string, string> = {}) {
   // GitHub accepts both "token <PAT>" (classic) and "Bearer <PAT>" (fine-grained / GitHub App).
@@ -109,9 +139,19 @@ async function verifyGithubToken(): Promise<{ ok: true; login: string } | { ok: 
   return { ok: true, login: j.login };
 }
 
+async function readGithubFile(path: string): Promise<{ content: string; sha: string }> {
+  const check = await verifyGithubToken();
+  if ('error' in check) throw new Error(check.error);
+  const response = await fetch(`https://api.github.com/repos/${GITHUB_REPO}/contents/${encodeURI(path)}?ref=${encodeURIComponent(GITHUB_BRANCH)}`, { headers: ghHeaders() });
+  if (!response.ok) throw new Error(`GitHub read ${response.status}`);
+  const file = await response.json();
+  const bytes = Uint8Array.from(atob(file.content.replace(/\s/g, '')), (c: string) => c.charCodeAt(0));
+  return { content: new TextDecoder().decode(bytes), sha: file.sha };
+}
+
 async function commitFile(path: string, content: string, message: string, expectedSha: string): Promise<{ sha: string; url: string }> {
   const check = await verifyGithubToken();
-  if (!check.ok) throw new Error(check.error);
+  if ('error' in check) throw new Error(check.error);
 
   const apiBase = `https://api.github.com/repos/${GITHUB_REPO}/contents/${encodeURI(path)}`;
   const fileUrl = `${apiBase}?ref=${encodeURIComponent(GITHUB_BRANCH)}`;
@@ -205,13 +245,60 @@ Deno.serve(async (req) => {
     if (action === 'read') {
       const { path } = await req.json().catch(() => ({}));
       if (typeof path !== 'string' || !ALLOWED_PATHS.has(path)) return json({ error: 'Invalid path' }, 400);
-      const check = await verifyGithubToken();
-      if (!check.ok) throw new Error(check.error);
-      const response = await fetch(`https://api.github.com/repos/${GITHUB_REPO}/contents/${encodeURI(path)}?ref=${encodeURIComponent(GITHUB_BRANCH)}`, { headers: ghHeaders() });
-      if (!response.ok) throw new Error(`GitHub read ${response.status}`);
-      const file = await response.json();
-      const bytes = Uint8Array.from(atob(file.content.replace(/\s/g, '')), (c: string) => c.charCodeAt(0));
-      return json({ content: new TextDecoder().decode(bytes), sha: file.sha });
+      return json(await readGithubFile(path));
+    }
+
+    if (action === 'draft-list') {
+      const rows = await draftsRequest('GET', 'select=kind,slug,revision,updated_at&order=updated_at.desc');
+      return json({ drafts: rows });
+    }
+    if (action === 'draft-read' || action === 'draft-save' || action === 'draft-publish' || action === 'draft-delete') {
+      const data = await req.json().catch(() => ({}));
+      const { kind, slug } = data;
+      if (!isContentKind(kind) || typeof slug !== 'string' || !/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug)) {
+        return json({ error: 'Invalid draft identity' }, 400);
+      }
+      const current = await getDraft(kind, slug);
+      if (action === 'draft-read') return current ? json({ draft: current }) : json({ error: 'Draft not found' }, 404);
+      if (action === 'draft-save') {
+        if (!data.item || JSON.stringify(data.item).length > 100_000) return json({ error: 'Invalid draft' }, 400);
+        let item: { slug: string };
+        try { item = parseItem(kind, data.item); } catch { return json({ error: 'Invalid draft fields' }, 400); }
+        if (item.slug !== slug) return json({ error: 'Draft identity mismatch' }, 400);
+        if (!Number.isInteger(data.revision) && data.revision !== null) return json({ error: 'Missing revision' }, 400);
+        if (current ? current.revision !== data.revision : data.revision !== null) throw new ConflictError();
+        if (typeof data.baseSha !== 'string' || !/^[a-f0-9]{40}$/.test(data.baseSha)) return json({ error: 'Invalid base version' }, 400);
+        // A draft keeps the SHA from the Git version it was based on.
+        if (current && current.base_sha !== data.baseSha) throw new ConflictError();
+        const row = current
+          ? { content: item, revision: current.revision + 1, updated_at: new Date().toISOString() }
+          : { kind, slug, content: item, base_sha: data.baseSha };
+        const filter = current ? draftQuery(kind, slug, current.revision) : 'on_conflict=kind,slug';
+        const saved = await draftsRequest(current ? 'PATCH' : 'POST', filter, row) as DraftRow[];
+        if (saved.length !== 1) throw new ConflictError();
+        return json({ draft: saved[0] });
+      }
+      if (!current) return json({ error: 'Draft not found' }, 404);
+      if (!Number.isInteger(data.revision) || current.revision !== data.revision) throw new ConflictError();
+      if (action === 'draft-delete') {
+        const deleted = await draftsRequest('DELETE', draftQuery(kind, slug, current.revision));
+        if (deleted.length !== 1) throw new ConflictError();
+        return json({ ok: true });
+      }
+      const path = collectionPath(kind);
+      const file = await readGithubFile(path);
+      if (!canSave(current.base_sha, file.sha)) throw new ConflictError();
+      const collection = parseCollection(kind, JSON.parse(file.content));
+      const item = parseItem(kind, current.content);
+      const items = collection.items.filter((entry) => entry.slug !== slug);
+      items.push(item);
+      const content = JSON.stringify({ schemaVersion: 2, items }, null, 2) + '\n';
+      if (validateContent(path, content)) return json({ error: 'Invalid collection' }, 400);
+      const commit = await commitFile(path, content, `cms(v2): publish ${kind}/${slug}`, file.sha);
+      // Git is committed before deleting the draft. If deletion fails, the stale base SHA blocks republishing.
+      try { await draftsRequest('DELETE', draftQuery(kind, slug, current.revision)); }
+      catch (error) { console.error('Published draft cleanup failed', error); }
+      return json({ ok: true, sha: commit.sha, url: commit.url });
     }
 
     if (action === 'save') {
@@ -226,6 +313,10 @@ Deno.serve(async (req) => {
     if (action === 'redeploy') {
       const r = await triggerRedeploy();
       return json({ ok: r.ok, status: r.status, body: r.body }, r.ok ? 200 : 502);
+    }
+
+    if (action === 'status') {
+      return json({ repo: GITHUB_REPO, branch: GITHUB_BRANCH, draftStorageConfigured: !!(SUPABASE_URL && SERVICE_ROLE_KEY), deployHookConfigured: !!VERCEL_DEPLOY_HOOK });
     }
 
     if (action === 'me') {
@@ -243,6 +334,6 @@ Deno.serve(async (req) => {
 function json(data: unknown, status = 200) {
   return new Response(JSON.stringify(data), {
     status,
-    headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+    headers: { ...corsHeaders, 'Content-Type': 'application/json', 'Cache-Control': 'no-store' },
   });
 }
