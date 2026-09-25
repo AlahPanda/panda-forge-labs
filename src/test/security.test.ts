@@ -16,7 +16,7 @@ describe('publication security', () => {
   it('rejects unauthorized paths, malformed JSON and stale revisions', () => {
     expect(validateContent('src/App.tsx', '{}')).toBe('Invalid path');
     expect(validateContent(news, 'not json')).toBe('Content is not valid JSON');
-    expect(validateContent(news, JSON.stringify({ articles: [{ slug: 'a', draft: true }] }))).toBeNull();
+    expect(validateContent(news, JSON.stringify({ articles: [{ slug: 'a', draft: true }] }))).toContain('Drafts cannot');
     expect(canSave('old', 'new')).toBe(false);
     expect(canSave('same', 'same')).toBe(true);
   });

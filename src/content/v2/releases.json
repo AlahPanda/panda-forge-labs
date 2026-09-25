@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 2,
+  "items": [
+    {
+      "slug": "mac-native-0-3-1",
+      "name": "Mac Native 0.3.1",
+      "sourceLocale": "en",
+      "translations": {},
+      "projectSlug": "mac-native",
+      "version": "0.3.1",
+      "channel": "beta",
+      "changelog": "The official release notes list network changes involving e4all and VMP; configurations for AsyncParticles and ModernFix; configurations for Entity Model, Texture and Sound Features; and updated default game and audio options.",
+      "distribution": [{"provider": "modrinth", "state": "active", "priority": "primary", "url": "https://modrinth.com/modpack/mac-native/version/0.3.1"}]
+    }
+  ]
+}

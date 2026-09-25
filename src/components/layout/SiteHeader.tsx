@@ -7,6 +7,7 @@ import { LOCALES, LOCALE_LABEL, type Locale } from '@/content';
 import { useTheme } from '@/lib/theme';
 import { Sun, Moon } from 'lucide-react';
 import { site } from '@/content';
+import { publicSettings } from '@/content/publicResolver';
 
 export default function SiteHeader() {
   const { t, locale, setLocale } = useI18n();
@@ -34,7 +35,7 @@ export default function SiteHeader() {
             className="h-7 w-7 transition-transform group-hover:rotate-[6deg]"
           />
           <div className="flex flex-col leading-none">
-            <span className="text-[15px] font-semibold tracking-tight">AlahPanda Labs</span>
+            <span className="text-[15px] font-semibold tracking-tight">{publicSettings()?.name || site.name}</span>
             <span className="label-mono text-[9px] mt-0.5">{site.tagline}</span>
           </div>
         </Link>

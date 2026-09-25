@@ -1,13 +1,14 @@
 import Seo from '@/components/Seo';
 import NewsCard from '@/components/NewsCard';
 import AdSlot from '@/components/AdSlot';
-import { publishedArticles } from '@/content';
 import { useI18n } from '@/lib/i18n';
 import { Fragment } from 'react';
+import { publicArticles } from '@/content/publicResolver';
+import { PublicV2Card } from '@/components/PublicV2Card';
 
 export default function News() {
   const { t } = useI18n();
-  const items = publishedArticles();
+  const items = publicArticles();
   return (
     <>
       <Seo title="News — AlahPanda Labs" description="Release notes, engineering posts and announcements." />
@@ -18,7 +19,7 @@ export default function News() {
         <div className="mt-12 grid md:grid-cols-2 lg:grid-cols-3 gap-5">
           {items.map((a, idx) => (
             <Fragment key={a.slug}>
-              <NewsCard article={a} index={idx} />
+              {a.source === 'v2' ? <PublicV2Card item={a.item} section="news" /> : <NewsCard article={a.item} index={idx} />}
               {/* In-feed ad after every 3rd article */}
               {(idx + 1) % 3 === 0 && idx < items.length - 1 && (
                 <div className="md:col-span-2 lg:col-span-3">

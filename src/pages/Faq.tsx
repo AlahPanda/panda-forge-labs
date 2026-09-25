@@ -1,6 +1,6 @@
 import SiteLayout from '@/components/layout/SiteLayout';
 import Seo from '@/components/Seo';
-import { faq } from '@/content';
+import { publicFaq } from '@/content/publicResolver';
 import { useI18n } from '@/lib/i18n';
 import { useState } from 'react';
 import { ChevronDown } from 'lucide-react';
@@ -8,6 +8,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 
 export default function Faq() {
   const { t } = useI18n();
+  const faq = publicFaq();
   return (
     <SiteLayout>
       <Seo title="FAQ — AlahPanda Labs" description="Common questions about installation, performance, and support." />
@@ -16,12 +17,12 @@ export default function Faq() {
         <h1 className="mt-3 text-4xl md:text-5xl font-semibold tracking-tight reveal">{t('nav.faq')}</h1>
 
         <div className="mt-12 space-y-12">
-          {faq.map((cat) => (
-            <div key={cat.id} className="reveal">
-              <h2 className="text-sm font-mono uppercase tracking-[0.2em] text-signal mb-4">{cat.title}</h2>
+          {faq.map((entry) => (
+            <div key={entry.slug} className="reveal">
+              <h2 className="text-sm font-mono uppercase tracking-[0.2em] text-signal mb-4">{entry.source === 'v2' ? entry.item.name : entry.item.title}</h2>
               <div className="border border-hairline rounded-lg divide-y divide-hairline overflow-hidden">
-                {cat.items.map((item, idx) => (
-                  <FaqItem key={idx} q={item.q} a={item.a} />
+                {entry.item.items.map((item, idx) => (
+                  <FaqItem key={idx} q={entry.source === 'v2' ? item.question : item.q} a={entry.source === 'v2' ? item.answer : item.a} />
                 ))}
               </div>
             </div>

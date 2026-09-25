@@ -12,8 +12,17 @@ import { getLauncher } from '@/lib/launchers';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { ArrowRight, Download } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { publicLauncher } from '@/content/publicResolver';
+import PublicV2Detail from '@/components/PublicV2Detail';
 
 export default function LauncherDetail() {
+  const { slug } = useParams();
+  const entry = slug ? publicLauncher(slug) : undefined;
+  if (entry?.source === 'v2') return <PublicV2Detail item={entry.item} section="launchers" />;
+  return <LegacyLauncherDetail />;
+}
+
+function LegacyLauncherDetail() {
   const { slug } = useParams();
   const launcher = slug ? getLauncher(slug) : undefined;
   const astral = getLauncher('astralrinth');

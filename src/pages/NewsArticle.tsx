@@ -4,8 +4,17 @@ import RichMarkdown from '@/components/RichMarkdown';
 import SmartImage from '@/components/SmartImage';
 import { getArticle } from '@/content';
 import { ArrowLeft } from 'lucide-react';
+import { publicArticle } from '@/content/publicResolver';
+import PublicV2Detail from '@/components/PublicV2Detail';
 
 export default function NewsArticle() {
+  const { slug } = useParams();
+  const entry = slug ? publicArticle(slug) : undefined;
+  if (entry?.source === 'v2') return <PublicV2Detail item={entry.item} section="news" />;
+  return <LegacyNewsArticle />;
+}
+
+function LegacyNewsArticle() {
   const { slug } = useParams();
   const article = slug ? getArticle(slug) : undefined;
 

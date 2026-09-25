@@ -1,6 +1,15 @@
+import { CONTENT_KINDS, collectionPath, parseCollection, parseItem, type ContentKind } from '../../../src/content/v2/schema.ts';
+
+export { CONTENT_KINDS, collectionPath, parseCollection, parseItem };
+export type { ContentKind };
+export function isContentKind(value: unknown): value is ContentKind {
+  return typeof value === 'string' && CONTENT_KINDS.includes(value as ContentKind);
+}
+
 export const ALLOWED_PATHS = new Set([
   'src/content/site.json', 'src/content/modpacks.json', 'src/content/news.json',
   'src/content/faq.json', 'src/content/i18n.json', 'src/content/reviews.json',
+  ...CONTENT_KINDS.map(collectionPath),
 ]);
 
 const ROOT_KEYS: Record<string, string> = {
@@ -15,14 +24,20 @@ export function validateContent(path: string, content: unknown): string | null {
   let parsed: unknown;
   try { parsed = JSON.parse(content); } catch { return 'Content is not valid JSON'; }
   if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed)) return 'Invalid content shape';
+  const kind = CONTENT_KINDS.find((candidate) => collectionPath(candidate) === path);
+  if (kind) {
+    try { parseCollection(kind, parsed); return null; }
+    catch { return `Invalid ${kind} collection`; }
+  }
   const obj = parsed as Record<string, unknown>;
   const root = ROOT_KEYS[path];
   if (root && (root === 'site' ? (!obj.site || typeof obj.site !== 'object' || Array.isArray(obj.site)) : !Array.isArray(obj[root]))) {
     return 'Invalid content shape';
   }
+  // Legacy public news must never receive private drafts. Existing published entries remain untouched.
   if (path === 'src/content/news.json' && (obj.articles as unknown[]).some((a) =>
     !a || typeof a !== 'object' || typeof (a as { slug?: unknown }).slug !== 'string' ||
-    typeof (a as { draft?: unknown }).draft !== 'boolean')) return 'Invalid article';
+    (a as { draft?: unknown }).draft !== false)) return 'Drafts cannot be saved to public GitHub';
   return null;
 }
 

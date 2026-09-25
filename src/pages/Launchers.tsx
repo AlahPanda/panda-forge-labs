@@ -1,16 +1,17 @@
 import { motion } from 'framer-motion';
 import Seo from '@/components/Seo';
 import LauncherListCard from '@/components/launchers/LauncherListCard';
-import { launchersForList } from '@/lib/launchers';
+import { publicLaunchers } from '@/content/publicResolver';
+import { PublicV2Card } from '@/components/PublicV2Card';
 
 export default function Launchers() {
-  const items = launchersForList();
+  const items = publicLaunchers();
 
   return (
     <>
       <Seo
         title="Launchers — AlahPanda Labs"
-        description="Interactive Minecraft launcher gallery — ratings, tags, and a focused path to AstralRinth plus trusted third-party clients."
+        description="Browse Minecraft launchers and reviewed official links."
       />
 
       <section className="border-b border-hairline relative overflow-hidden">
@@ -38,28 +39,15 @@ export default function Launchers() {
             </h1>
 
             <p className="mt-6 max-w-2xl text-lg text-muted-foreground leading-relaxed">
-              Cards surface community-style ratings and functional tags. AstralRinth is highlighted as our pick — open any tile for a
-              software-style showcase or a technical dossier with compare tables.
+              Browse launchers and their available details. Official links are shown for entries that have been reviewed.
             </p>
-
-            <motion.p
-              initial={{ opacity: 0, y: 8 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2 }}
-              className="mt-7 max-w-2xl text-sm rounded-2xl border border-orange-500/25 px-5 py-4 bg-orange-500/[0.08] shadow-[inset_0_1px_0_0_hsla(0,0%,100%,0.08)] leading-relaxed text-foreground/90"
-            >
-              <span className="font-semibold text-amber-200/95">Momentum check:</span> AstralRinth remains the launcher players heat-map
-              alongside our docs — browse the grid fairly, then dive into the page that matches your workflow.
-            </motion.p>
           </motion.div>
         </div>
       </section>
 
       <section className="container py-14 pb-28">
         <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
-          {items.map((launcher, i) => (
-            <LauncherListCard key={launcher.id} launcher={launcher} index={i} />
-          ))}
+          {items.map((entry, i) => entry.source === 'v2' ? <PublicV2Card key={entry.slug} item={entry.item} section="launchers" /> : <LauncherListCard key={entry.slug} launcher={entry.item} index={i} />)}
         </div>
       </section>
     </>

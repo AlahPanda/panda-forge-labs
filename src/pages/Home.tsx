@@ -3,22 +3,25 @@ import SiteLayout from '@/components/layout/SiteLayout';
 import Seo from '@/components/Seo';
 import ModpackCard from '@/components/ModpackCard';
 import NewsCard from '@/components/NewsCard';
-import { featuredModpacks, featuredArticles, site } from '@/content';
+import { site } from '@/content';
 import { useI18n } from '@/lib/i18n';
-import { ArrowRight, Activity, Boxes, Users, Rocket } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 import logo from '@/assets/logo.png';
 import AdSlot from '@/components/AdSlot';
+import { publicHomepage, publicFeaturedProjects, publicFeaturedArticles, publicSiteDescription } from '@/content/publicResolver';
+import { PublicV2Card } from '@/components/PublicV2Card';
 
 export default function Home() {
   const { t } = useI18n();
-  const modpacks = featuredModpacks();
-  const articles = featuredArticles().slice(0, 3);
+  const config = publicHomepage();
+  const modpacks = publicFeaturedProjects();
+  const articles = publicFeaturedArticles().slice(0, 3);
 
   return (
     <SiteLayout>
       <Seo
         title="AlahPanda Labs — Premium Minecraft Modpacks"
-        description={site.description}
+        description={publicSiteDescription()}
       />
 
       {/* HERO — instrument panel */}
@@ -36,17 +39,16 @@ export default function Home() {
           <div className="md:col-span-7">
             <div className="flex items-center gap-3 label-mono reveal">
               <span className="signal-dot" />
-              <span>{t('home.eyebrow')}</span>
+              <span>{config?.hero?.eyebrow || t('home.eyebrow')}</span>
               <span className="hairline border-t w-12" />
             </div>
 
             <h1 className="mt-6 text-5xl md:text-7xl font-semibold tracking-tight leading-[1.02] reveal">
-              <span className="block">{t('home.heroLineA')}</span>
-              <span className="block text-signal">{t('home.heroLineB')}</span>
+              {config?.hero?.title ? <span className="block">{config.hero.title}</span> : <><span className="block">{t('home.heroLineA')}</span><span className="block text-signal">{t('home.heroLineB')}</span></>}
             </h1>
 
             <p className="mt-6 max-w-xl text-base md:text-lg text-muted-foreground reveal">
-              {t('home.heroSub')}
+              {config?.hero?.subtitle || t('home.heroSub')}
             </p>
 
             <div className="mt-9 flex flex-wrap items-center gap-3 reveal">
@@ -96,6 +98,8 @@ export default function Home() {
         </div>
       </section>
 
+      {config?.notices?.filter((notice) => notice.visible).map((notice) => <div key={notice.id} className="border-b border-hairline bg-elev/40"><div className="container py-4 text-sm">{notice.link ? <a href={notice.link} target="_blank" rel="noopener noreferrer" className="text-signal underline">{notice.text}</a> : notice.text}</div></div>)}
+
       {/* AD SLOT — below hero */}
       <section className="border-b border-hairline">
         <div className="container py-8">
@@ -103,20 +107,8 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="border-b border-hairline">
-        <div className="container py-10">
-          <div className="label-mono mb-6 reveal">{t('home.metrics')}</div>
-          <div className="grid grid-cols-2 md:grid-cols-4 divide-x divide-hairline border border-hairline rounded-lg overflow-hidden">
-            <Metric icon={<Activity className="h-4 w-4" />} value={site.stats.downloads} label={t('metrics.downloads')} />
-            <Metric icon={<Boxes className="h-4 w-4" />} value={site.stats.modpacks} label={t('metrics.modpacks')} />
-            <Metric icon={<Users className="h-4 w-4" />} value={site.stats.members} label={t('metrics.members')} />
-            <Metric icon={<Rocket className="h-4 w-4" />} value={site.stats.buildsShipped} label={t('metrics.builds')} />
-          </div>
-        </div>
-      </section>
-
       {/* FEATURED MODPACKS */}
-      <section className="border-b border-hairline">
+      {config?.sections?.find((section) => section.id === 'featured-projects')?.visible !== false && <section className="border-b border-hairline">
         <div className="container py-20">
           <div className="flex items-end justify-between mb-10 reveal">
             <div>
@@ -128,13 +120,13 @@ export default function Home() {
             </Link>
           </div>
           <div className="grid md:grid-cols-3 gap-5">
-            {modpacks.map((m, i) => <ModpackCard key={m.slug} modpack={m} index={i} />)}
+            {modpacks.map((m, i) => m.source === 'v2' ? <PublicV2Card key={m.slug} item={m.item} section="modpacks" /> : <ModpackCard key={m.slug} modpack={m.item} index={i} />)}
           </div>
         </div>
-      </section>
+      </section>}
 
       {/* LATEST NEWS */}
-      <section>
+      {config?.sections?.find((section) => section.id === 'latest-news')?.visible !== false && <section>
         <div className="container py-20">
           <div className="flex items-end justify-between mb-10 reveal">
             <div>
@@ -146,22 +138,10 @@ export default function Home() {
             </Link>
           </div>
           <div className="grid md:grid-cols-3 gap-5">
-            {articles.map((a, i) => <NewsCard key={a.slug} article={a} index={i} />)}
+            {articles.map((a, i) => a.source === 'v2' ? <PublicV2Card key={a.slug} item={a.item} section="news" /> : <NewsCard key={a.slug} article={a.item} index={i} />)}
           </div>
         </div>
-      </section>
+      </section>}
     </SiteLayout>
-  );
-}
-
-function Metric({ icon, value, label }: { icon: React.ReactNode; value: string; label: string }) {
-  return (
-    <div className="p-6 reveal">
-      <div className="flex items-center gap-2 text-muted-foreground">
-        {icon}
-        <span className="label-mono">{label}</span>
-      </div>
-      <div className="mt-3 font-mono tabular text-3xl font-semibold tracking-tight">{value}</div>
-    </div>
   );
 }

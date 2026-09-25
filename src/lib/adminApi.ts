@@ -1,3 +1,5 @@
+import type { ContentKind } from '@/content/v2/schema';
+
 const FN_BASE = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/admin-cms`;
 const TOKEN_KEY = 'apl.admin.token';
 
@@ -35,5 +37,14 @@ export const adminApi = {
   read: (path: string) => call<{ content: string; sha: string }>('read', { path }),
   save: (path: string, content: string, sha: string, commitMessage?: string) =>
     call<{ ok: true; sha: string; url: string }>('save', { path, content, sha, commitMessage }),
+  draftList: () => call<{ drafts: Array<{ kind: ContentKind; slug: string; revision: number; updated_at: string }> }>('draft-list'),
+  draftRead: (kind: ContentKind, slug: string) => call<{ draft: { content: unknown; base_sha: string; revision: number } }>('draft-read', { kind, slug }),
+  draftSave: (kind: ContentKind, slug: string, item: unknown, baseSha: string, revision: number | null) =>
+    call<{ draft: { content: unknown; base_sha: string; revision: number } }>('draft-save', { kind, slug, item, baseSha, revision }),
+  draftPublish: (kind: ContentKind, slug: string, revision: number) =>
+    call<{ ok: true; sha: string; url: string }>('draft-publish', { kind, slug, revision }),
+  draftDelete: (kind: ContentKind, slug: string, revision: number) =>
+    call<{ ok: true }>('draft-delete', { kind, slug, revision }),
+  status: () => call<{ repo: string; branch: string; draftStorageConfigured: boolean; deployHookConfigured: boolean }>('status'),
   redeploy: () => call<{ ok: true }>('redeploy'),
 };
