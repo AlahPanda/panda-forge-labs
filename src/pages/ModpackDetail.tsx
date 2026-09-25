@@ -12,10 +12,19 @@ import InstallGuide from '@/components/InstallGuide';
 import RichMarkdown from '@/components/RichMarkdown';
 import TagChip from '@/components/TagChip';
 import AdSlot from '@/components/AdSlot';
+import { publicProject } from '@/content/publicResolver';
+import PublicV2Detail from '@/components/PublicV2Detail';
 
 type TabKey = 'showcase' | 'install' | 'changelog';
 
 export default function ModpackDetail() {
+  const { slug } = useParams();
+  const entry = slug ? publicProject(slug) : undefined;
+  if (entry?.source === 'v2') return <SiteLayout><PublicV2Detail item={entry.item} section="modpacks" /></SiteLayout>;
+  return <LegacyModpackDetail />;
+}
+
+function LegacyModpackDetail() {
   const { slug } = useParams();
   const { t } = useI18n();
   const modpack = slug ? getModpack(slug) : undefined;

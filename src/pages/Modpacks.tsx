@@ -4,7 +4,8 @@ import SiteLayout from '@/components/layout/SiteLayout';
 import Seo from '@/components/Seo';
 import ModpackCard from '@/components/ModpackCard';
 import TagChip from '@/components/TagChip';
-import { modpacks } from '@/content';
+import { publicProjects } from '@/content/publicResolver';
+import { PublicV2Card } from '@/components/PublicV2Card';
 import { useI18n } from '@/lib/i18n';
 import { Search, X, SlidersHorizontal } from 'lucide-react';
 
@@ -12,6 +13,7 @@ const FILTER_TAGS = ['Mac', 'Windows', 'Fabric', 'Forge'] as const;
 type Tag = (typeof FILTER_TAGS)[number];
 
 export default function Modpacks() {
+  const modpacks = publicProjects();
   const { t } = useI18n();
   const [query, setQuery] = useState('');
   const [active, setActive] = useState<Set<Tag>>(new Set());
@@ -41,12 +43,12 @@ export default function Modpacks() {
     const q = query.trim().toLowerCase();
     return modpacks.filter((m) => {
       if (q) {
-        const hay = `${m.name} ${m.tagline} ${m.summary} ${m.tags.join(' ')} ${m.loader}`.toLowerCase();
+        const hay = m.source === 'v2' ? `${m.item.name} ${m.item.summary || ''}`.toLowerCase() : `${m.item.name} ${m.item.tagline} ${m.item.summary} ${m.item.tags.join(' ')} ${m.item.loader}`.toLowerCase();
         if (!hay.includes(q)) return false;
       }
       if (active.size) {
-        const tagsLower = m.tags.map((x) => x.toLowerCase());
-        const loaderLower = m.loader.toLowerCase();
+        const tagsLower = m.source === 'v2' ? [...(m.item.compatibility?.platforms || []), ...(m.item.compatibility?.loaders || [])].map((x) => x.toLowerCase()) : m.item.tags.map((x) => x.toLowerCase());
+        const loaderLower = m.source === 'v2' ? '' : m.item.loader.toLowerCase();
         for (const a of active) {
           const al = a.toLowerCase();
           const matches = tagsLower.includes(al) || loaderLower.includes(al);
@@ -153,7 +155,7 @@ export default function Modpacks() {
         </div>
 
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
-          {filtered.map((m, i) => <ModpackCard key={m.slug} modpack={m} index={i} />)}
+          {filtered.map((m, i) => m.source === 'v2' ? <PublicV2Card key={m.slug} item={m.item} section="modpacks" /> : <ModpackCard key={m.slug} modpack={m.item} index={i} />)}
         </div>
 
         {filtered.length === 0 && (

@@ -1,10 +1,11 @@
 import { motion } from 'framer-motion';
 import Seo from '@/components/Seo';
 import LauncherListCard from '@/components/launchers/LauncherListCard';
-import { launchersForList } from '@/lib/launchers';
+import { publicLaunchers } from '@/content/publicResolver';
+import { PublicV2Card } from '@/components/PublicV2Card';
 
 export default function Launchers() {
-  const items = launchersForList();
+  const items = publicLaunchers();
 
   return (
     <>
@@ -57,9 +58,7 @@ export default function Launchers() {
 
       <section className="container py-14 pb-28">
         <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
-          {items.map((launcher, i) => (
-            <LauncherListCard key={launcher.id} launcher={launcher} index={i} />
-          ))}
+          {items.map((entry, i) => entry.source === 'v2' ? <PublicV2Card key={entry.slug} item={entry.item} section="launchers" /> : <LauncherListCard key={entry.slug} launcher={entry.item} index={i} />)}
         </div>
       </section>
     </>
