@@ -14,7 +14,7 @@
 
     <meta name="description" content="A modern hub for premium Minecraft modpacks: Mac Native and CraftToons. Engineered for performance." />
     <meta name="author" content="AlahPanda Labs" />
-    <meta name="theme-color" content="#0c1220" />
+    <meta name="theme-color" content="#f8f5f0" />
 
     <meta property="og:title" content="AlahPanda Labs — Premium Minecraft Modpacks" />
     <meta property="og:description" content="A modern hub for premium Minecraft modpacks. Mac Native and CraftToons." />
@@ -22,9 +22,6 @@
 
     <meta name="twitter:card" content="summary_large_image" />
 
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
     
     <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-PMMB39LBY9"></script>
@@ -43,7 +40,15 @@
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1826086897592568" crossorigin="anonymous"></script>
   </head>
 
-  <body class="dark">
+  <body>
+    <script>
+      try {
+        var savedTheme = localStorage.getItem('apl.theme');
+        var darkTheme = savedTheme === 'dark' || (savedTheme !== 'light' && matchMedia('(prefers-color-scheme: dark)').matches);
+        document.documentElement.classList.toggle('dark', darkTheme);
+        document.documentElement.style.colorScheme = darkTheme ? 'dark' : 'light';
+      } catch (error) { /* ThemeProvider applies the system preference when storage is blocked. */ }
+    </script>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>

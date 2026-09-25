@@ -41,8 +41,8 @@ export default function SiteFooter() {
         <div>
           <div className="label-mono mb-3">{t('footer.legal')}</div>
           <ul className="space-y-2 text-sm">
-            <li><Link to="/legal?kind=privacy" className="text-zinc-400 hover:text-white transition-colors">{t('footer.privacy')}</Link></li>
-            <li><Link to="/legal?kind=terms" className="text-zinc-400 hover:text-white transition-colors">{t('footer.terms')}</Link></li>
+            <li><Link to="/legal?kind=privacy" className="text-muted-foreground hover:text-foreground transition-colors">{t('footer.privacy')}</Link></li>
+            <li><Link to="/legal?kind=terms" className="text-muted-foreground hover:text-foreground transition-colors">{t('footer.terms')}</Link></li>
             <li><a href={`mailto:${contactEmail}`} className="hover:text-signal transition-colors">{contactEmail}</a></li>
           </ul>
         </div>
@@ -55,15 +55,15 @@ export default function SiteFooter() {
               to="/admin"
               aria-label="Lab access"
               title="Lab access"
-              className="inline-flex items-center justify-center h-6 w-6 rounded text-muted-foreground/40 hover:text-signal hover:bg-secondary/60 transition-colors"
+              className="inline-flex items-center justify-center h-9 w-9 rounded text-muted-foreground hover:text-signal hover:bg-secondary/60 transition-colors"
             >
               <Lock className="h-3 w-3" />
             </Link>
-            <span className="font-mono text-[11px] text-muted-foreground/70">
+            <span className="text-xs text-muted-foreground">
               © {year} AlahPanda Labs · {t('footer.rights')}
             </span>
           </div>
-          <div className="font-mono text-[11px] text-muted-foreground/60">
+          <div className="text-xs text-muted-foreground">
             v2.1 · build.{year}
           </div>
         </div>

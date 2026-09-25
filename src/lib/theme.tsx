@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState, ReactNode } from 'react';
+import { createContext, useContext, useEffect, useLayoutEffect, useState, ReactNode } from 'react';
 
 type Theme = 'dark' | 'light';
 const STORAGE_KEY = 'apl.theme';
@@ -12,29 +12,38 @@ interface ThemeCtx {
 const Ctx = createContext<ThemeCtx | null>(null);
 
 export function ThemeProvider({ children }: { children: ReactNode }) {
-  const [theme, setThemeState] = useState<Theme>('dark');
+  const [theme, setThemeState] = useState<Theme>(() => {
+    try {
+      const stored = window.localStorage.getItem(STORAGE_KEY);
+      if (stored === 'light' || stored === 'dark') return stored;
+    } catch { /* Private browsing may disable storage. */ }
+    return window.matchMedia?.('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+  });
 
-  useEffect(() => {
-    const stored = (typeof window !== 'undefined' && window.localStorage.getItem(STORAGE_KEY)) as Theme | null;
-    const initial: Theme = stored === 'light' || stored === 'dark' ? stored : 'dark';
-    setThemeState(initial);
-  }, []);
-
-  useEffect(() => {
+  useLayoutEffect(() => {
     const root = document.documentElement;
     const body = document.body;
-    if (theme === 'dark') {
-      root.classList.add('dark');
-      body.classList.add('dark');
-    } else {
-      root.classList.remove('dark');
-      body.classList.remove('dark');
-    }
-    if (typeof window !== 'undefined') window.localStorage.setItem(STORAGE_KEY, theme);
+    root.classList.toggle('dark', theme === 'dark');
+    body.classList.toggle('dark', theme === 'dark');
+    root.style.colorScheme = theme;
   }, [theme]);
 
-  const setTheme = (t: Theme) => setThemeState(t);
-  const toggle = () => setThemeState((prev) => (prev === 'dark' ? 'light' : 'dark'));
+  useEffect(() => {
+    const media = window.matchMedia?.('(prefers-color-scheme: dark)');
+    if (!media) return;
+    const onChange = () => {
+      try { if (window.localStorage.getItem(STORAGE_KEY)) return; } catch { /* Continue with system preference. */ }
+      setThemeState(media.matches ? 'dark' : 'light');
+    };
+    media.addEventListener('change', onChange);
+    return () => media.removeEventListener('change', onChange);
+  }, []);
+
+  const setTheme = (t: Theme) => {
+    try { window.localStorage.setItem(STORAGE_KEY, t); } catch { /* Toggle still works for this session. */ }
+    setThemeState(t);
+  };
+  const toggle = () => setTheme(theme === 'dark' ? 'light' : 'dark');
 
   return <Ctx.Provider value={{ theme, setTheme, toggle }}>{children}</Ctx.Provider>;
 }

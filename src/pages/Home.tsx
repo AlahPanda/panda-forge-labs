@@ -6,7 +6,7 @@ import NewsCard from '@/components/NewsCard';
 import { site } from '@/content';
 import { useI18n } from '@/lib/i18n';
 import { ArrowRight } from 'lucide-react';
-import logo from '@/assets/logo.png';
+import { PandaMark } from '@/components/design-system/PandaMark';
 import AdSlot from '@/components/AdSlot';
 import { publicHomepage, publicFeaturedProjects, publicFeaturedArticles, publicSiteDescription } from '@/content/publicResolver';
 import { PublicV2Card } from '@/components/PublicV2Card';
@@ -24,18 +24,9 @@ export default function Home() {
         description={publicSiteDescription()}
       />
 
-      {/* HERO — instrument panel */}
+      {/* Phase 4A identity sample: the existing content and routes stay intact. */}
       <section className="relative overflow-hidden border-b border-hairline">
-        <div className="absolute inset-0 grid-bg opacity-50 pointer-events-none" />
-        <div
-          className="absolute inset-0 pointer-events-none"
-          style={{
-            background:
-              'radial-gradient(60% 50% at 80% 0%, hsl(var(--signal) / 0.12), transparent 70%)',
-          }}
-        />
-
-        <div className="container relative py-20 md:py-28 grid md:grid-cols-12 gap-10 items-center">
+        <div className="container relative py-16 sm:py-20 md:py-28 grid md:grid-cols-12 gap-10 items-center">
           <div className="md:col-span-7">
             <div className="flex items-center gap-3 label-mono reveal">
               <span className="signal-dot" />
@@ -43,7 +34,7 @@ export default function Home() {
               <span className="hairline border-t w-12" />
             </div>
 
-            <h1 className="mt-6 text-5xl md:text-7xl font-semibold tracking-tight leading-[1.02] reveal">
+            <h1 className="mt-6 text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-semibold tracking-tight leading-[1.08] reveal">
               {config?.hero?.title ? <span className="block">{config.hero.title}</span> : <><span className="block">{t('home.heroLineA')}</span><span className="block text-signal">{t('home.heroLineB')}</span></>}
             </h1>
 
@@ -54,7 +45,7 @@ export default function Home() {
             <div className="mt-9 flex flex-wrap items-center gap-3 reveal">
               <Link
                 to="/modpacks"
-                className="inline-flex items-center gap-2 px-5 h-11 rounded-md bg-signal text-primary-foreground font-medium hover:bg-signal/90 transition-colors active:scale-[0.97]"
+                className="inline-flex items-center gap-2 px-5 h-11 rounded-lg bg-primary text-primary-foreground font-medium hover:bg-signal-strong transition-colors active:scale-[0.98] focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 motion-reduce:transform-none"
               >
                 {t('home.cta.explore')} <ArrowRight className="h-4 w-4" />
               </Link>
@@ -62,7 +53,7 @@ export default function Home() {
                 href={site.discordUrl}
                 target="_blank"
                 rel="noreferrer"
-                className="inline-flex items-center gap-2 px-5 h-11 rounded-md border border-hairline bg-background hover:bg-secondary/60 transition-colors active:scale-[0.97]"
+                className="inline-flex items-center gap-2 px-5 h-11 rounded-lg border border-hairline bg-card hover:bg-secondary/60 transition-colors active:scale-[0.98] focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 motion-reduce:transform-none"
               >
                 {t('home.cta.discord')}
               </a>
@@ -70,29 +61,9 @@ export default function Home() {
           </div>
 
           <div className="md:col-span-5 reveal">
-            <div className="relative aspect-square max-w-md ml-auto">
-              <div className="absolute inset-0 rounded-xl border border-hairline bg-elev grid-bg-fine" />
-              <div className="absolute inset-0 flex items-center justify-center">
-                <img
-                  src={logo}
-                  alt="AlahPanda Labs"
-                  width={280}
-                  height={280}
-                  className="drop-shadow-[0_24px_60px_hsl(var(--signal)/0.35)]"
-                />
-              </div>
-              {/* Corner ticks */}
-              {(['tl', 'tr', 'bl', 'br'] as const).map((c) => (
-                <span
-                  key={c}
-                  className={`absolute h-3 w-3 border-signal ${
-                    c === 'tl' ? 'top-2 left-2 border-l border-t' :
-                    c === 'tr' ? 'top-2 right-2 border-r border-t' :
-                    c === 'bl' ? 'bottom-2 left-2 border-l border-b' :
-                    'bottom-2 right-2 border-r border-b'
-                  }`}
-                />
-              ))}
+            <div className="relative aspect-[4/3] max-w-md ml-auto rounded-card border border-hairline bg-card shadow-card flex items-center justify-center">
+              <div className="absolute inset-5 sm:inset-8 rounded-card border border-hairline bg-accent/40" />
+              <PandaMark className="relative w-32 h-32 sm:w-44 sm:h-44 text-foreground" />
             </div>
           </div>
         </div>

@@ -12,8 +12,8 @@ export default {
     },
     extend: {
       fontFamily: {
-        sans: ['Inter', 'system-ui', 'sans-serif'],
-        mono: ['JetBrains Mono', 'ui-monospace', 'monospace'],
+        sans: ['ui-sans-serif', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'sans-serif'],
+        mono: ['ui-monospace', 'SFMono-Regular', 'Consolas', 'Liberation Mono', 'monospace'],
       },
       colors: {
         border: "hsl(var(--border))",
@@ -22,6 +22,16 @@ export default {
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
         hairline: "hsl(var(--hairline))",
+        success: "hsl(var(--success))",
+        warning: "hsl(var(--warning))",
+        error: "hsl(var(--error))",
+        info: "hsl(var(--info))",
+        status: {
+          beta: "hsl(var(--status-beta))",
+          development: "hsl(var(--status-development))",
+          stable: "hsl(var(--status-stable))",
+          archived: "hsl(var(--status-archived))",
+        },
         signal: {
           DEFAULT: "hsl(var(--signal))",
           strong: "hsl(var(--signal-strong))",
@@ -66,9 +76,14 @@ export default {
         },
       },
       borderRadius: {
+        card: "var(--radius-card)",
         lg: "var(--radius)",
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",
+      },
+      boxShadow: {
+        card: "var(--shadow-card)",
+        raised: "var(--shadow-raised)",
       },
       keyframes: {
         "accordion-down": { from: { height: "0" }, to: { height: "var(--radix-accordion-content-height)" } },
