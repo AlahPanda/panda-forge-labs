@@ -8,7 +8,7 @@ import { useI18n } from '@/lib/i18n';
 import { ArrowRight } from 'lucide-react';
 import { HeroLandscape } from '@/components/design-system/HeroLandscape';
 import AdSlot from '@/components/AdSlot';
-import { publicHomepage, publicFeaturedProjects, publicFeaturedArticles } from '@/content/publicResolver';
+import { publicHomepage, publicFeaturedProjects, publicFeaturedArticles, publicSettings } from '@/content/publicResolver';
 import { PublicV2Card } from '@/components/PublicV2Card';
 
 export default function Home() {
@@ -21,7 +21,7 @@ export default function Home() {
     <SiteLayout>
       <Seo
         title="AlahPanda Labs"
-        description={config?.hero?.subtitle || t('home.heroSub')}
+        description={publicSettings()?.description || config?.hero?.subtitle || t('home.heroSub')}
       />
 
       {/* Brand direction sample. Legacy slogans have no authority in this presentation. */}
