@@ -15,12 +15,12 @@ export const destinations: { path: string; label: string; Icon: LucideIcon }[] =
   { path: '/news', label: 'News', Icon: Newspaper },
 ];
 
-export function PageHero({ title, description, eyebrow, children, landscape = false, scene = 'home' }: { title: string; description?: string; eyebrow?: string; children?: React.ReactNode; landscape?: boolean; scene?: 'home' | 'mac' | 'news' | 'projects' }) {
-  return <section className={'experience-hero ' + (landscape ? 'experience-hero-art' : 'experience-hero-plain')}>
+export function PageHero({ title, description, eyebrow, children, landscape = false, scene = 'home', tone = 'default', icon: Icon = Leaf }: { title: string; description?: string; eyebrow?: string; children?: React.ReactNode; landscape?: boolean; scene?: 'home' | 'mac' | 'news' | 'projects'; tone?: 'default' | 'launchers' | 'guides' | 'about' | 'quiet'; icon?: LucideIcon }) {
+  return <section className={'experience-hero ' + (landscape ? `experience-hero-art experience-scene-${scene}` : `experience-hero-plain experience-tone-${tone}`)}>
     {landscape && <HeroLandscape scene={scene} />}
     <div className="container experience-hero-inner">
       <div className="experience-hero-copy">
-        {eyebrow && <div className="experience-kicker"><Leaf size={16} aria-hidden="true" /> {eyebrow}</div>}
+        {eyebrow && <div className="experience-kicker"><Icon size={16} aria-hidden="true" /> {eyebrow}</div>}
         <h1>{title}</h1>
         {description && <p>{description}</p>}
         {children && <div className="experience-hero-actions">{children}</div>}

@@ -203,7 +203,7 @@ export default function Legal({ kind }: Props) {
             : 'Terms of Service applicable to the use of the AlahPanda Labs website.'
         }
       />
-      <PageHero eyebrow="Legal" title={isPrivacy ? 'Privacy Policy' : 'Terms of Service'} description="Information about using AlahPanda Labs." />
+      <PageHero tone="quiet" eyebrow="Legal" title={isPrivacy ? 'Privacy Policy' : 'Terms of Service'} description="Information about using AlahPanda Labs." />
       <section className="container experience-detail-body">
         <article className="experience-content-panel experience-reading text-foreground/85">
           {isPrivacy ? <PrivacyContent contactEmail={contactEmail} /> : <TermsContent />}

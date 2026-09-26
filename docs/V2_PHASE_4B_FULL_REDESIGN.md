@@ -22,7 +22,7 @@ O `App.tsx` aponta as rotas públicas para `PublicExperience.tsx`; os componente
 
 Mantêm-se os tokens Day/Night da 4A.1, a stack tipográfica de sistema e as primitives existentes. `experience.css` define a gramática comum de header, menu móvel com `Sheet`, botões, cards, grids, pesquisa, badges, painéis de leitura, estados vazios, notices e footer. O modo Light usa superfícies naturais claras; o Dark usa azul profundo e superfícies frias. Gradients de leitura são CSS e o texto nunca está gravado na imagem. CTAs e ícones têm área mínima de 44 px; `:focus-visible` e `prefers-reduced-motion` continuam globais. O seletor de tema suporta System/Light/Dark e observa mudanças do sistema, sem descarregar Day e Night simultaneamente. Idiomas existentes continuam disponíveis na navegação; vários rótulos novos de interface ainda são provisoriamente ingleses e precisam da revisão linguística antes do cutover.
 
-Mobile primeiro: <=380 px ajusta largura e CTAs; <=640 px empilha cards e painéis, transforma a navegação rápida em grelha e preserva o foco da arte com crop mobile; <=850 px empilha detalhe/sidebar; <1280 px usa menu acessível; desktop e wide desktop têm container limitado. Os filtros usam campos de pesquisa nativos e estados vazios; o menu abre por teclado, fecha por Escape e fecha depois da navegação através do Radix Sheet. A validação visual em browsers reais e dispositivos permanece obrigatória.
+Mobile primeiro: <=380 px ajusta largura e CTAs; <=640 px empilha cards e painéis, transforma a navegação rápida em grelha e coloca a arte panorâmica como primeiro capítulo do hero, seguida do texto em superfície sólida. A imagem mantém crop mobile independente com focos específicos por cena. <=850 px empilha detalhe/sidebar; <1280 px usa menu acessível; desktop e wide desktop têm container limitado. Os filtros usam campos de pesquisa nativos e estados vazios; o menu abre por teclado, fecha por Escape e fecha depois da navegação através do Radix Sheet. A validação visual em browsers reais e dispositivos permanece obrigatória.
 
 ## Arte
 
@@ -51,3 +51,26 @@ Gates executados: Vitest 33/33 (25 existentes + 8 novos), app TypeScript sem err
 3. Rever copy de interface e traduções completas. Escolher eventual slogan e símbolo/mascote finais. Nenhum foi definido neste commit.
 4. Separar um trabalho de privacidade para gating real dos scripts do HTML e revisão de política/metadata; não tratar o aviso informativo como consentimento.
 5. Após inspeção e aprovação do Preview, considerar remoção em commit separado das páginas antigas já sem consumidores, code splitting do CMS e testes visuais automatizados.
+
+## Retoma e auditoria visual posterior ao commit inicial
+
+O commit local inicial `7dcdda1` foi confirmado na branch `v2/full-redesign`, com worktree limpa e árvore `f6592f82909de9b606834a3a3270ca4aabc9fd1b`. A referência remota `v2/full-redesign` existia, mas ainda estava em `a2be3207d001c7d09bf799f715cf2e4458b441d7` (base da fase). Foi construída no GitHub uma árvore **idêntica** à local, mas a criação do commit remoto foi bloqueada pelo limite de utilização da revisão automática; nenhuma referência foi avançada. Este estado não representa um Preview da 4B.
+
+Comparação visual efetuada entre os assets, CSS/JSX e board de referência. **Não é um teste com screenshots do site renderizado**: o Vite local falhou ao iniciar (`uv_interface_addresses`) e o browser cloud não conseguiu alcançar o servidor local. Não é possível aprovar visualmente a composição, as transições, o foco ou a ausência real de overflow com estes dados.
+
+| Página | Cobertura atual | Lacuna perante a direção canónica |
+| --- | --- | --- |
+| Home | Day/Night aprovado, hero, recursos, projetos reais | Confirmar imagem/texto/CTAs e estado mobile no Preview; mascote/logótipo final pendente |
+| Projects e Modpacks | Cena original de caminhos Day/Night **provisória**, 2 projetos V2 | Rever arte aprovada quando fornecida; o catálogo real tem só 2 entradas, sem filtros fictícios |
+| Mac Native | Cena Day/Night **provisória**, dados oficiais V2 | Art direction ainda não aprovada; verificar relação entre arte e identidade Minecraft/Mac, sem promessas novas |
+| CraftToons | Teaser verídico, ícone neutro | Falta visual isométrico aprovado e layout de identidade própria; sem release ou métricas |
+| Launchers | Pesquisa, 6 entradas V2 e detalhes reais; hero com tom próprio | Falta artwork de mochila/mapa/setup aprovada e media por launcher; manter recomendações antigas suspensas |
+| News | Cenário Day/Night **provisório** e empty state | Cena atual lembra observatório, não a cabana/jornal canónicos; sem artigos publicados V2 |
+| Guides | Estrutura de leitura/estado vazio e tom de hero próprio | Falta biblioteca de dois pisos aprovada; não criar guias para preencher |
+| About | Conteúdo próprio curto e tom específico | Falta quarto do explorador **sem panda** e uma estrutura narrativa aprovada |
+| FAQ | Estado vazio V2, foco de leitura | Esperar revisão do FAQ legado; cenário discreto é adequado mas precisa teste em browser |
+| 404 | Navegação funcional e estado coerente com tokens | Falta panda perdido na bifurcação com mapa, mochila e lanterna especificada; 404/CTAs permanecem HTML |
+
+Na continuação, o texto dos heroes panorâmicos em <=640 px foi deslocado para depois da arte, com foco por cena. Isto evita cobrir o panda com headings em 375, 390 ou 430 px **por construção CSS**, mas as três larguras ainda exigem inspeção visual real. As variantes originais aprovadas da Home continuam intactas como referência; os WebP derivados permanecem substituíveis. Os heroes Launchers, Guides e About receberam apenas tons e ícones próprios enquanto as artes aprovadas não existem. Foi acrescentada contenção de texto comprido no footer e scroll horizontal para blocos técnicos nas páginas de leitura. Nenhuma arte provisória foi promovida a final.
+
+Verificações desta continuação: 33/33 testes; TypeScript app sem erros; lint 0 erros e 65 avisos preexistentes; build concluído com aviso Browserslist antigo; 22/22 pares de contraste AA; `git diff --check` limpo. Bundle JS 593 277 B e CSS 114 673 B, variação de +171 B JS e +968 B CSS face ao commit `7dcdda1`. Os valores não validam o aspeto renderizado.

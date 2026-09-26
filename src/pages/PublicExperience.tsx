@@ -88,7 +88,7 @@ export function LaunchersExperience() {
   const launchers = publicLaunchers().filter((entry) => entry.source === 'v2');
   const filtered = launchers.filter((entry) => (entry.item.name + ' ' + (entry.item.summary || '')).toLowerCase().includes(query.trim().toLowerCase()));
   return <SiteLayout><Seo title="Launchers — AlahPanda Labs" description="Explore launchers with reviewed official links."/>
-    <PageHero title="Launchers" eyebrow="Starting points" description="Different ways to launch Minecraft. Explore verified official destinations and available details."/>
+    <PageHero title="Launchers" tone="launchers" icon={Compass} eyebrow="Starting points" description="Different ways to launch Minecraft. Explore verified official destinations and available details."/>
     <section className="container experience-section experience-catalog"><div className="experience-catalog-toolbar"><SectionTitle title="Browse launchers" icon={Box}/><SearchField id="launcher-search" value={query} onChange={setQuery} placeholder="Search launchers"/></div>
       {filtered.length ? <div className="experience-grid experience-grid-launchers">{filtered.map((entry) => <LauncherCard key={entry.slug} item={entry.item}/>)}</div> : <EmptyCollection title="No matching launchers" description="Try another search term."/>}
     </section></SiteLayout>;
@@ -140,7 +140,7 @@ export function GuidesExperience() {
   const [query, setQuery] = useState('');
   const guides = publicGuides();
   const filtered = guides.filter((guide) => (guide.name + ' ' + (guide.summary || '')).toLowerCase().includes(query.trim().toLowerCase()));
-  return <SiteLayout><Seo title="Guides — AlahPanda Labs" description="Published guides from AlahPanda Labs."/><PageHero title="Guides" eyebrow="Resources" description="Find published guides and learn at your own pace."/>
+  return <SiteLayout><Seo title="Guides — AlahPanda Labs" description="Published guides from AlahPanda Labs."/><PageHero title="Guides" tone="guides" icon={BookOpen} eyebrow="Resources" description="Find published guides and learn at your own pace."/>
     <section className="container experience-section experience-catalog"><div className="experience-catalog-toolbar"><SectionTitle title="Browse guides" icon={BookOpen}/><SearchField id="guide-search" value={query} onChange={setQuery} placeholder="Search guides"/></div>
       {filtered.length ? <div className="experience-grid experience-grid-resources">{filtered.map((guide) => <GuideCard key={guide.slug} guide={guide}/>)}</div> : <EmptyCollection title={query ? 'No matching guides' : 'No guides published yet'} description={query ? 'Try another search term.' : 'Guides will appear here when they are published.'}/>}
     </section></SiteLayout>;
@@ -159,14 +159,14 @@ export function GuideDetailExperience() {
 export function FaqExperience() {
   // The legacy FAQ awaits editorial review; never present its technical claims as verified.
   const faq = publicFaq().filter((entry) => entry.source === 'v2');
-  return <SiteLayout><Seo title="FAQ — AlahPanda Labs" description="Questions and answers from AlahPanda Labs."/><PageHero title="FAQ" eyebrow="Help" description="Answers to published questions will appear here."/>
+  return <SiteLayout><Seo title="FAQ — AlahPanda Labs" description="Questions and answers from AlahPanda Labs."/><PageHero title="FAQ" tone="quiet" icon={MessageCircle} eyebrow="Help" description="Answers to published questions will appear here."/>
     <section className="container experience-section">{faq.length ? faq.map((entry) => entry.source === 'v2' && <div className="experience-faq-group" key={entry.slug}><SectionTitle title={entry.item.name}/>{entry.item.items.map((item) => <details key={item.question} className="experience-faq-item"><summary>{item.question}</summary><p>{item.answer}</p></details>)}</div>) : <EmptyCollection title="No answers published yet" description="This section is waiting for editorial review." to="/about" link="Contact and community"/>}</section>
   </SiteLayout>;
 }
 
 export function AboutExperience() {
   return <SiteLayout><Seo title="About — AlahPanda Labs" description={publicSettings()?.description || site.description}/>
-    <PageHero title="About AlahPanda Labs" eyebrow="Our place" description={publicSettings()?.description || site.description}/>
+    <PageHero title="About AlahPanda Labs" tone="about" icon={Heart} eyebrow="Our place" description={publicSettings()?.description || site.description}/>
     <div className="container experience-detail-body"><section className="experience-content-panel experience-reading"><h2>Projects and experiences</h2><p>{site.tagline}</p><p>Explore the projects available here, find official launcher links and follow published updates.</p><div className="experience-card-actions"><Link to="/projects" className="experience-button experience-button-primary">Explore projects <ArrowRight size={16}/></Link><a className="experience-button experience-button-soft" href={site.discordUrl} target="_blank" rel="noopener noreferrer">Community <ExternalLink size={16}/></a></div></section></div>
   </SiteLayout>;
 }
