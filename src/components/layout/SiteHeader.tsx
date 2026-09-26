@@ -36,6 +36,7 @@ export default function SiteHeader() {
         <Sheet open={open} onOpenChange={setOpen}><SheetTrigger asChild><button className="experience-mobile-icon" aria-label="Open menu" aria-expanded={open}><Menu size={23}/></button></SheetTrigger>
           <SheetContent side="right" className="experience-drawer"><SheetHeader><SheetTitle className="experience-brand"><BrandSymbol className="experience-brand-symbol"/><span>AlahPanda Labs</span></SheetTitle></SheetHeader>
             <nav aria-label="Mobile navigation" className="experience-drawer-nav">{siteLinks.map((link) => <NavLink key={link.to} to={link.to} end={link.to === '/'} onClick={() => setOpen(false)} className={({isActive}) => 'experience-drawer-link' + (isActive ? ' is-active' : '')}>{t(link.key)}</NavLink>)}</nav>
+            <div className="experience-drawer-projects"><span>Projects</span><Link to="/modpacks/mac-native" onClick={() => setOpen(false)}>Mac Native</Link><Link to="/modpacks/crafttoons" onClick={() => setOpen(false)}>CraftToons</Link><Link to="/support" onClick={() => setOpen(false)}>Support</Link></div>
             <div className="experience-drawer-bottom"><Preferences/><a className="experience-button experience-button-primary" href={site.discordUrl} target="_blank" rel="noopener noreferrer"><MessageCircle size={17}/>{t('nav.discord')}</a></div>
           </SheetContent></Sheet>
       </div>

@@ -10,7 +10,12 @@
   --experience-hover: 214 81% 79%;
 }
 html { scroll-behavior: smooth; }
-body { background: hsl(var(--experience-page)); }
+body { background: hsl(var(--experience-page)); transition: background-color 320ms var(--motion-ease), color 320ms var(--motion-ease); }
+.experience-site,.experience-header,.experience-footer,.experience-card,.experience-content-panel,.experience-product-facts,.experience-faq-item,.experience-quick-nav,.experience-empty,.experience-search,.experience-preferences label,.experience-drawer,.experience-notice,.experience-detail-hero,.experience-hero,.experience-button,.experience-launcher-icon,.experience-card-visual,.experience-detail-emblem { transition: background-color 320ms var(--motion-ease), border-color 320ms var(--motion-ease), color 320ms var(--motion-ease), box-shadow 320ms var(--motion-ease); }
+.experience-site :where(h1,h2,h3,p,span,a,svg,summary,dt,dd) { transition: color 320ms var(--motion-ease); }
+.hero-landscape > picture { position:absolute; inset:0; }
+.hero-landscape-entering { animation: experience-art-reveal 340ms var(--motion-ease) both; }
+@keyframes experience-art-reveal { from { opacity:0; } to { opacity:1; } }
 .experience-site .container { max-width: 1400px; }
 .experience-header { position: sticky; top: 0; z-index: 40; border-bottom: 1px solid hsl(var(--border) / .55); background: hsl(var(--card) / .94); backdrop-filter: blur(9px); }
 .experience-header-inner { min-height: 74px; display: flex; align-items: center; gap: clamp(10px,2vw,26px); justify-content: space-between; }
@@ -42,6 +47,10 @@ body { background: hsl(var(--experience-page)); }
 .experience-drawer-link:hover,.experience-drawer-link.is-active { background: hsl(var(--accent)); color: hsl(var(--accent-foreground)); }
 .experience-drawer-bottom { border-top: 1px solid hsl(var(--border)); padding-top: 20px; display: grid; gap: 17px; }
 .experience-drawer-bottom .experience-preferences { flex-wrap: wrap; }
+.experience-drawer-projects { display:grid; gap:5px; border-top:1px solid hsl(var(--border)); padding:12px 0 20px; }
+.experience-drawer-projects span { color:hsl(var(--muted-foreground)); font-size:.78rem; font-weight:700; padding:5px 16px; }
+.experience-drawer-projects a { min-height:44px; padding:10px 16px; border-radius:14px; }
+.experience-drawer-projects a:hover { background:hsl(var(--accent)); }
 .experience-hero { position: relative; overflow: hidden; isolation: isolate; border-bottom: 1px solid hsl(var(--border) / .5); }
 .experience-hero-inner { position: relative; min-height: clamp(340px, 32vw, 485px); display: flex; align-items: center; z-index: 2; }
 .experience-hero-copy { max-width: 570px; padding: 52px 0 80px; }
@@ -156,6 +165,38 @@ a:hover .experience-text-link svg,.experience-text-link:hover svg { transform: t
 .experience-faq-item { margin-top:10px;background:hsl(var(--card));border:1px solid hsl(var(--border));border-radius:15px; }
 .experience-faq-item summary { cursor:pointer;padding:20px 24px;font-weight:650;min-height:58px; }
 .experience-faq-item p { padding:0 24px 22px;color:hsl(var(--muted-foreground)); }
+.experience-faq-answer { padding:0 24px 22px; }
+.experience-faq-answer p { padding:0; }
+.experience-product-body { padding-block:clamp(36px,5vw,80px); }
+.experience-product-hero .experience-detail-intro { align-items:center; }
+.experience-product-hero .experience-hero-actions { margin-top:27px; }
+.experience-product-facts { display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,160px),1fr)); gap:0; border:1px solid hsl(var(--border)); border-radius:var(--radius-card); background:hsl(var(--card)); overflow:hidden; box-shadow:var(--shadow-card); }
+.experience-product-facts > div { padding:19px 22px; border-right:1px solid hsl(var(--border) / .6); display:flex; flex-direction:column; gap:9px; min-width:0; }
+.experience-product-facts > div:last-child { border-right:0; }
+.experience-product-facts span,.experience-product-specs dt { font-size:.78rem; color:hsl(var(--muted-foreground)); }
+.experience-product-facts strong,.experience-product-specs dd { font-size:1rem; font-weight:720; overflow-wrap:anywhere; }
+.experience-product-section { padding-block:clamp(40px,5vw,72px); border-bottom:1px solid hsl(var(--border) / .65); }
+.experience-product-section h2 { font-size:clamp(1.5rem,2.7vw,2.6rem); letter-spacing:-.035em; font-weight:750; }
+.experience-product-section .experience-section-heading { margin-bottom:27px; }
+.experience-product-intro,.experience-product-split,.experience-product-end { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1.4fr); gap:clamp(25px,5vw,85px); align-items:start; }
+.experience-product-intro h2,.experience-product-split h2,.experience-product-end h2 { margin-top:12px; }
+.experience-product-intro .prose-apl,.experience-product-split p { line-height:1.7; color:hsl(var(--muted-foreground)); }
+.experience-product-split > div:first-child > p { margin-top:16px; max-width:45ch; }
+.experience-product-split .experience-text-link { margin-top:19px; }
+.experience-product-split .experience-reading { margin-top:0; max-width:none; }
+.experience-product-specs div { display:flex; justify-content:space-between; gap:14px; padding-block:13px; border-bottom:1px solid hsl(var(--border) / .6); }
+.experience-product-specs div:first-child { padding-top:0; }
+.experience-product-requirement { margin-top:20px; }
+.experience-product-media { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:20px; }
+.experience-product-media img { width:100%; height:auto; border-radius:var(--radius-card); }
+.experience-product-media figcaption { color:hsl(var(--muted-foreground)); font-size:.85rem; margin-top:8px; }
+.experience-release-detail { padding:26px; grid-column:1/-1; max-width:1000px; }
+.experience-release-detail h3 { font-size:1.2rem; font-weight:730; }
+.experience-release-detail .prose-apl { margin-top:18px; line-height:1.6; }
+.experience-product-source { margin-top:22px; }
+.experience-product-list { list-style:disc; padding-left:22px; color:hsl(var(--muted-foreground)); }
+.experience-product-end { border-bottom:0; }
+.experience-product-end .experience-project-card { max-width:510px; }
 .experience-missing { min-height:60vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:15px;color:hsl(var(--primary)); }
 .experience-missing h1 { font-size:clamp(2.3rem,5vw,4rem);letter-spacing:-.04em;color:hsl(var(--foreground));font-weight:750; }
 .experience-missing p { color:hsl(var(--muted-foreground)); }
@@ -186,6 +227,7 @@ a:hover .experience-text-link svg,.experience-text-link:hover svg { transform: t
   .experience-grid-resources { grid-template-columns:repeat(2,minmax(0,1fr)); }
   .experience-detail-columns { grid-template-columns:1fr; }
   .experience-footer-main { grid-template-columns:repeat(2,minmax(0,1fr)); }
+  .experience-product-intro,.experience-product-split,.experience-product-end { grid-template-columns:1fr; }
 }
 @media (max-width: 640px) {
   .experience-header-inner { min-height:64px; }
@@ -221,6 +263,13 @@ a:hover .experience-text-link svg,.experience-text-link:hover svg { transform: t
   .experience-detail-hero.has-art .experience-detail-intro { grid-template-columns:1fr;min-height:510px;align-items:end; }
   .experience-detail-hero.has-art .container { padding-bottom:40px; }
   .experience-detail-emblem { height:220px; }
+  .experience-product-hero.has-art .experience-detail-intro { min-height:570px; align-items:end; }
+  .experience-product-hero.has-art .hero-landscape { height:450px; }
+  .experience-product-hero .experience-hero-actions .experience-button { width:100%; }
+  .experience-product-media { grid-template-columns:1fr; }
+  .experience-product-facts { grid-template-columns:repeat(2,minmax(0,1fr)); }
+  .experience-product-facts > div { padding:17px 15px; border-bottom:1px solid hsl(var(--border) / .6); }
+  .experience-product-facts > div:nth-child(2n) { border-right:0; }
   .experience-community > svg { display:none; }
   .experience-footer-main { grid-template-columns:repeat(2,minmax(0,1fr));gap:28px;padding-block:44px; }
   .experience-footer-intro { grid-column:1/-1; }
@@ -235,4 +284,5 @@ a:hover .experience-text-link svg,.experience-text-link:hover svg { transform: t
 }
 @media (prefers-reduced-motion: reduce) {
   .experience-card:hover,.experience-button:hover,.experience-text-link:hover svg { transform:none; }
+  body,.experience-site,.experience-site * { transition-duration:0.01ms !important; animation-duration:0.01ms !important; }
 }

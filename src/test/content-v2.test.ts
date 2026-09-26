@@ -30,6 +30,13 @@ describe('Content Model V2', () => {
     expect(parseItem('releases', { ...base, projectSlug: 'new-project', version: '0.1.0', channel: 'alpha' }).channel).toBe('alpha');
     expect(distributionSchema.safeParse({ provider: 'curseforge', state: 'active', url: 'javascript:alert(1)' }).success).toBe(false);
   });
+  it('accepts optional technical fields without fabricating requirements or known issues', () => {
+    const product = projectSchema.parse({ ...base, status: 'beta', compatibility: { environment: 'client', minecraft: ['1.21.11'] }, knownIssues: ['A documented issue'] });
+    expect(product.compatibility?.environment).toBe('client');
+    expect(product.knownIssues).toEqual(['A documented issue']);
+    expect(product.requirements).toBeUndefined();
+    expect(projectSchema.safeParse({ ...base, status: 'beta', compatibility: { environment: 'unverified' } }).success).toBe(false);
+  });
   it('supports absent and partial translations without fabricating text', () => {
     const item = projectSchema.parse({ ...base, status: 'beta', translations: { en: { state: 'partial', fields: { name: 'Example' } } } });
     expect(item.translations.en?.fields.description).toBeUndefined();

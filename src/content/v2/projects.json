@@ -7,8 +7,20 @@
       "sourceLocale": "pt-PT",
       "translations": {},
       "status": "beta",
+      "summary": "Modpack Minecraft para macOS, desenvolvido para Macs com Apple Silicon e Intel.",
+      "description": "Mac Native concentra-se na experiência Minecraft no Mac. A publicação oficial descreve objetivos de otimização da renderização e gestão de recursos, além de integração com o trackpad em modelos compatíveis. Os resultados dependem do equipamento e da configuração; a lista de mods e as alterações publicadas estão no Modrinth.",
       "releaseSlugs": ["mac-native-0-3-1"],
-      "compatibility": {"minecraft": ["1.21.11"], "loaders": ["Fabric"], "platforms": ["macOS"]},
+      "features": [
+        {"title": "Criado para Mac", "description": "A publicação do projeto contempla Macs com Apple Silicon e processadores Intel."},
+        {"title": "Foco na experiência client-side", "description": "O projeto reúne componentes de renderização e gestão de recursos, sem uma promessa universal de desempenho."},
+        {"title": "Integração com trackpad", "description": "A descrição oficial refere resposta háptica na hotbar com trackpads Force Touch integrados em MacBooks compatíveis, não em trackpads externos."}
+      ],
+      "compatibility": {"minecraft": ["1.21.11"], "loaders": ["Fabric"], "platforms": ["macOS"], "environment": "client"},
+      "installation": "1. Abre a página oficial de Mac Native no Modrinth e consulta a release compatível com Minecraft Java 1.21.11 e Fabric.\n2. Na aplicação Modrinth, procura Mac Native na secção de modpacks e instala-o a partir da página do projeto.\n3. Segue as instruções da aplicação para iniciar a instância. Se utilizares outro launcher, consulta primeiro a ajuda oficial do Modrinth para modpacks.",
+      "faq": [
+        {"question": "Que Macs são abrangidos?", "answer": "A página oficial descreve Apple Silicon e Intel. A release 0.3.1 indica Minecraft Java 1.21.11, Fabric e ambiente client-side."},
+        {"question": "Onde estão a lista de mods e as notas da release?", "answer": "Consulta as secções Content e Changes da página oficial da release no Modrinth."}
+      ],
       "distribution": [{"provider": "modrinth", "state": "active", "priority": "primary", "url": "https://modrinth.com/modpack/mac-native"}]
     },
     {

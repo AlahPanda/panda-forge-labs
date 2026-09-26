@@ -26,8 +26,9 @@ export const distributionSchema = z.object({
 export const projectSchema = base.extend({
   status: projectStatusSchema, releaseSlugs: z.array(slugSchema).default([]),
   media: z.array(media).optional(), features: z.array(feature).optional(),
-  compatibility: z.object({ minecraft: z.array(shortText).optional(), loaders: z.array(shortText).optional(), platforms: z.array(shortText).optional() }).strict().optional(),
+  compatibility: z.object({ minecraft: z.array(shortText).optional(), loaders: z.array(shortText).optional(), platforms: z.array(shortText).optional(), environment: z.enum(['client', 'server', 'both']).optional() }).strict().optional(),
   requirements: z.array(feature).optional(), installation: text.optional(), recommendations: z.array(shortText).optional(),
+  knownIssues: z.array(shortText).optional(),
   distribution: z.array(distributionSchema).optional(),
   benchmarks: z.array(z.object({ label: shortText, value: z.number().finite(), unit: shortText, methodology: text.optional(), source: url.optional() }).strict()).optional(),
   faq: z.array(faqItem).optional(), roadmap: z.array(z.object({ title: shortText, state: z.enum(['planned', 'in-progress', 'done']) }).strict()).optional(),

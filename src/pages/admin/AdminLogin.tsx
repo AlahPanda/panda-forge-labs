@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import SiteLayout from '@/components/layout/SiteLayout';
 import Seo from '@/components/Seo';
 import { adminApi, adminAuth } from '@/lib/adminApi';
@@ -12,6 +12,16 @@ export default function AdminLogin() {
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [checking, setChecking] = useState(() => adminAuth.isLoggedIn());
+
+  useEffect(() => {
+    if (!adminAuth.isLoggedIn()) return;
+    let active = true;
+    adminApi.me().then(() => { if (active) nav('/admin/editor', { replace: true }); }).catch(() => {
+      if (active) { adminAuth.clear(); setChecking(false); }
+    });
+    return () => { active = false; };
+  }, [nav]);
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -36,8 +46,9 @@ export default function AdminLogin() {
             <Lock className="h-3.5 w-3.5" /> Restricted
           </div>
           <h1 className="mt-3 text-2xl font-semibold tracking-tight">{t('admin.title')}</h1>
+          <p className="mt-3 text-sm text-muted-foreground">Owner CMS · published content and private drafts</p>
 
-          <form onSubmit={submit} className="mt-6 space-y-4">
+          {checking ? <p className="mt-6" role="status">Checking CMS session…</p> : <form onSubmit={submit} className="mt-6 space-y-4">
             <div>
               <label htmlFor="pw" className="label-mono block mb-2">{t('admin.password')}</label>
               <input
@@ -59,7 +70,8 @@ export default function AdminLogin() {
               {loading && <Loader2 className="h-4 w-4 animate-spin" />}
               {t('admin.signin')}
             </button>
-          </form>
+          </form>}
+          <Link to="/" className="mt-6 inline-block text-sm text-signal underline">Back to site</Link>
         </div>
       </section>
     </SiteLayout>

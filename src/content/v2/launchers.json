@@ -6,6 +6,7 @@
     {"slug":"atlauncher","name":"ATLauncher","sourceLocale":"en","translations":{},"platforms":[],"officialLinks":[{"label":"Official ATLauncher downloads","url":"https://atlauncher.com/downloads"}]},
     {"slug":"curseforge-app","name":"CurseForge App","sourceLocale":"en","translations":{},"platforms":[],"officialLinks":[{"label":"Official CurseForge App page","url":"https://www.curseforge.com/download/app"}]},
     {"slug":"multimc","name":"MultiMC","sourceLocale":"en","translations":{},"summary":"A Minecraft launcher for managing separate instances.","platforms":[],"officialLinks":[{"label":"Official MultiMC website","url":"https://multimc.org/"}]},
-    {"slug":"gdlauncher","name":"GDLauncher","sourceLocale":"en","translations":{},"platforms":[],"officialLinks":[{"label":"Official GDLauncher website","url":"https://gdlauncher.com/"}]}
+    {"slug":"gdlauncher","name":"GDLauncher","sourceLocale":"en","translations":{},"platforms":[],"officialLinks":[{"label":"Official GDLauncher website","url":"https://gdlauncher.com/"}]},
+    {"slug":"sklauncher","name":"SKLauncher","sourceLocale":"en","translations":{},"summary":"A launcher for Minecraft: Java Edition published by SKmedix.","platforms":["Windows","Linux","macOS"],"officialLinks":[{"label":"Official SKLauncher website","url":"https://skmedix.pl/"},{"label":"Official installation documentation","url":"https://docs.skmedix.pl/getting-started/install"}]}
   ]
 }

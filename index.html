@@ -7,17 +7,27 @@
     <!-- Metatag de Validação do AdSense -->
     <meta name="google-adsense-account" content="ca-pub-1826086897592568">
 
-    <title>AlahPanda Labs — Premium Minecraft Modpacks</title>
+    <title>AlahPanda Labs — Projects and experiences</title>
     
     <!-- Mini Logo (Favicon) -->
-    <link rel="icon" type="image/png" href="/favicon.png" />
+    <link rel="icon" href="/favicon.ico" />
 
-    <meta name="description" content="A modern hub for premium Minecraft modpacks: Mac Native and CraftToons. Engineered for performance." />
+    <meta name="description" content="Explore projects and experiences created by AlahPanda." />
     <meta name="author" content="AlahPanda Labs" />
     <meta name="theme-color" content="#f8f5f0" />
+    <script>
+      // Apply the chosen theme before styles paint.
+      try {
+        var savedTheme = localStorage.getItem('apl.theme');
+        var darkTheme = savedTheme === 'dark' || (savedTheme !== 'light' && matchMedia('(prefers-color-scheme: dark)').matches);
+        document.documentElement.classList.toggle('dark', darkTheme);
+        document.documentElement.style.colorScheme = darkTheme ? 'dark' : 'light';
+        document.querySelector('meta[name="theme-color"]').setAttribute('content', darkTheme ? '#121c2b' : '#f6f0e6');
+      } catch (error) { /* ThemeProvider handles unavailable storage. */ }
+    </script>
 
-    <meta property="og:title" content="AlahPanda Labs — Premium Minecraft Modpacks" />
-    <meta property="og:description" content="A modern hub for premium Minecraft modpacks. Mac Native and CraftToons." />
+    <meta property="og:title" content="AlahPanda Labs — Projects and experiences" />
+    <meta property="og:description" content="Explore projects and experiences created by AlahPanda." />
     <meta property="og:type" content="website" />
 
     <meta name="twitter:card" content="summary_large_image" />
@@ -41,14 +51,6 @@
   </head>
 
   <body>
-    <script>
-      try {
-        var savedTheme = localStorage.getItem('apl.theme');
-        var darkTheme = savedTheme === 'dark' || (savedTheme !== 'light' && matchMedia('(prefers-color-scheme: dark)').matches);
-        document.documentElement.classList.toggle('dark', darkTheme);
-        document.documentElement.style.colorScheme = darkTheme ? 'dark' : 'light';
-      } catch (error) { /* ThemeProvider applies the system preference when storage is blocked. */ }
-    </script>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>

@@ -61,7 +61,7 @@ describe('public Content V2 resolution', () => {
   });
 
   it('keeps legacy routes for launchers and articles pending editorial migration', () => {
-    const migrated = ['prism', 'modrinth-app', 'atlauncher', 'curseforge-app', 'multimc', 'gdlauncher'];
+    const migrated = ['prism', 'modrinth-app', 'atlauncher', 'curseforge-app', 'multimc', 'gdlauncher', 'sklauncher'];
     for (const slug of migrated) {
       const entry = publicLauncher(slug);
       expect(entry?.source).toBe('v2');
@@ -72,7 +72,7 @@ describe('public Content V2 resolution', () => {
         expect(entry.item.recommendations).toBeUndefined();
       }
     }
-    expect(publicLaunchers().filter((entry) => entry.source === 'legacy').map((entry) => entry.slug).sort()).toEqual(['astralrinth', 'sklauncher']);
+    expect(publicLaunchers().filter((entry) => entry.source === 'legacy').map((entry) => entry.slug).sort()).toEqual(['astralrinth']);
     expect(publicSettings()?.name).toBe('AlahPanda Labs');
     expect(publicSettings()?.contactEmail).toBeUndefined();
     expect(publicFaq().filter((entry) => entry.source === 'legacy').map((entry) => entry.slug)).toEqual(['general', 'performance', 'support']);

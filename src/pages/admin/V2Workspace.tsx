@@ -135,7 +135,9 @@ export default function V2Workspace({ kind, draftsOnly = false }: { kind: Conten
           <StringList label="Release slugs" values={strings(entry, 'releaseSlugs')} onChange={(v) => change('releaseSlugs', v)} />
           <Input label="Installation" value={value(entry, 'installation')} onChange={(v) => change('installation', v)} multiline />
           <StringList label="Recommendations" values={strings(entry, 'recommendations')} onChange={(v) => change('recommendations', v)} />
+          <StringList label="Known issues" values={strings(entry, 'knownIssues')} onChange={(v) => change('knownIssues', v)} />
           {(['minecraft', 'loaders', 'platforms'] as const).map((key) => <StringList key={key} label={`Compatibility: ${key}`} values={strings((entry.compatibility as Entry) || {}, key)} onChange={(v) => change('compatibility', { ...((entry.compatibility as Entry) || {}), [key]: v })} />)}
+          <Select label="Environment (optional)" value={value((entry.compatibility as Entry) || {}, 'environment') || 'unspecified'} choices={['unspecified', 'client', 'server', 'both']} onChange={(v) => { const next = { ...((entry.compatibility as Entry) || {}) }; if (v === 'unspecified') delete next.environment; else next.environment = v; change('compatibility', next); }} />
           <Rows title="Distribution providers" items={records(entry, 'distribution')} fields={['provider', 'state|active|paused|outdated', 'priority|primary|secondary', 'url', 'note']} onChange={(v) => change('distribution', v)} />
           <Rows title="Features" items={records(entry, 'features')} fields={['title', 'description', 'icon']} onChange={(v) => change('features', v)} />
           <Rows title="Requirements" items={records(entry, 'requirements')} fields={['title', 'description']} onChange={(v) => change('requirements', v)} />

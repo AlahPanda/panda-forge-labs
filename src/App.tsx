@@ -13,6 +13,7 @@ import { HomeExperience, ProjectsExperience, ProjectDetailExperience, GuidesExpe
 import Legal from "./pages/Legal";
 import AdminLogin from "./pages/admin/AdminLogin";
 import AdminEditor from "./pages/admin/AdminEditor";
+import AdminGate from "./pages/admin/AdminGate";
 
 const queryClient = new QueryClient();
 
@@ -54,7 +55,7 @@ const App = () => (
                 <Route path="/legal/terms" element={<Navigate to="/legal?kind=terms" replace />} />
                 <Route path="/support" element={<SupportExperience />} />
                 <Route path="/admin" element={<AdminLogin />} />
-                <Route path="/admin/editor" element={<AdminEditor />} />
+                <Route path="/admin/editor" element={<AdminGate><AdminEditor /></AdminGate>} />
                 <Route path="*" element={<MissingExperience />} />
               </Routes>
             </BrowserRouter>

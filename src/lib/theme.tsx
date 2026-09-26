@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useLayoutEffect, useState, type ReactNode } from 'react';
+import { createContext, useContext, useEffect, useLayoutEffect, useRef, useState, type ReactNode } from 'react';
 
 type Theme = 'dark' | 'light';
 export type ThemePreference = Theme | 'system';
@@ -15,6 +15,7 @@ const Ctx = createContext<ThemeCtx | null>(null);
 const systemIsDark = () => typeof window !== 'undefined' && !!window.matchMedia?.('(prefers-color-scheme: dark)').matches;
 
 export function ThemeProvider({ children }: { children: ReactNode }) {
+  const previousTheme = useRef<Theme | null>(null);
   const [preference, setPreferenceState] = useState<ThemePreference>(() => {
     try {
       const stored = window.localStorage.getItem(STORAGE_KEY);
@@ -27,10 +28,14 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
 
   useLayoutEffect(() => {
     const root = document.documentElement;
+    if (previousTheme.current && previousTheme.current !== theme) root.dataset.themeTransition = 'true';
+    previousTheme.current = theme;
     root.classList.toggle('dark', theme === 'dark');
     document.body.classList.toggle('dark', theme === 'dark');
     root.style.colorScheme = theme;
     document.querySelector('meta[name="theme-color"]')?.setAttribute('content', theme === 'dark' ? '#121c2b' : '#f6f0e6');
+    const timer = window.setTimeout(() => { delete root.dataset.themeTransition; }, 420);
+    return () => { window.clearTimeout(timer); delete root.dataset.themeTransition; };
   }, [theme]);
 
   useEffect(() => {

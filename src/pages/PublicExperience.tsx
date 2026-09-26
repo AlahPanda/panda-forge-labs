@@ -11,6 +11,7 @@ import type { ArticleV2, ProjectV2 } from '@/content/v2/schema';
 import { ProjectStatusBadge } from '@/components/design-system/ProjectStatus';
 import { HeroLandscape } from '@/components/design-system/HeroLandscape';
 import { PageHero, SectionTitle, SearchField, EmptyCollection, ProjectCard, LauncherCard, ArticleCard, GuideCard, destinations } from '@/components/experience/Shared';
+import { MacNativeProduct } from '@/components/experience/MacNativeProduct';
 
 const cardGrid = 'experience-grid experience-grid-projects';
 const approvedArticles = (): ArticleV2[] => publicArticles().flatMap((entry) => entry.source === 'v2' ? [entry.item] : []);
@@ -64,6 +65,7 @@ export function ProjectDetailExperience() {
   const project: ProjectV2 = entry.item;
   const teaser = project.status === 'internal-prototype';
   const releases = teaser ? [] : publicReleasesFor(project);
+  if (project.slug === 'mac-native' && !teaser) return <MacNativeProduct project={project} releases={releases}/>;
   const image = project.media?.find((medium) => medium.kind === 'image');
   const primary = project.distribution?.find((provider) => provider.state === 'active' && provider.priority === 'primary' && provider.url);
   return <SiteLayout><Seo title={(project.seo?.title || project.name) + ' — AlahPanda Labs'} description={project.seo?.description || project.summary || project.name} image={project.seo?.image || image?.url}/>
@@ -85,12 +87,12 @@ export function ProjectDetailExperience() {
 
 export function LaunchersExperience() {
   const [query, setQuery] = useState('');
-  const launchers = publicLaunchers().filter((entry) => entry.source === 'v2');
-  const filtered = launchers.filter((entry) => (entry.item.name + ' ' + (entry.item.summary || '')).toLowerCase().includes(query.trim().toLowerCase()));
+  const launchers = publicLaunchers();
+  const filtered = launchers.filter((entry) => (entry.item.name + ' ' + (entry.source === 'v2' ? entry.item.summary || '' : '')).toLowerCase().includes(query.trim().toLowerCase()));
   return <SiteLayout><Seo title="Launchers — AlahPanda Labs" description="Explore launchers with reviewed official links."/>
     <PageHero title="Launchers" tone="launchers" icon={Compass} eyebrow="Starting points" description="Different ways to launch Minecraft. Explore verified official destinations and available details."/>
     <section className="container experience-section experience-catalog"><div className="experience-catalog-toolbar"><SectionTitle title="Browse launchers" icon={Box}/><SearchField id="launcher-search" value={query} onChange={setQuery} placeholder="Search launchers"/></div>
-      {filtered.length ? <div className="experience-grid experience-grid-launchers">{filtered.map((entry) => <LauncherCard key={entry.slug} item={entry.item}/>)}</div> : <EmptyCollection title="No matching launchers" description="Try another search term."/>}
+      {filtered.length ? <div className="experience-grid experience-grid-launchers">{filtered.map((entry) => <LauncherCard key={entry.slug} entry={entry}/>)}</div> : <EmptyCollection title="No matching launchers" description="Try another search term."/>}
     </section></SiteLayout>;
 }
 

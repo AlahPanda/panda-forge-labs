@@ -3,8 +3,9 @@ import { ArrowRight, BookOpen, Box, Compass, Leaf, Newspaper, Rocket, Search, ty
 import { HeroLandscape } from '@/components/design-system/HeroLandscape';
 import { ProjectStatusBadge } from '@/components/design-system/ProjectStatus';
 import type { ProjectV2, LauncherV2, ArticleV2, GuideV2 } from '@/content/v2/schema';
-import type { PublicEntry, } from '@/content/publicResolver';
+import type { PublicEntry } from '@/content/publicResolver';
 import type { Modpack } from '@/content';
+import type { LauncherItem } from '@/lib/launchers';
 import { publicReleasesFor } from '@/content/publicResolver';
 
 export const destinations: { path: string; label: string; Icon: LucideIcon }[] = [
@@ -63,7 +64,9 @@ export function ProjectCard({ entry }: { entry: PublicEntry<ProjectV2, Modpack> 
   </Link>;
 }
 
-export function LauncherCard({ item }: { item: LauncherV2 }) {
+export function LauncherCard({ entry }: { entry: PublicEntry<LauncherV2, LauncherItem> }) {
+  if (entry.source === 'legacy') return <article className="experience-card experience-launcher-card"><div className="experience-launcher-icon"><Box size={30} aria-hidden="true"/></div><div className="experience-card-body"><h2>{entry.item.name}</h2><p>Launcher details are being checked against the publisher's information.</p><span className="experience-meta">Information under review</span><div className="experience-card-actions"><Link to={'/launchers/' + entry.slug} className="experience-button experience-button-soft">View status <ArrowRight size={16}/></Link></div></div></article>;
+  const item = entry.item;
   return <article className="experience-card experience-launcher-card"><div className="experience-launcher-icon"><Box size={30} aria-hidden="true"/></div><div className="experience-card-body">
     <h2>{item.name}</h2>{item.summary && <p>{item.summary}</p>}
     {item.platforms.length > 0 && <p className="experience-meta">{item.platforms.join(' · ')}</p>}
