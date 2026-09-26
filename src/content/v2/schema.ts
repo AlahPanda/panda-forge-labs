@@ -16,7 +16,8 @@ const base = z.object({
   summary: shortText.optional(), description: text.optional(), seo: seo.optional(),
 }).strict();
 const feature = z.object({ title: shortText, description: text.optional(), icon: shortText.optional() }).strict();
-const faqItem = z.object({ question: shortText, answer: text }).strict();
+const faqItem = z.object({ id: slugSchema.optional(), question: shortText, answer: text }).strict();
+const compatibility = z.object({ minecraft: z.array(shortText).optional(), loaders: z.array(shortText).optional(), platforms: z.array(shortText).optional(), environment: z.enum(['client', 'server', 'both']).optional() }).strict();
 
 export const projectStatusSchema = z.enum(['internal-prototype', 'development', 'alpha', 'beta', 'stable', 'archived']);
 export const distributionSchema = z.object({
@@ -26,7 +27,7 @@ export const distributionSchema = z.object({
 export const projectSchema = base.extend({
   status: projectStatusSchema, releaseSlugs: z.array(slugSchema).default([]),
   media: z.array(media).optional(), features: z.array(feature).optional(),
-  compatibility: z.object({ minecraft: z.array(shortText).optional(), loaders: z.array(shortText).optional(), platforms: z.array(shortText).optional(), environment: z.enum(['client', 'server', 'both']).optional() }).strict().optional(),
+  compatibility: compatibility.optional(),
   requirements: z.array(feature).optional(), installation: text.optional(), recommendations: z.array(shortText).optional(),
   knownIssues: z.array(shortText).optional(),
   distribution: z.array(distributionSchema).optional(),
@@ -36,6 +37,7 @@ export const projectSchema = base.extend({
 export const releaseSchema = base.extend({
   projectSlug: slugSchema, version: shortText, channel: z.enum(['alpha', 'beta', 'stable']),
   releasedAt: z.string().datetime().optional(), changelog: text.optional(),
+  compatibility: compatibility.optional(),
   distribution: z.array(distributionSchema).optional(),
 }).strict();
 export const launcherSchema = base.extend({
@@ -51,7 +53,8 @@ export const articleSchema = base.extend({
 }).strict();
 export const guideSchema = base.extend({
   body: text, projectSlug: slugSchema.optional(), launcherSlug: slugSchema.optional(),
-  level: z.enum(['beginner', 'technical']).optional(), steps: z.array(z.object({ title: shortText, body: text }).strict()).optional(),
+  level: z.enum(['beginner', 'technical']).optional(), updatedAt: z.string().datetime().optional(),
+  media: z.array(media).optional(), steps: z.array(z.object({ title: shortText, body: text }).strict()).optional(),
 }).strict();
 export const faqSchema = base.extend({ projectSlug: slugSchema.optional(), items: z.array(faqItem).default([]) }).strict();
 export const homepageSchema = base.extend({

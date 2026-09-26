@@ -44,8 +44,10 @@ export const publicProjects = () => resolveEntries(validatedPublicItems<ProjectV
 export const publicProject = (slug: string) => publicProjects().find((entry) => entry.slug === slug);
 export const publicReleasesFor = (project: ProjectV2): ReleaseV2[] => {
   if (project.status === 'internal-prototype') return [];
-  const slugs = new Set(project.releaseSlugs || []);
-  return validatedPublicItems<ReleaseV2>('releases', sources.releases).filter((release) => release.projectSlug === project.slug && slugs.has(release.slug));
+  const published = validatedPublicItems<ReleaseV2>('releases', sources.releases);
+  // CMS project order is the editorial order. Never guess maturity or freshness
+  // from a version string (including prerelease versions).
+  return [...new Set(project.releaseSlugs)].flatMap((slug) => published.filter((release) => release.slug === slug && release.projectSlug === project.slug));
 };
 export const publicLaunchers = () => resolveEntries(validatedPublicItems<LauncherV2>('launchers', sources.launchers), launchersForList(), (l) => l.id);
 export const publicLauncher = (slug: string) => publicLaunchers().find((entry) => entry.slug === slug);

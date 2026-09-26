@@ -4,12 +4,13 @@ import { ThemeProvider, useTheme } from '@/lib/theme';
 import { ProjectStatusBadge } from '@/components/design-system/ProjectStatus';
 import { IconButton } from '@/components/design-system/Primitives';
 import { HeroLandscape } from '@/components/design-system/HeroLandscape';
+import { I18nProvider } from '@/lib/i18n';
 
 afterEach(() => { cleanup(); vi.unstubAllGlobals(); localStorage.removeItem('apl.theme'); document.documentElement.classList.remove('dark'); delete document.documentElement.dataset.themeTransition; });
 
 describe('design system', () => {
   it('hides the internal prototype terminology on public badges', () => {
-    render(<ProjectStatusBadge status="internal-prototype" />);
+    render(<I18nProvider><ProjectStatusBadge status="internal-prototype" /></I18nProvider>);
     expect(screen.getByText('In Development')).toBeInTheDocument();
     expect(screen.queryByText(/internal.prototype/i)).not.toBeInTheDocument();
   });
