@@ -8,6 +8,7 @@ import AdminLogin from '@/pages/admin/AdminLogin';
 import AdminGate from '@/pages/admin/AdminGate';
 import AdminEditor from '@/pages/admin/AdminEditor';
 import { adminApi, adminAuth } from '@/lib/adminApi';
+import App from '@/App';
 
 afterEach(() => { cleanup(); vi.restoreAllMocks(); sessionStorage.clear(); });
 
@@ -59,5 +60,14 @@ describe('owner CMS routes', () => {
     adminRoute('/admin');
     await waitFor(() => expect(screen.getByLabelText(/password|palavra-passe/i)).toBeInTheDocument());
     expect(adminAuth.getToken()).toBeNull();
+  });
+
+  it('loads the code split owner route on direct navigation while retaining the guard', async () => {
+    window.history.replaceState({}, '', '/admin/editor');
+    const scroll = vi.spyOn(window, 'scrollTo').mockImplementation(() => {});
+    render(<App/>);
+    expect(await screen.findByLabelText(/password|palavra-passe/i)).toBeInTheDocument();
+    expect(scroll).toHaveBeenCalled();
+    window.history.replaceState({}, '', '/');
   });
 });

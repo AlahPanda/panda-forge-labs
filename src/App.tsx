@@ -1,4 +1,4 @@
-import { useLayoutEffect } from "react";
+import { lazy, Suspense, useLayoutEffect } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Navigate, Route, Routes, useLocation } from "react-router-dom";
 import { HelmetProvider } from "react-helmet-async";
@@ -11,9 +11,10 @@ import CookieConsent from "@/components/CookieConsent";
 
 import { HomeExperience, ProjectsExperience, ProjectDetailExperience, GuidesExperience, GuideDetailExperience, NewsExperience, ArticleExperience, FaqExperience, AboutExperience, SupportExperience, LaunchersExperience, LauncherDetailExperience, MissingExperience } from "./pages/PublicExperience";
 import Legal from "./pages/Legal";
-import AdminLogin from "./pages/admin/AdminLogin";
-import AdminEditor from "./pages/admin/AdminEditor";
-import AdminGate from "./pages/admin/AdminGate";
+// The owner workspace is downloaded only when an admin route is visited.
+const AdminLogin = lazy(() => import("./pages/admin/AdminLogin"));
+const AdminEditor = lazy(() => import("./pages/admin/AdminEditor"));
+const AdminGate = lazy(() => import("./pages/admin/AdminGate"));
 
 const queryClient = new QueryClient();
 
@@ -54,8 +55,8 @@ const App = () => (
                 <Route path="/legal/privacy" element={<Navigate to="/legal?kind=privacy" replace />} />
                 <Route path="/legal/terms" element={<Navigate to="/legal?kind=terms" replace />} />
                 <Route path="/support" element={<SupportExperience />} />
-                <Route path="/admin" element={<AdminLogin />} />
-                <Route path="/admin/editor" element={<AdminGate><AdminEditor /></AdminGate>} />
+                <Route path="/admin" element={<Suspense fallback={<div role="status">Loading owner access…</div>}><AdminLogin /></Suspense>} />
+                <Route path="/admin/editor" element={<Suspense fallback={<div role="status">Loading owner workspace…</div>}><AdminGate><AdminEditor /></AdminGate></Suspense>} />
                 <Route path="*" element={<MissingExperience />} />
               </Routes>
             </BrowserRouter>
