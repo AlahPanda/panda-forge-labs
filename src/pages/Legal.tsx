@@ -3,6 +3,7 @@ import Seo from '@/components/Seo';
 import { site } from '@/content';
 import { useSearchParams } from 'react-router-dom';
 import type { ReactNode } from 'react';
+import { PageHero } from '@/components/experience/Shared';
 
 type LegalKind = 'privacy' | 'terms';
 
@@ -11,11 +12,11 @@ interface Props {
 }
 
 function LegalParagraph({ children }: { children: ReactNode }) {
-  return <p className="mt-3 text-zinc-400">{children}</p>;
+  return <p className="mt-3 text-muted-foreground leading-relaxed">{children}</p>;
 }
 
 function LegalList({ children }: { children: ReactNode }) {
-  return <ul className="mt-3 list-disc space-y-2 pl-6 text-zinc-400">{children}</ul>;
+  return <ul className="mt-3 list-disc space-y-2 pl-6 text-muted-foreground leading-relaxed">{children}</ul>;
 }
 
 function LegalSection({ title, children }: { title: string; children: ReactNode }) {
@@ -202,14 +203,9 @@ export default function Legal({ kind }: Props) {
             : 'Terms of Service applicable to the use of the AlahPanda Labs website.'
         }
       />
-      <section className="container max-w-3xl py-16">
-        <div className="label-mono">07 — Legal</div>
-        <h1 className="mt-3 text-4xl md:text-5xl font-semibold tracking-tight">
-          {isPrivacy ? 'Privacy Policy' : 'Terms of Service'}
-        </h1>
-        <p className="mt-6 text-muted-foreground">Last updated: {new Date().toISOString().slice(0, 10)}</p>
-
-        <article className="mt-10 text-foreground/85">
+      <PageHero eyebrow="Legal" title={isPrivacy ? 'Privacy Policy' : 'Terms of Service'} description="Information about using AlahPanda Labs." />
+      <section className="container experience-detail-body">
+        <article className="experience-content-panel experience-reading text-foreground/85">
           {isPrivacy ? <PrivacyContent contactEmail={contactEmail} /> : <TermsContent />}
         </article>
       </section>

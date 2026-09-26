@@ -40,4 +40,10 @@ describe('design system', () => {
     expect(container.querySelector('picture img')).toHaveAttribute('src', '/brand/overlook-day.webp');
     expect(container.querySelector('picture source')).toHaveAttribute('srcset', '/brand/overlook-day-mobile.webp');
   });
+
+  it('selects a different illustration for a different public route', () => {
+    const { container } = render(<ThemeProvider><HeroLandscape scene="projects" /></ThemeProvider>);
+    expect(container.querySelector('picture img')).toHaveAttribute('src', '/brand/projects-day.webp');
+    expect(container.querySelector('picture source')).toHaveAttribute('srcset', '/brand/projects-day-mobile.webp');
+  });
 });

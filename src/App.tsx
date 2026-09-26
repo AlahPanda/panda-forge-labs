@@ -9,24 +9,10 @@ import { ThemeProvider } from "@/lib/theme";
 import { I18nProvider } from "@/lib/i18n";
 import CookieConsent from "@/components/CookieConsent";
 
-import Home from "./pages/Home";
-import Modpacks from "./pages/Modpacks";
-import ModpackDetail from "./pages/ModpackDetail";
-import Guides from "./pages/Guides";
-import GuideDetail from "./pages/GuideDetail";
-import News from "./pages/News";
-import NewsArticle from "./pages/NewsArticle";
-import Faq from "./pages/Faq";
-import About from "./pages/About";
+import { HomeExperience, ProjectsExperience, ProjectDetailExperience, GuidesExperience, GuideDetailExperience, NewsExperience, ArticleExperience, FaqExperience, AboutExperience, SupportExperience, LaunchersExperience, LauncherDetailExperience, MissingExperience } from "./pages/PublicExperience";
 import Legal from "./pages/Legal";
-import Support from "./pages/Support";
-import Launchers from "./pages/Launchers";
-import LauncherDetail from "./pages/LauncherDetail";
-import LauncherRoutesLayout from "./pages/launchers/LauncherRoutesLayout";
-import NewsRoutesLayout from "./pages/news/NewsRoutesLayout";
 import AdminLogin from "./pages/admin/AdminLogin";
 import AdminEditor from "./pages/admin/AdminEditor";
-import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
 
@@ -51,28 +37,25 @@ const App = () => (
             <BrowserRouter>
               <ScrollToTop />
               <Routes>
-                <Route path="/" element={<Home />} />
-                <Route path="/modpacks" element={<Modpacks />} />
-                <Route path="/modpacks/:slug" element={<ModpackDetail />} />
-                <Route path="/guides" element={<Guides />} />
-                <Route path="/guides/:slug" element={<GuideDetail />} />
-                <Route path="/news" element={<NewsRoutesLayout />}>
-                  <Route index element={<News />} />
-                  <Route path=":slug" element={<NewsArticle />} />
-                </Route>
-                <Route path="/launchers" element={<LauncherRoutesLayout />}>
-                  <Route index element={<Launchers />} />
-                  <Route path=":slug" element={<LauncherDetail />} />
-                </Route>
-                <Route path="/faq" element={<Faq />} />
-                <Route path="/about" element={<About />} />
+                <Route path="/" element={<HomeExperience />} />
+                <Route path="/projects" element={<ProjectsExperience />} />
+                <Route path="/modpacks" element={<ProjectsExperience modpacks />} />
+                <Route path="/modpacks/:slug" element={<ProjectDetailExperience />} />
+                <Route path="/guides" element={<GuidesExperience />} />
+                <Route path="/guides/:slug" element={<GuideDetailExperience />} />
+                <Route path="/news" element={<NewsExperience />} />
+                <Route path="/news/:slug" element={<ArticleExperience />} />
+                <Route path="/launchers" element={<LaunchersExperience />} />
+                <Route path="/launchers/:slug" element={<LauncherDetailExperience />} />
+                <Route path="/faq" element={<FaqExperience />} />
+                <Route path="/about" element={<AboutExperience />} />
                 <Route path="/legal" element={<Legal />} />
                 <Route path="/legal/privacy" element={<Navigate to="/legal?kind=privacy" replace />} />
                 <Route path="/legal/terms" element={<Navigate to="/legal?kind=terms" replace />} />
-                <Route path="/support" element={<Support />} />
+                <Route path="/support" element={<SupportExperience />} />
                 <Route path="/admin" element={<AdminLogin />} />
                 <Route path="/admin/editor" element={<AdminEditor />} />
-                <Route path="*" element={<NotFound />} />
+                <Route path="*" element={<MissingExperience />} />
               </Routes>
             </BrowserRouter>
           </TooltipProvider>

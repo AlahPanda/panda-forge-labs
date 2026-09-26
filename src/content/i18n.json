@@ -1,6 +1,8 @@
 {
   "en": {
     "nav.home": "Home",
+    "nav.projects": "Projects",
+    "nav.guides": "Guides",
     "nav.modpacks": "Modpacks",
     "nav.news": "News",
     "nav.about": "About",
@@ -47,6 +49,8 @@
   },
   "pt-PT": {
     "nav.home": "Início",
+    "nav.projects": "Projetos",
+    "nav.guides": "Guias",
     "nav.modpacks": "Modpacks",
     "nav.news": "Notícias",
     "nav.about": "Sobre",
@@ -93,6 +97,8 @@
   },
   "pt-BR": {
     "nav.home": "Início",
+    "nav.projects": "Projetos",
+    "nav.guides": "Guias",
     "nav.modpacks": "Modpacks",
     "nav.news": "Notícias",
     "nav.about": "Sobre",
@@ -139,6 +145,8 @@
   },
   "es": {
     "nav.home": "Inicio",
+    "nav.projects": "Proyectos",
+    "nav.guides": "Guías",
     "nav.modpacks": "Modpacks",
     "nav.news": "Noticias",
     "nav.about": "Acerca",
