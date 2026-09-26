@@ -2,56 +2,56 @@
 @tailwind components;
 @tailwind utilities;
 
-/* AlahPanda Labs — V2 semantic tokens. HSL channels are consumed by Tailwind. */
+/* AlahPanda Labs — Day/Night semantic tokens. HSL channels are consumed by Tailwind. */
 
 @layer base {
   :root {
-    --background: 34 37% 96%;
-    --foreground: 25 21% 16%;
-    --card: 34 40% 99%;
+    --background: 39 48% 94%;
+    --foreground: 29 22% 18%;
+    --card: 42 60% 98%;
     --card-foreground: var(--foreground);
-    --popover: 34 40% 99%;
+    --popover: 42 60% 98%;
     --popover-foreground: var(--foreground);
-    --primary: 334 57% 40%;
+    --primary: 76 32% 30%;
     --primary-foreground: 0 0% 100%;
-    --secondary: 32 26% 91%;
+    --secondary: 39 29% 88%;
     --secondary-foreground: var(--foreground);
-    --muted: 32 26% 91%;
-    --muted-foreground: 25 14% 37%;
-    --accent: 334 45% 91%;
-    --accent-foreground: 334 57% 30%;
+    --muted: 39 29% 88%;
+    --muted-foreground: 29 16% 35%;
+    --accent: 79 25% 86%;
+    --accent-foreground: 76 32% 25%;
     --destructive: 1 65% 38%;
     --destructive-foreground: 0 0% 100%;
-    --border: 30 18% 83%;
+    --border: 36 23% 79%;
     --input: var(--border);
     --ring: var(--primary);
-    --hairline: 30 18% 83%;
-    --grid-line: 30 18% 90%;
-    --surface-glass: 34 40% 99%;
-    --surface-elev: 34 29% 93%;
+    --hairline: var(--border);
+    --grid-line: 36 23% 88%;
+    --surface-glass: var(--card);
+    --surface-elev: 40 34% 90%;
     --signal: var(--primary); /* compatibility alias; replace in 4B */
-    --signal-strong: 334 60% 33%;
-    --accent-hover: 334 60% 33%;
-    --accent-subtle: 334 43% 93%;
-    --success: 151 44% 29%;
+    --signal-strong: 76 36% 25%;
+    --accent-hover: var(--signal-strong);
+    --accent-subtle: 79 25% 86%;
+    --success: 146 43% 28%;
     --warning: 32 72% 32%;
     --error: 1 65% 38%;
-    --info: 205 52% 32%;
+    --info: 205 48% 32%;
     --status-beta: 267 38% 38%;
     --status-development: 32 72% 32%;
-    --status-stable: 151 44% 29%;
-    --status-archived: 25 14% 37%;
+    --status-stable: var(--success);
+    --status-archived: var(--muted-foreground);
     --warn: var(--warning);
     --ok: var(--success);
     --radius: 0.875rem;
     --radius-card: 1.25rem;
-    --shadow-card: 0 8px 28px -16px hsl(24 24% 20% / 0.20);
-    --shadow-raised: 0 18px 45px -22px hsl(24 24% 20% / 0.25);
+    --shadow-card: 0 10px 32px -18px hsl(32 28% 27% / 0.25);
+    --shadow-raised: 0 20px 48px -24px hsl(32 28% 27% / 0.29);
     --space-section: clamp(3.5rem, 7vw, 6rem);
     --motion-quick: 150ms;
     --motion-normal: 240ms;
     --motion-ease: cubic-bezier(0.2, 0.7, 0.2, 1);
-    --panda-face: #f8f5f0;
+    --panda-face: #faf3e7;
     --sidebar-background: var(--background);
     --sidebar-foreground: var(--foreground);
     --sidebar-primary: var(--primary);
@@ -63,46 +63,46 @@
   }
 
   .dark {
-    --background: 24 13% 12%;
-    --foreground: 35 20% 92%;
-    --card: 25 12% 16%;
+    --background: 218 41% 12%;
+    --foreground: 42 35% 93%;
+    --card: 217 34% 17%;
     --card-foreground: var(--foreground);
-    --popover: 25 12% 17%;
+    --popover: 217 34% 18%;
     --popover-foreground: var(--foreground);
-    --primary: 335 69% 73%;
-    --primary-foreground: 24 17% 12%;
-    --secondary: 25 10% 23%;
+    --primary: 216 76% 70%;
+    --primary-foreground: 220 47% 11%;
+    --secondary: 217 25% 23%;
     --secondary-foreground: var(--foreground);
-    --muted: 25 10% 23%;
-    --muted-foreground: 30 12% 72%;
-    --accent: 332 26% 25%;
-    --accent-foreground: 335 78% 86%;
+    --muted: 217 25% 23%;
+    --muted-foreground: 215 24% 76%;
+    --accent: 217 32% 26%;
+    --accent-foreground: 215 82% 86%;
     --destructive: 3 70% 70%;
     --destructive-foreground: 24 17% 12%;
-    --border: 27 11% 32%;
+    --border: 215 23% 34%;
     --input: var(--border);
     --ring: var(--primary);
     --hairline: var(--border);
-    --grid-line: 26 10% 23%;
-    --surface-glass: 25 12% 16%;
-    --surface-elev: 25 11% 20%;
+    --grid-line: 217 22% 24%;
+    --surface-glass: var(--card);
+    --surface-elev: 217 29% 21%;
     --signal: var(--primary);
-    --signal-strong: 336 77% 81%;
-    --accent-hover: 336 77% 81%;
-    --accent-subtle: 332 26% 25%;
-    --success: 150 45% 67%;
+    --signal-strong: 214 81% 79%;
+    --accent-hover: var(--signal-strong);
+    --accent-subtle: 217 32% 26%;
+    --success: 150 44% 68%;
     --warning: 40 78% 70%;
     --error: 3 70% 70%;
-    --info: 204 62% 75%;
+    --info: 202 61% 77%;
     --status-beta: 271 65% 79%;
     --status-development: 40 78% 70%;
-    --status-stable: 150 45% 67%;
-    --status-archived: 30 12% 72%;
-    --panda-face: #292522;
+    --status-stable: var(--success);
+    --status-archived: var(--muted-foreground);
+    --panda-face: #f6efdf;
     --warn: var(--warning);
     --ok: var(--success);
-    --shadow-card: 0 8px 28px -16px hsl(20 20% 3% / 0.60);
-    --shadow-raised: 0 18px 45px -22px hsl(20 20% 3% / 0.70);
+    --shadow-card: 0 10px 32px -18px hsl(220 60% 3% / 0.60);
+    --shadow-raised: 0 20px 48px -24px hsl(220 60% 3% / 0.72);
     --sidebar-background: var(--background);
     --sidebar-foreground: var(--foreground);
     --sidebar-primary: var(--primary);
@@ -127,7 +127,7 @@
 
   body {
     @apply bg-background text-foreground font-sans;
-    font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    font-family: "Trebuchet MS", "Segoe UI", ui-sans-serif, system-ui, sans-serif;
   }
 
   h1, h2, h3, h4 {
@@ -146,6 +146,41 @@
 }
 
 @layer components {
+  /* One landscape with two moments. The artwork dissolves into the page at every width. */
+  .hero-universe { isolation: isolate; }
+  .hero-universe::before {
+    content: '';
+    position: absolute;
+    z-index: 1;
+    inset: 0;
+    pointer-events: none;
+    background: linear-gradient(90deg, hsl(var(--background)) 3%, hsl(var(--background) / .95) 24%, hsl(var(--background) / .55) 43%, transparent 70%);
+  }
+  .hero-universe::after {
+    content: '';
+    position: absolute;
+    z-index: 1;
+    inset: auto 0 0;
+    height: 25%;
+    pointer-events: none;
+    background: linear-gradient(0deg, hsl(var(--background)) 0%, transparent 100%);
+  }
+  .hero-content { z-index: 2; min-height: clamp(29rem, 45vw, 39rem); }
+  .hero-landscape { position: absolute; z-index: 0; inset: 0; pointer-events: none; }
+  .hero-landscape picture, .hero-landscape img { display: block; width: 100%; height: 100%; }
+  .hero-landscape img { object-fit: cover; object-position: 67% center; }
+  @media (max-width: 767px) {
+    .hero-landscape { height: 21rem; }
+    .hero-landscape img { object-position: 77% center; }
+    .hero-universe::before {
+      background: linear-gradient(180deg, transparent 0%, hsl(var(--background) / .30) 17rem, hsl(var(--background)) 22rem);
+    }
+    .hero-universe::after { display: none; }
+    .hero-content { min-height: 0; }
+    .hero-copy { padding: 17.5rem 0 3.75rem; }
+  }
+  @media (min-width: 768px) { .hero-copy { padding: 4.5rem 0 5.5rem; } }
+
   /* Legacy grid utility remains a neutral surface until page redesign. */
   .grid-bg {
     background-image: none;

@@ -1,7 +1,7 @@
 import { Link, NavLink } from 'react-router-dom';
 import { Menu, X } from 'lucide-react';
 import { useState } from 'react';
-import { PandaMark } from '@/components/design-system/PandaMark';
+import { BrandSymbol } from '@/components/design-system/BrandSymbol';
 import { useI18n } from '@/lib/i18n';
 import { LOCALES, LOCALE_LABEL, type Locale } from '@/content';
 import { useTheme } from '@/lib/theme';
@@ -27,11 +27,8 @@ export default function SiteHeader() {
     <header className="sticky top-0 z-40 border-b border-hairline bg-background">
       <div className="container flex h-16 items-center justify-between gap-4">
         <Link to="/" className="flex items-center gap-2.5 group rounded-md focus-visible:outline-offset-4">
-          <PandaMark className="h-8 w-8 text-foreground transition-transform group-hover:rotate-[4deg] motion-reduce:transform-none" />
-          <div className="flex flex-col leading-none">
-            <span className="text-[15px] font-semibold tracking-tight">{publicSettings()?.name || site.name}</span>
-            <span className="label-mono text-[9px] mt-0.5">{site.tagline}</span>
-          </div>
+          <BrandSymbol className="h-8 w-8 text-foreground transition-transform group-hover:rotate-[4deg] motion-reduce:transform-none" />
+          <span className="text-[15px] font-semibold tracking-tight">{publicSettings()?.name || site.name}</span>
         </Link>
 
         <nav className="hidden md:flex items-center gap-1">
@@ -69,7 +66,7 @@ export default function SiteHeader() {
           <button
             onClick={toggle}
             aria-label={theme === 'dark' ? 'Switch to light theme' : 'Switch to dark theme'}
-            className="h-8 w-8 inline-flex items-center justify-center rounded-md border border-hairline text-muted-foreground hover:text-foreground hover:bg-secondary/60 transition-colors active:scale-95"
+            className="h-10 w-10 inline-flex items-center justify-center rounded-full border border-hairline text-foreground hover:bg-secondary/60 transition-colors active:scale-95"
           >
             {theme === 'dark' ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
           </button>
@@ -77,7 +74,7 @@ export default function SiteHeader() {
             href={site.discordUrl}
             target="_blank"
             rel="noreferrer"
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md text-sm font-medium bg-signal text-primary-foreground hover:bg-signal/90 transition-colors active:scale-[0.97]"
+            className="inline-flex h-10 items-center gap-1.5 px-4 rounded-full text-sm font-medium bg-primary text-primary-foreground hover:bg-signal-strong transition-colors active:scale-[0.97]"
           >
             <span className="h-1.5 w-1.5 rounded-full bg-current" />
             {t('nav.discord')}
@@ -85,7 +82,7 @@ export default function SiteHeader() {
         </div>
 
         <button
-          className="md:hidden h-9 w-9 inline-flex items-center justify-center rounded-md border border-hairline"
+          className="md:hidden h-11 w-11 inline-flex items-center justify-center rounded-lg border border-hairline"
           onClick={() => setOpen((v) => !v)}
           aria-label={open ? 'Close menu' : 'Open menu'}
           aria-expanded={open}

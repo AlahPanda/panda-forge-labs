@@ -1,5 +1,7 @@
 # Fase 4A — Identidade visual e Design System V2
 
+> Registo histórico da proposta 4A. A direção raspberry/charcoal foi rejeitada pelo proprietário; a paleta e a aplicação atuais estão documentadas em [V2_PHASE_4A1_BRAND_DIRECTION.md](V2_PHASE_4A1_BRAND_DIRECTION.md). A infraestrutura de tokens e primitives mantém-se.
+
 Base: `v2/security-foundation` em `ebf54b5`. Trabalho isolado em `v2/design-system`. Sem merge, produção ou redesign completo.
 
 ## Filosofia e âmbito

@@ -26,6 +26,7 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     root.classList.toggle('dark', theme === 'dark');
     body.classList.toggle('dark', theme === 'dark');
     root.style.colorScheme = theme;
+    document.querySelector('meta[name="theme-color"]')?.setAttribute('content', theme === 'dark' ? '#121c2b' : '#f6f0e6');
   }, [theme]);
 
   useEffect(() => {
