@@ -7,15 +7,32 @@ const shortText = z.string().max(400);
 const url = z.string().url().refine((value) => /^https?:\/\//.test(value), 'Use an HTTP(S) URL');
 const media = z.object({ url, alt: shortText.optional(), caption: shortText.optional(), kind: z.enum(['image', 'video']).default('image') }).strict();
 const seo = z.object({ title: shortText.optional(), description: shortText.optional(), image: url.optional(), noindex: z.boolean().optional() }).strict();
-const localizedText = z.object({ name: shortText.optional(), summary: shortText.optional(), description: text.optional(), body: text.optional() }).strict();
-const translation = z.object({ state: z.enum(['partial', 'complete']), fields: localizedText }).strict();
+const localizedText = z.object({
+  name: shortText.optional(), summary: shortText.optional(), description: text.optional(), body: text.optional(),
+  installation: text.optional(), changelog: text.optional(), seoTitle: shortText.optional(), seoDescription: shortText.optional(),
+  heroEyebrow: shortText.optional(), heroTitle: shortText.optional(), heroSubtitle: shortText.optional(),
+  supportIntro: text.optional(), communityIntro: text.optional(),
+}).strict();
+const translatedParts = z.object({
+  features: z.record(slugSchema, z.object({ title: shortText.optional(), description: text.optional() }).strict()).optional(),
+  requirements: z.record(slugSchema, z.object({ title: shortText.optional(), description: text.optional() }).strict()).optional(),
+  faq: z.record(slugSchema, z.object({ question: shortText.optional(), answer: text.optional() }).strict()).optional(),
+  items: z.record(slugSchema, z.object({ question: shortText.optional(), answer: text.optional() }).strict()).optional(),
+  steps: z.record(slugSchema, z.object({ title: shortText.optional(), body: text.optional() }).strict()).optional(),
+  notices: z.record(slugSchema, z.object({ text: shortText.optional() }).strict()).optional(),
+  sections: z.record(slugSchema, z.object({ title: shortText.optional(), intro: text.optional(), ctaLabel: shortText.optional() }).strict()).optional(),
+  quickLinks: z.record(slugSchema, z.object({ label: shortText.optional() }).strict()).optional(),
+  navigation: z.record(slugSchema, z.object({ label: shortText.optional() }).strict()).optional(),
+  footer: z.record(slugSchema, z.object({ label: shortText.optional() }).strict()).optional(),
+}).strict();
+const translation = z.object({ state: z.enum(['partial', 'complete', 'needs-review']), fields: localizedText, structured: translatedParts.optional() }).strict();
 const translations = z.object({ 'pt-PT': translation.optional(), 'pt-BR': translation.optional(), en: translation.optional(), es: translation.optional() }).strict();
 const base = z.object({
   slug: slugSchema, name: z.string().min(1).max(200),
   sourceLocale: localeSchema.default('pt-PT'), translations: translations.default({}),
   summary: shortText.optional(), description: text.optional(), seo: seo.optional(),
 }).strict();
-const feature = z.object({ title: shortText, description: text.optional(), icon: shortText.optional() }).strict();
+const feature = z.object({ id: slugSchema.optional(), title: shortText, description: text.optional(), icon: shortText.optional() }).strict();
 const faqItem = z.object({ id: slugSchema.optional(), question: shortText, answer: text }).strict();
 const compatibility = z.object({ minecraft: z.array(shortText).optional(), loaders: z.array(shortText).optional(), platforms: z.array(shortText).optional(), environment: z.enum(['client', 'server', 'both']).optional() }).strict();
 
@@ -54,19 +71,21 @@ export const articleSchema = base.extend({
 export const guideSchema = base.extend({
   body: text, projectSlug: slugSchema.optional(), launcherSlug: slugSchema.optional(),
   level: z.enum(['beginner', 'technical']).optional(), updatedAt: z.string().datetime().optional(),
-  media: z.array(media).optional(), steps: z.array(z.object({ title: shortText, body: text }).strict()).optional(),
+  media: z.array(media).optional(), steps: z.array(z.object({ id: slugSchema.optional(), title: shortText, body: text }).strict()).optional(),
 }).strict();
 export const faqSchema = base.extend({ projectSlug: slugSchema.optional(), items: z.array(faqItem).default([]) }).strict();
 export const homepageSchema = base.extend({
   hero: z.object({ eyebrow: shortText.optional(), title: shortText.optional(), subtitle: shortText.optional(), primaryProjectSlug: slugSchema.optional() }).strict().optional(),
   featuredProjectSlugs: z.array(slugSchema).optional(), featuredArticleSlugs: z.array(slugSchema).optional(),
   notices: z.array(z.object({ id: slugSchema, text: shortText, visible: z.boolean(), link: url.optional() }).strict()).optional(),
-  sections: z.array(z.object({ id: slugSchema, visible: z.boolean() }).strict()).optional(),
+  sections: z.array(z.object({ id: slugSchema, visible: z.boolean(), title: shortText.optional(), intro: text.optional(), ctaLabel: shortText.optional() }).strict()).optional(),
+  quickLinks: z.array(z.object({ id: slugSchema, label: shortText, path: z.string().startsWith('/').max(200) }).strict()).optional(),
 }).strict();
 export const siteSettingsSchema = base.extend({
-  navigation: z.array(z.object({ label: shortText, path: z.string().startsWith('/').max(200) }).strict()).optional(),
-  footer: z.array(z.object({ label: shortText, url }).strict()).optional(),
+  navigation: z.array(z.object({ id: slugSchema.optional(), label: shortText, path: z.string().startsWith('/').max(200) }).strict()).optional(),
+  footer: z.array(z.object({ id: slugSchema.optional(), label: shortText, url }).strict()).optional(),
   contactEmail: z.string().email().optional(),
+  supportIntro: text.optional(), communityIntro: text.optional(),
 }).strict();
 
 export const collectionSchemas = {
@@ -89,12 +108,29 @@ export type ValidatedItem = { slug: string; name: string } & Record<string, unkn
 
 export function parseItem(kind: ContentKind, item: unknown): ValidatedItem {
   // The union API keeps runtime validation in one shared module used by browser and Edge Function.
-  return collectionSchemas[kind].parse(item) as ValidatedItem;
+  const parsed = collectionSchemas[kind].parse(item) as ValidatedItem;
+  for (const part of ['features', 'requirements', 'faq', 'items', 'steps', 'notices', 'sections', 'quickLinks', 'navigation', 'footer']) {
+    const rows = parsed[part];
+    if (!Array.isArray(rows)) continue;
+    const ids = rows.flatMap((row: { id?: string }) => row.id ? [row.id] : []);
+    if (new Set(ids).size !== ids.length) throw new Error(`Duplicate ${part} ID in ${kind}/${parsed.slug}`);
+  }
+  return parsed;
 }
 export function parseCollection(kind: ContentKind, input: unknown): { schemaVersion: 2; items: ValidatedItem[] } {
   const wrapper = z.object({ schemaVersion: z.literal(2), items: z.array(collectionSchemas[kind]) }).strict();
   const result = wrapper.parse(input);
   const slugs = result.items.map((item) => item.slug);
   if (new Set(slugs).size !== slugs.length) throw new Error(`Duplicate ${kind} slug`);
-  return result as { schemaVersion: 2; items: ValidatedItem[] };
+  const hasText = (value: unknown): boolean => typeof value === 'string'
+    ? value.trim().length > 0
+    : !!value && typeof value === 'object' && Object.values(value).some(hasText);
+  for (const item of result.items) {
+    for (const [locale, translation] of Object.entries(item.translations)) {
+      if (translation?.state === 'needs-review' && (hasText(translation.fields) || hasText(translation.structured))) {
+        throw new Error(`Unreviewed ${locale} text must stay in a private draft: ${kind}/${item.slug}`);
+      }
+    }
+  }
+  return { schemaVersion: 2, items: result.items.map((item) => parseItem(kind, item)) };
 }

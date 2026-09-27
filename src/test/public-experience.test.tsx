@@ -102,17 +102,22 @@ describe('public redesign and editorial boundaries', () => {
     expect(screen.queryByText(old.item.title)).not.toBeInTheDocument();
   });
 
-  it('provides useful empty states for News, Guides and FAQ', () => {
+  it('provides useful empty states for News and Guides', () => {
     const cases = [
       ['/news', <NewsExperience/>, 'No articles published yet'],
       ['/guides', <GuidesExperience/>, 'No guides published yet'],
-      ['/faq', <FaqExperience/>, 'No answers published yet'],
     ] as const;
     for (const [path, page, title] of cases) {
       const { unmount } = publicRoute(path, path, page);
       expect(screen.getByRole('heading', { name: title })).toBeInTheDocument();
       unmount();
     }
+  });
+
+  it('shows the verified, published V2 FAQ and keeps the unreviewed legacy answers private from the V2 page', () => {
+    publicRoute('/faq', '/faq', <FaqExperience/>);
+    expect(screen.getByText('Do I need a Minecraft account?')).toBeInTheDocument();
+    expect(screen.getByText(/use a Microsoft account with access to the game/)).toBeInTheDocument();
   });
 
   it('shows the two projects without a marketplace filter or Soon', () => {
