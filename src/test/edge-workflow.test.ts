@@ -1,5 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { webcrypto } from 'node:crypto';
+import { allowedAdminOrigins, originAllowed } from '../../supabase/functions/admin-cms/origins';
 
 type Handler = (request: Request) => Promise<Response>;
 let handler: Handler;
@@ -47,10 +48,35 @@ const post = (action: string, body: unknown, token?: string) => handler(new Requ
 const login = async () => ((await (await post('login', { password: 'test-password' })).json()) as { token: string }).token;
 
 describe('authenticated draft → publish route', () => {
+  it('accepts only exact, explicitly configured HTTPS Preview origins', () => {
+    const allowed = allowedAdminOrigins('https://preview.example, https://deployment.example', undefined);
+    expect(allowed).toEqual(['https://preview.example','https://deployment.example']);
+    expect(originAllowed('https://deployment.example', allowed!)).toBe(true);
+    expect(originAllowed('https://other.example', allowed!)).toBe(false);
+    for (const input of ['*','https://*.vercel.app','http://preview.example','https://preview.example/path','https://preview.example/','https://preview.example, *']) expect(allowedAdminOrigins(input,undefined)).toBeNull();
+  });
+  it('serves a second allowed origin with its own exact CORS header and refuses other origins', async () => {
+    vi.resetModules();
+    vi.stubGlobal('Deno', { env: { get: (key: string) => ({ ADMIN_ORIGINS: 'https://preview.example,https://deployment.example', ADMIN_JWT_SECRET: 'test-secret', ADMIN_PASSWORD:'test-password' } as Record<string,string>)[key] }, serve: (fn: Handler) => { handler = fn; } });
+    await import('../../supabase/functions/admin-cms/index.ts');
+    const options = await handler(new Request('https://supabase.example/functions/v1/admin-cms/login', {method:'OPTIONS',headers:{Origin:'https://deployment.example'}}));
+    expect(options.headers.get('Access-Control-Allow-Origin')).toBe('https://deployment.example');
+    expect(options.headers.get('Vary')).toBe('Origin');
+    const accepted = await handler(new Request('https://supabase.example/functions/v1/admin-cms/login', {method:'POST',headers:{Origin:'https://deployment.example','Content-Type':'application/json'},body:JSON.stringify({password:'test-password'})}));
+    expect(accepted.status).toBe(200);
+    expect(accepted.headers.get('Access-Control-Allow-Origin')).toBe('https://deployment.example');
+    const refused = await handler(new Request('https://supabase.example/functions/v1/admin-cms/login', {method:'POST',headers:{Origin:'https://other.example','Content-Type':'application/json'},body:JSON.stringify({password:'test-password'})}));
+    expect(refused.status).toBe(403);
+    expect(refused.headers.get('Access-Control-Allow-Origin')).toBeNull();
+    expect(await refused.json()).toEqual({error:'Forbidden origin',receivedOrigin:'https://other.example',expectedOrigins:['https://preview.example','https://deployment.example']});
+    const missing = await handler(new Request('https://supabase.example/functions/v1/admin-cms/login', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({password:'test-password'})}));
+    expect(missing.status).toBe(403);
+    expect(missing.headers.get('Access-Control-Allow-Origin')).toBeNull();
+  });
   it('rejects a foreign origin before processing login', async () => {
     const r = await handler(new Request('https://supabase.example/functions/v1/admin-cms/login', {method:'POST',headers:{Origin:'https://ephemeral.example','Content-Type':'application/json'},body:JSON.stringify({password:'test-password'})}));
     expect(r.status).toBe(403);
-    expect((await r.json()).error).toBe('Forbidden origin');
+    expect(await r.json()).toEqual({error:'Forbidden origin',receivedOrigin:'https://ephemeral.example',expectedOrigins:['https://preview.example']});
     expect(requests).toHaveLength(0);
   });
   it('fails closed when the owner password is absent instead of using a default', async () => {

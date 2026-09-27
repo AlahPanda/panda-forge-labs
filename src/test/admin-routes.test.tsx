@@ -106,6 +106,20 @@ describe('owner CMS routes', () => {
     expect(adminAuth.getToken()).toBe('new-session');
   });
 
+  it('does not disable the owner login on a different explicitly Edge-authorized Preview alias', async () => {
+    vi.stubEnv('VITE_PREVIEW_ORIGIN', 'https://preferred-preview.test');
+    stubContent();
+    const login = vi.spyOn(adminApi, 'login').mockResolvedValue({ token:'authorized-preview-session' });
+    adminRoute('/admin');
+    const submit = screen.getByRole('button', { name: /sign in|entrar/i });
+    expect(submit).toBeEnabled();
+    fireEvent.change(screen.getByLabelText(/password|palavra-passe/i), { target: { value:'test-password' } });
+    fireEvent.click(submit);
+    expect(await screen.findByRole('heading', { name: 'Dashboard' })).toBeInTheDocument();
+    expect(login).toHaveBeenCalledWith('test-password');
+    vi.unstubAllEnvs();
+  });
+
   it('rechecks a saved session on /admin and exposes login after expiry', async () => {
     adminAuth.setToken('expired-session');
     vi.spyOn(adminApi, 'me').mockImplementation(async () => { adminAuth.clear(); throw new Error('Unauthorized'); });

@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import SiteLayout from '@/components/layout/SiteLayout';
 import Seo from '@/components/Seo';
-import { AdminApiError, adminApi, adminAuth, isPreviewOrigin, previewOrigin } from '@/lib/adminApi';
+import { AdminApiError, adminApi, adminAuth, previewOrigin } from '@/lib/adminApi';
 import { useI18n } from '@/lib/i18n';
 import { Lock, Loader2 } from 'lucide-react';
 import { useAdminText } from './adminText';
@@ -19,26 +19,28 @@ export default function AdminLogin() {
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [originHelp, setOriginHelp] = useState(false);
   const [checking, setChecking] = useState(() => adminAuth.isLoggedIn());
 
   useEffect(() => {
     if (!adminAuth.isLoggedIn()) return;
     let active = true;
     adminApi.me().then(() => { if (active) nav('/admin/editor', { replace: true }); }).catch((err: unknown) => {
-      if (active) { if (err instanceof AdminApiError && err.code === 'session-invalid') adminAuth.clear(); setError(a(loginErrorKey(err))); setChecking(false); }
+      if (active) { if (err instanceof AdminApiError && err.code === 'session-invalid') adminAuth.clear(); setError(a(loginErrorKey(err))); setOriginHelp(err instanceof AdminApiError && ['origin','network'].includes(err.code)); setChecking(false); }
     });
     return () => { active = false; };
   }, [nav]);
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setLoading(true); setError(null);
+    setLoading(true); setError(null); setOriginHelp(false);
     try {
       const { token } = await adminApi.login(password);
       adminAuth.setToken(token);
       nav('/admin/editor', { replace: true });
     } catch (err) {
       setError(a(loginErrorKey(err)));
+      setOriginHelp(err instanceof AdminApiError && ['origin','network'].includes(err.code));
     } finally {
       setLoading(false);
     }
@@ -54,7 +56,6 @@ export default function AdminLogin() {
           </div>
           <h1 className="mt-3 text-2xl font-semibold tracking-tight">{t('admin.title')}</h1>
           <p className="mt-3 text-sm text-muted-foreground">{a('cmsIntro')}</p>
-          {!isPreviewOrigin() && <p role="alert" className="mt-4 text-sm text-destructive">{a('loginorigin')} {previewOrigin() && <a href={`${previewOrigin()}/admin`} className="underline">{previewOrigin()}/admin</a>}</p>}
 
           {checking ? <p className="mt-6" role="status">{a('checking')}</p> : <form onSubmit={submit} className="mt-6 space-y-4">
             <div>
@@ -70,9 +71,10 @@ export default function AdminLogin() {
               />
             </div>
             {error && <p role="alert" className="text-sm text-destructive">{error}</p>}
+            {originHelp && <p className="text-xs break-words text-muted-foreground">{a('receivedOrigin')}: <code>{window.location.origin}</code>. {a('expectedOrigin')}: <code>{previewOrigin() || a('unavailable')}</code>. {a('originAllowlistHelp')}</p>}
             <button
               type="submit"
-              disabled={loading || !isPreviewOrigin()}
+              disabled={loading}
               className="w-full h-11 inline-flex items-center justify-center gap-2 rounded-md bg-signal text-primary-foreground font-medium hover:bg-signal/90 transition-colors disabled:opacity-60 active:scale-[0.98]"
             >
               {loading && <Loader2 className="h-4 w-4 animate-spin" />}

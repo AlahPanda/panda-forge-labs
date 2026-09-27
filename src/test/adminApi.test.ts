@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { adminApi, adminAuth, classifyAdminError, isPreviewOrigin } from '../lib/adminApi';
+import { adminApi, adminAuth, classifyAdminError } from '../lib/adminApi';
 import { isPreviewReady, rememberPreviewCommit, pendingPreviewCommit } from '../lib/previewDeployment';
 
 beforeEach(() => {
@@ -8,12 +8,12 @@ beforeEach(() => {
 });
 
 describe('CMS browser transport', () => {
-  it('rejects a different origin before sending a password or token', async () => {
+  it('lets the Edge decide when the current Preview differs from the preferred alias', async () => {
     vi.stubEnv('VITE_PREVIEW_ORIGIN', 'https://different-preview.test');
-    const fetchMock = vi.fn(); vi.stubGlobal('fetch', fetchMock);
-    expect(isPreviewOrigin()).toBe(false);
-    await expect(adminApi.login('test-password')).rejects.toMatchObject({ code: 'origin' });
-    expect(fetchMock).not.toHaveBeenCalled();
+    const fetchMock = vi.fn().mockResolvedValue({ ok: true, json: async () => ({ token: 'test-session' }) });
+    vi.stubGlobal('fetch', fetchMock);
+    expect(await adminApi.login('test-password')).toEqual({ token: 'test-session' });
+    expect(fetchMock).toHaveBeenCalledTimes(1);
     vi.unstubAllEnvs();
   });
   it('classifies API failures independently', () => {

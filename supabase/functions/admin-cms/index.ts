@@ -1,4 +1,5 @@
 import { ALLOWED_PATHS, validateContent, validateClaims, canSave, isContentKind, parseItem, parseCollection, collectionPath, type ContentKind } from "./policy.ts";
+import { allowedAdminOrigins, originAllowed } from './origins.ts';
 // Admin CMS edge function
 // - POST /login         { password } -> { token }
 // - POST /read          { path } (Bearer token) -> current JSON and blob SHA
@@ -6,16 +7,16 @@ import { ALLOWED_PATHS, validateContent, validateClaims, canSave, isContentKind,
 // - POST /redeploy      (Bearer token) -> hits Vercel deploy hook
 //
 // Secrets required:
-//   ADMIN_PASSWORD, ADMIN_JWT_SECRET, ADMIN_ORIGIN, GITHUB_TOKEN, GITHUB_REPO,
+//   ADMIN_PASSWORD, ADMIN_JWT_SECRET, ADMIN_ORIGINS (or legacy ADMIN_ORIGIN), GITHUB_TOKEN, GITHUB_REPO,
 //   GITHUB_BRANCH; optional VERCEL_DEPLOY_HOOK (preview-only for preview config)
 
-const ADMIN_ORIGIN = Deno.env.get('ADMIN_ORIGIN') ?? '';
-
-const corsHeaders = {
-  'Access-Control-Allow-Origin': ADMIN_ORIGIN,
+const ADMIN_ORIGINS = allowedAdminOrigins(Deno.env.get('ADMIN_ORIGINS'), Deno.env.get('ADMIN_ORIGIN'));
+const corsHeaders = (origin: string | null): Record<string, string> => origin && ADMIN_ORIGINS && originAllowed(origin, ADMIN_ORIGINS) ? {
+  'Access-Control-Allow-Origin': origin,
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
   'Access-Control-Allow-Methods': 'POST, OPTIONS',
-};
+  Vary: 'Origin',
+} : { Vary: 'Origin' };
 
 const ADMIN_PASSWORD = Deno.env.get('ADMIN_PASSWORD') ?? '';
 const JWT_SECRET = Deno.env.get('ADMIN_JWT_SECRET') ?? '';
@@ -200,12 +201,14 @@ const attempts = new Map<string, { count: number; until: number }>();
 
 // ---------- Router ----------
 Deno.serve(async (req) => {
-  if (!ADMIN_ORIGIN || !JWT_SECRET) return json({ error: 'Server not configured' }, 500);
-  if (req.headers.get('Origin') && req.headers.get('Origin') !== ADMIN_ORIGIN) return json({ error: 'Forbidden origin' }, 403);
-  if (req.method === 'OPTIONS') return new Response('ok', { headers: corsHeaders });
+  const origin = req.headers.get('Origin');
+  const json = (data: unknown, status = 200) => responseJson(data, status, origin);
+  if (!ADMIN_ORIGINS || !JWT_SECRET) return json({ error: 'Server not configured' }, 500);
+  if (!originAllowed(origin, ADMIN_ORIGINS)) return json({ error: 'Forbidden origin', receivedOrigin: origin, expectedOrigins: ADMIN_ORIGINS }, 403);
+  if (req.method === 'OPTIONS') return new Response('ok', { headers: corsHeaders(origin) });
   if (req.method !== 'POST') {
     return new Response(JSON.stringify({ error: 'Method not allowed' }), {
-      status: 405, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      status: 405, headers: { ...corsHeaders(origin), 'Content-Type': 'application/json' },
     });
   }
 
@@ -336,9 +339,9 @@ Deno.serve(async (req) => {
   }
 });
 
-function json(data: unknown, status = 200) {
+function responseJson(data: unknown, status = 200, origin: string | null = null) {
   return new Response(JSON.stringify(data), {
     status,
-    headers: { ...corsHeaders, 'Content-Type': 'application/json', 'Cache-Control': 'no-store' },
+    headers: { ...corsHeaders(origin), 'Content-Type': 'application/json', 'Cache-Control': 'no-store' },
   });
 }

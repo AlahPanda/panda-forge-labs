@@ -2,7 +2,7 @@ import { lazy, Suspense, useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Activity, BookOpen, Box, ExternalLink, FileText, Globe, HelpCircle, Home, Image, Languages, LayoutDashboard, LogOut, Menu, Newspaper, Rocket, Search, Settings, Sparkles, X } from 'lucide-react';
 import Seo from '@/components/Seo';
-import { adminApi, adminAuth, isPreviewOrigin } from '@/lib/adminApi';
+import { adminApi, adminAuth } from '@/lib/adminApi';
 import { isPreviewReady, pendingPreviewCommit } from '@/lib/previewDeployment';
 import { useModrinthStats } from '@/lib/modrinthStats';
 import { useI18n } from '@/lib/i18n';
@@ -67,7 +67,7 @@ function OwnerDashboard({ owner }: { owner: ReturnType<typeof useOwnerContent> }
   const distribution = (mac?.distribution as Array<{ provider: string; url?: string; state?: string }> | undefined)?.find((item) => item.provider === 'modrinth' && item.state === 'active')?.url;
   const metrics = useModrinthStats(distribution);
   const total = Object.values(owner.data).reduce((count, collection) => count + (collection?.items.length || 0), 0);
-  const verifiedPreview = isPreviewOrigin() && owner.status?.branch === 'v2/full-redesign';
+  const verifiedPreview = owner.status?.branch === 'v2/full-redesign';
   const tiles = [
     [a('siteStatus'), a('unknown'), Home], [a('preview'), verifiedPreview ? a('connected') : a('unknown'), ExternalLink],
     [a('lastDeploy'), a('unknown'), Rocket], [a('cmsStatus'), owner.status ? a('connected') : a('unknown'), Activity],
@@ -191,7 +191,7 @@ export default function AdminEditor() {
     if (collections[page]) return <>
       <div className="admin-page-heading"><div><span className="admin-eyebrow">{a('contentVersion')} · {a('published')}</span><h1>{a(page as Parameters<typeof a>[0])}</h1><p>{a('contentReady')}</p></div><Link to={`${path}/locales`} className="admin-button admin-button-secondary">{a('locales')}</Link></div>
       {page === 'modpacks' && <ModpackOverview owner={owner}/>}
-      <V2Workspace key={page} kind={collections[page]} onChanged={owner.refresh} publishAllowed={owner.status?.branch === 'v2/full-redesign' && owner.status?.repo === 'AlahPanda/panda-forge-labs' && owner.status?.githubAccess === true && isPreviewOrigin()}/>
+      <V2Workspace key={page} kind={collections[page]} onChanged={owner.refresh} publishAllowed={owner.status?.branch === 'v2/full-redesign' && owner.status?.repo === 'AlahPanda/panda-forge-labs' && owner.status?.githubAccess === true}/>
     </>;
     return <div role="alert">{a('unavailable')} <Link to={path}>{a('dashboard')}</Link></div>;
   };

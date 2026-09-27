@@ -16,10 +16,6 @@ export function previewOrigin(): string | null {
   } catch { return null; }
 }
 
-export function isPreviewOrigin(): boolean {
-  return previewOrigin() !== null && window.location.origin === previewOrigin();
-}
-
 export function classifyAdminError(status: number, error: string, action: string, auth: boolean): AdminErrorCode {
   if (status === 403 && error === 'Forbidden origin') return 'origin';
   if (status === 401) return auth ? 'session-invalid' : 'invalid-password';
@@ -39,7 +35,6 @@ export const adminAuth = {
 };
 
 async function call<T>(action: string, body: unknown = {}, auth = true): Promise<T> {
-  if (!isPreviewOrigin()) throw new AdminApiError('origin', 'Open the configured stable Preview branch URL.');
   const supabase = import.meta.env.VITE_SUPABASE_URL;
   const apikey = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY;
   if (!supabase || !apikey || !/^https:\/\/[^/]+$/.test(supabase)) throw new AdminApiError('missing-config', 'Supabase Preview configuration is missing.');
@@ -55,7 +50,7 @@ async function call<T>(action: string, body: unknown = {}, auth = true): Promise
   let res: Response;
   try { res = await fetch(`${supabase}/functions/v1/admin-cms/${action}`, {
     method: 'POST', headers, body: JSON.stringify(body),
-  }); } catch { throw new AdminApiError('network', 'Could not reach the Preview CMS API. Check the network and ADMIN_ORIGIN.'); }
+  }); } catch { throw new AdminApiError('network', 'Could not reach the Preview CMS API. Check network, CORS, and ADMIN_ORIGINS.'); }
   const data = await res.json().catch(() => ({}));
   if (!res.ok) {
     if (res.status === 401 && auth) adminAuth.clear();
