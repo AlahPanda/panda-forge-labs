@@ -7,6 +7,8 @@ export default defineConfig({
   plugins: [react(), publishedNewsPlugin()],
   test: {
     environment: "jsdom",
+    environmentOptions: { jsdom: { url: "https://preview.test/" } },
+    env: { VITE_PREVIEW_ORIGIN: "https://preview.test" },
     globals: true,
     setupFiles: ["./src/test/setup.ts"],
     include: ["src/**/*.{test,spec}.{ts,tsx}"],

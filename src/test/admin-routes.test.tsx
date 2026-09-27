@@ -26,7 +26,7 @@ function adminRoute(path: string) {
 function stubContent() {
   vi.spyOn(adminApi, 'me').mockResolvedValue({ ok: true });
   vi.spyOn(adminApi, 'read').mockImplementation(async (path) => ({ sha: 'verified-sha', content: path.includes('/v2/') ? JSON.stringify({schemaVersion:2,items:[]}) : JSON.stringify(path.includes('modpacks') ? {modpacks:[]} : path.includes('news') ? {articles:[]} : path.includes('faq') ? {categories:[]} : path.includes('reviews') ? {reviews:[]} : {site:{}}) }));
-  vi.spyOn(adminApi, 'status').mockResolvedValue({ repo:'AlahPanda/panda-forge-labs', branch:'v2/full-redesign', draftStorageConfigured:true, deployHookConfigured:false });
+  vi.spyOn(adminApi, 'status').mockResolvedValue({ repo:'AlahPanda/panda-forge-labs', branch:'v2/full-redesign', githubAccess:true, draftStorageConfigured:true, deployHookConfigured:false });
   vi.spyOn(adminApi, 'draftList').mockResolvedValue({ drafts:[] });
 }
 

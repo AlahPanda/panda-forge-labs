@@ -2,7 +2,8 @@ import { lazy, Suspense, useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Activity, BookOpen, Box, ExternalLink, FileText, Globe, HelpCircle, Home, Image, Languages, LayoutDashboard, LogOut, Menu, Newspaper, Rocket, Search, Settings, Sparkles, X } from 'lucide-react';
 import Seo from '@/components/Seo';
-import { adminApi, adminAuth } from '@/lib/adminApi';
+import { adminApi, adminAuth, isPreviewOrigin } from '@/lib/adminApi';
+import { isPreviewReady, pendingPreviewCommit } from '@/lib/previewDeployment';
 import { useModrinthStats } from '@/lib/modrinthStats';
 import { useI18n } from '@/lib/i18n';
 import { collectionPath, CONTENT_KINDS, parseCollection, parseItem, type ContentKind, type ValidatedItem } from '@/content/v2/schema';
@@ -58,17 +59,19 @@ function Panel({ title, children, className = '' }: { title: string; children: R
 
 function OwnerDashboard({ owner }: { owner: ReturnType<typeof useOwnerContent> }) {
   const a = useAdminText();
+  const [ready, setReady] = useState(false);
+  const commit = pendingPreviewCommit();
+  useEffect(() => { if (commit) void isPreviewReady(commit).then(setReady); }, [commit?.sha]);
   const { locale } = useI18n();
   const mac = owner.data.projects?.items.find((item) => item.slug === 'mac-native');
   const distribution = (mac?.distribution as Array<{ provider: string; url?: string; state?: string }> | undefined)?.find((item) => item.provider === 'modrinth' && item.state === 'active')?.url;
   const metrics = useModrinthStats(distribution);
   const total = Object.values(owner.data).reduce((count, collection) => count + (collection?.items.length || 0), 0);
-  const previewOrigin = import.meta.env.VITE_PREVIEW_ORIGIN;
-  const verifiedPreview = typeof previewOrigin === 'string' && previewOrigin === window.location.origin && owner.status?.branch === 'v2/full-redesign';
+  const verifiedPreview = isPreviewOrigin() && owner.status?.branch === 'v2/full-redesign';
   const tiles = [
     [a('siteStatus'), a('unknown'), Home], [a('preview'), verifiedPreview ? a('connected') : a('unknown'), ExternalLink],
     [a('lastDeploy'), a('unknown'), Rocket], [a('cmsStatus'), owner.status ? a('connected') : a('unknown'), Activity],
-    [a('github'), owner.status?.repo && owner.status?.branch ? a('configured') : a('unknown'), Globe],
+    [a('github'), owner.status?.githubAccess ? a('connected') : a('unavailable'), Globe],
     [a('modrinth'), metrics.data ? `${metrics.data.downloads.toLocaleString(locale)} / ${metrics.data.followers.toLocaleString(locale)}` : a('unknown'), Box],
   ] as const;
   const localeTotals = (['pt-PT', 'pt-BR', 'en', 'es'] as const).map((language) => {
@@ -85,8 +88,8 @@ function OwnerDashboard({ owner }: { owner: ReturnType<typeof useOwnerContent> }
     <div className="admin-status-grid">{tiles.map(([label, value, Icon]) => <div className="admin-status-card" key={label}><span>{label}</span><strong>{value}</strong><Icon size={21} aria-hidden="true"/></div>)}</div>
     <div className="admin-dashboard-main">
       <Panel title={a('studio')} className="admin-ai-teaser"><Sparkles size={22} aria-hidden="true"/><p>{a('aiUnavailable')}</p><Link className="admin-button admin-button-primary" to={`${path}/ai`}>{a('proposal')}</Link></Panel>
-      <Panel title={a('workflow')}><ol className="admin-steps"><li>{a('draft')}</li><li>{a('preview')}</li><li>{a('publish')}</li></ol><p>{a('releaseInfo')}</p><Link to={`${path}/drafts`} className="admin-button admin-button-secondary">{a('drafts')}</Link></Panel>
-      <Panel title={a('livePreview')}><p>{verifiedPreview ? a('published') : a('previewUnavailable')}</p>{verifiedPreview && <a className="admin-button admin-button-secondary" href="/" target="_blank" rel="noopener noreferrer">{a('visit')} <ExternalLink size={14}/></a>}</Panel>
+      <Panel title={a('workflow')}><ol className="admin-steps"><li>{a('draft')}</li><li>{a('preview')}</li><li>{a('committedPreview')}</li><li>{a('readyLive')}</li><li>{a('liveProduction')}</li></ol><p>{commit ? `${commit.kind}/${commit.slug} · ${ready ? a('readyLive') : a('committedPreview')} · ${commit.sha.slice(0,10)}` : a('releaseInfo')}</p>{commit && !ready && <p role="status">{a('awaitingPreview')} <button type="button" className="admin-button admin-button-secondary" onClick={() => void isPreviewReady(commit).then(setReady)}>{a('retry')}</button></p>}<Link to={`${path}/drafts`} className="admin-button admin-button-secondary">{a('drafts')}</Link></Panel>
+      <Panel title={a('livePreview')}><p>{verifiedPreview ? commit ? ready ? a('readyLive') : a('awaitingPreview') : a('connected') : a('previewUnavailable')}</p>{verifiedPreview && <a className="admin-button admin-button-secondary" href="/" target="_blank" rel="noopener noreferrer">{a('visit')} <ExternalLink size={14}/></a>}</Panel>
     </div>
     <Panel title={a('quick')} className="admin-quick"><div className="admin-quick-grid">{(['articles', 'guides', 'faq', 'modpacks', 'releases', 'settings'] as const).map((key) => <Link to={`${path}/${key}`} key={key}>{a(key)} <span aria-hidden="true">↗</span></Link>)}</div></Panel>
     <div className="admin-dashboard-bottom">
@@ -188,7 +191,7 @@ export default function AdminEditor() {
     if (collections[page]) return <>
       <div className="admin-page-heading"><div><span className="admin-eyebrow">{a('contentVersion')} · {a('published')}</span><h1>{a(page as Parameters<typeof a>[0])}</h1><p>{a('contentReady')}</p></div><Link to={`${path}/locales`} className="admin-button admin-button-secondary">{a('locales')}</Link></div>
       {page === 'modpacks' && <ModpackOverview owner={owner}/>}
-      <V2Workspace key={page} kind={collections[page]} onChanged={owner.refresh} publishAllowed={owner.status?.branch === 'v2/full-redesign' && owner.status?.repo === 'AlahPanda/panda-forge-labs'}/>
+      <V2Workspace key={page} kind={collections[page]} onChanged={owner.refresh} publishAllowed={owner.status?.branch === 'v2/full-redesign' && owner.status?.repo === 'AlahPanda/panda-forge-labs' && owner.status?.githubAccess === true && isPreviewOrigin()}/>
     </>;
     return <div role="alert">{a('unavailable')} <Link to={path}>{a('dashboard')}</Link></div>;
   };

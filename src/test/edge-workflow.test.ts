@@ -16,7 +16,7 @@ beforeEach(async () => {
   vi.stubGlobal('crypto', webcrypto);
   vi.stubGlobal('Deno', {
     env: { get: (key: string) => ({ ADMIN_ORIGIN: 'https://preview.example', ADMIN_PASSWORD: 'test-password', ADMIN_JWT_SECRET: 'test-secret',
-      GITHUB_TOKEN: 'server-only', GITHUB_REPO: 'AlahPanda/panda-forge-labs', GITHUB_BRANCH: 'v2/security-foundation',
+      GITHUB_TOKEN: 'server-only', GITHUB_REPO: 'AlahPanda/panda-forge-labs', GITHUB_BRANCH: 'v2/full-redesign',
       SUPABASE_URL: 'https://supabase.example', SUPABASE_SERVICE_ROLE_KEY: 'private-key' } as Record<string, string>)[key] },
     serve: (fn: Handler) => { handler = fn; },
   });
@@ -32,7 +32,7 @@ beforeEach(async () => {
     if (url.endsWith('/user')) return response({ login: 'owner' });
     if (url.endsWith('/repos/AlahPanda/panda-forge-labs')) return response({});
     if (url.includes('/contents/src/content/v2/projects.json')) {
-      if (method === 'PUT') return response({ content: { sha: 'b'.repeat(40), html_url: 'https://github.example/commit' } });
+      if (method === 'PUT') return response({ content: { sha: 'b'.repeat(40), html_url: 'https://github.example/file' }, commit: {sha:'d'.repeat(40),html_url:'https://github.example/commit'} });
       return response({ sha, content: btoa(JSON.stringify(collection)) });
     }
     throw new Error(`Unexpected request ${method} ${url}`);
@@ -47,6 +47,12 @@ const post = (action: string, body: unknown, token?: string) => handler(new Requ
 const login = async () => ((await (await post('login', { password: 'test-password' })).json()) as { token: string }).token;
 
 describe('authenticated draft → publish route', () => {
+  it('rejects a foreign origin before processing login', async () => {
+    const r = await handler(new Request('https://supabase.example/functions/v1/admin-cms/login', {method:'POST',headers:{Origin:'https://ephemeral.example','Content-Type':'application/json'},body:JSON.stringify({password:'test-password'})}));
+    expect(r.status).toBe(403);
+    expect((await r.json()).error).toBe('Forbidden origin');
+    expect(requests).toHaveLength(0);
+  });
   it('fails closed when the owner password is absent instead of using a default', async () => {
     vi.resetModules();
     vi.stubGlobal('Deno', { env: { get: (key: string) => key === 'ADMIN_PASSWORD' ? undefined : ({ ADMIN_ORIGIN: 'https://preview.example', ADMIN_JWT_SECRET: 'test-secret' } as Record<string, string>)[key] }, serve: (fn: Handler) => { handler = fn; } });
@@ -80,7 +86,8 @@ describe('authenticated draft → publish route', () => {
     const put = requests.find((r) => r.method === 'PUT');
     expect(put).toBeDefined();
     const payload = JSON.parse(put?.body || '{}');
-    expect(payload.branch).toBe('v2/security-foundation');
+    expect(payload.branch).toBe('v2/full-redesign');
+    expect(await published.json()).toMatchObject({branch:'v2/full-redesign',commitSha:'d'.repeat(40),commitUrl:'https://github.example/commit'});
     expect(JSON.parse(atob(payload.content)).items).toMatchObject([{ slug: 'example', status: 'development' }]);
     expect(requests.some((r) => r.url.includes('/rest/v1/cms_drafts') && r.method === 'DELETE')).toBe(true);
   });

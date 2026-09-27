@@ -71,7 +71,7 @@ describe('V2 owner control', () => {
     vi.spyOn(adminApi,'read').mockResolvedValue({sha:'base-sha',content:JSON.stringify({schemaVersion:2,items:[item]})});
     vi.spyOn(adminApi,'draftList').mockResolvedValue({drafts:[{kind:'faq',slug:'general',revision:3,updated_at:'2026-09-27T12:00:00Z'}]});
     vi.spyOn(adminApi,'draftRead').mockResolvedValue({draft:{content:item,base_sha:'base-sha',revision:3}});
-    const publish = vi.spyOn(adminApi,'draftPublish').mockResolvedValue({ok:true,sha:'next-sha',url:'https://github.com/AlahPanda/panda-forge-labs/commit/next'});
+    const publish = vi.spyOn(adminApi,'draftPublish').mockResolvedValue({ok:true,sha:'next-sha',url:'https://github.com/AlahPanda/panda-forge-labs/commit/next',branch:'v2/full-redesign'});
     vi.spyOn(window,'confirm').mockReturnValue(true);
     const view = render(<I18nProvider><MemoryRouter initialEntries={['/admin/editor/faq?entry=general']}><V2Workspace kind="faq"/></MemoryRouter></I18nProvider>);
     expect(await screen.findByRole('heading',{name:'General'})).toBeInTheDocument();

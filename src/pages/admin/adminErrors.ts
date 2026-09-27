@@ -1,6 +1,11 @@
 import { ZodError } from 'zod';
+import { AdminApiError } from '@/lib/adminApi';
 
 export function ownerError(error: unknown, fallback: string) {
+  if (error instanceof AdminApiError) {
+    const safe: Record<string, string> = { origin: 'Unauthorized Preview origin. Open the configured branch alias.', 'missing-config': 'Supabase Preview configuration is missing.', 'session-invalid': 'CMS session expired. Sign in again.', 'github-config': 'GitHub token or repository configuration is invalid.', network: 'Cannot reach the Preview CMS API. Check network and ADMIN_ORIGIN.' };
+    return safe[error.code] || fallback;
+  }
   if (error instanceof ZodError) {
     const issue = error.issues[0];
     return issue ? `${issue.path.join('.') || 'item'}: ${issue.message}` : fallback;

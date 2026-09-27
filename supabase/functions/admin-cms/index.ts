@@ -141,17 +141,18 @@ async function verifyGithubToken(): Promise<{ ok: true; login: string } | { ok: 
 
 async function readGithubFile(path: string): Promise<{ content: string; sha: string }> {
   const check = await verifyGithubToken();
-  if ('error' in check) throw new Error(check.error);
+  if ('error' in check) throw new GithubAccessError();
   const response = await fetch(`https://api.github.com/repos/${GITHUB_REPO}/contents/${encodeURI(path)}?ref=${encodeURIComponent(GITHUB_BRANCH)}`, { headers: ghHeaders() });
+  if ([401, 403, 404].includes(response.status)) throw new GithubAccessError();
   if (!response.ok) throw new Error(`GitHub read ${response.status}`);
   const file = await response.json();
   const bytes = Uint8Array.from(atob(file.content.replace(/\s/g, '')), (c: string) => c.charCodeAt(0));
   return { content: new TextDecoder().decode(bytes), sha: file.sha };
 }
 
-async function commitFile(path: string, content: string, message: string, expectedSha: string): Promise<{ sha: string; url: string }> {
+async function commitFile(path: string, content: string, message: string, expectedSha: string): Promise<{ sha: string; url: string; commitSha?: string; commitUrl?: string }> {
   const check = await verifyGithubToken();
-  if ('error' in check) throw new Error(check.error);
+  if ('error' in check) throw new GithubAccessError();
 
   const apiBase = `https://api.github.com/repos/${GITHUB_REPO}/contents/${encodeURI(path)}`;
   const fileUrl = `${apiBase}?ref=${encodeURIComponent(GITHUB_BRANCH)}`;
@@ -162,6 +163,7 @@ async function commitFile(path: string, content: string, message: string, expect
     const j = await head.json();
     sha = j.sha;
   } else if (head.status !== 404) {
+    if ([401, 403].includes(head.status)) throw new GithubAccessError();
     throw new Error(`GitHub HEAD ${head.status}: ${await head.text()}`);
   }
 
@@ -178,9 +180,10 @@ async function commitFile(path: string, content: string, message: string, expect
     }),
   });
   if (put.status === 409) throw new ConflictError();
+  if ([401, 403, 404].includes(put.status)) throw new GithubAccessError();
   if (!put.ok) throw new Error(`GitHub PUT ${put.status}: ${await put.text()}`);
   const j = await put.json();
-  return { sha: j.content.sha, url: j.content.html_url };
+  return { sha: j.content.sha, url: j.content.html_url, commitSha: j.commit?.sha, commitUrl: j.commit?.html_url };
 }
 
 async function triggerRedeploy(): Promise<{ ok: boolean; status: number; body: string }> {
@@ -190,6 +193,7 @@ async function triggerRedeploy(): Promise<{ ok: boolean; status: number; body: s
 }
 
 class ConflictError extends Error { constructor() { super('Content changed on GitHub. Reload before saving.'); } }
+class GithubAccessError extends Error { constructor() { super('GitHub access is unavailable'); } }
 
 // Best-effort per-instance limiter; add an external limiter for distributed production.
 const attempts = new Map<string, { count: number; until: number }>();
@@ -298,7 +302,7 @@ Deno.serve(async (req) => {
       // Git is committed before deleting the draft. If deletion fails, the stale base SHA blocks republishing.
       try { await draftsRequest('DELETE', draftQuery(kind, slug, current.revision)); }
       catch (error) { console.error('Published draft cleanup failed', error); }
-      return json({ ok: true, sha: commit.sha, url: commit.url });
+      return json({ ok: true, ...commit, branch: GITHUB_BRANCH });
     }
 
     if (action === 'save') {
@@ -316,7 +320,8 @@ Deno.serve(async (req) => {
     }
 
     if (action === 'status') {
-      return json({ repo: GITHUB_REPO, branch: GITHUB_BRANCH, draftStorageConfigured: !!(SUPABASE_URL && SERVICE_ROLE_KEY), deployHookConfigured: !!VERCEL_DEPLOY_HOOK });
+      const github = await verifyGithubToken().catch(() => ({ ok: false as const }));
+      return json({ repo: GITHUB_REPO, branch: GITHUB_BRANCH, githubAccess: github.ok, draftStorageConfigured: !!(SUPABASE_URL && SERVICE_ROLE_KEY), deployHookConfigured: !!VERCEL_DEPLOY_HOOK });
     }
 
     if (action === 'me') {
@@ -327,7 +332,7 @@ Deno.serve(async (req) => {
   } catch (e) {
     const msg = e instanceof Error ? e.message : String(e);
     console.error('admin-cms error:', msg);
-    return json({ error: e instanceof ConflictError ? msg : 'Request failed' }, e instanceof ConflictError ? 409 : 500);
+    return json({ error: e instanceof ConflictError ? msg : e instanceof GithubAccessError ? 'GitHub access is unavailable' : 'Request failed' }, e instanceof ConflictError ? 409 : e instanceof GithubAccessError ? 503 : 500);
   }
 });
 

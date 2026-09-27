@@ -10,6 +10,7 @@ import { useAdminText } from './adminText';
 import { useI18n } from '@/lib/i18n';
 import { editorLabel } from './editorLabels';
 import { ownerError } from './adminErrors';
+import { rememberPreviewCommit } from '@/lib/previewDeployment';
 
 type Entry = Record<string, unknown>;
 type DraftInfo = { kind: ContentKind; slug: string; revision: number; updated_at: string };
@@ -180,7 +181,7 @@ export default function V2Workspace({ kind, draftsOnly = false, onChanged, publi
     if (!entry || revision === null || !saved || !previewReviewed || !publishAllowed) return;
     if (!confirm(`${a('confirmPublish')} ${kind}/${entry.slug}`)) return;
     setBusy(true);
-    try { await adminApi.draftPublish(kind, value(entry, 'slug'), revision); await refresh(); await onChanged?.(); setEntry(null); setRevision(null); setPreview(false); toast.success(a('published')); }
+    try { const result = await adminApi.draftPublish(kind, value(entry, 'slug'), revision); if (result.commitSha) rememberPreviewCommit({sha:result.commitSha, url:result.commitUrl, branch:result.branch, kind, slug:value(entry,'slug')}); await refresh(); await onChanged?.(); setEntry(null); setRevision(null); setPreview(false); toast.success(a('committedPreview')); }
     catch (err) { toast.error(ownerError(err, a('publishFailed'))); }
     finally { setBusy(false); }
   };
@@ -207,7 +208,7 @@ export default function V2Workspace({ kind, draftsOnly = false, onChanged, publi
       {!entry && <p>{a('selectEntry')}</p>}
       {entry && <>
         <div className="admin-editor-heading"><div><span className="admin-badge">{revision !== null ? a('draft') : items.some((item) => item.slug === entry.slug) ? a('alreadyPublished') : a('unsavedDraft')}</span><h2>{value(entry, 'name') || a('unsavedDraft')}</h2><small>{kind}/{value(entry, 'slug')} · {saved ? a('saved') : a('unsaved')}</small></div><select aria-label={a('previewLanguage')} value={previewLocale} onChange={(event) => setPreviewLocale(event.target.value as Locale)}>{['pt-PT','pt-BR','en','es'].map((code) => <option key={code}>{code}</option>)}</select></div>
-        <div className="admin-action-bar"><ol className="admin-flow"><li>{a('draft')}</li><li>{a('preview')}</li><li>{a('publish')}</li></ol><div><button disabled={busy || !sha} className="admin-button admin-button-primary" onClick={() => void save()}>{a('saveDraft')}</button><button className="admin-button admin-button-secondary" onClick={() => { if (!preview && saved) setPreviewReviewed(true); setPreview((previous) => !previous); }}>{a('preview')}</button><button disabled={busy || !saved || revision === null || !previewReviewed || !publishAllowed || !publishable} title={!publishAllowed ? a('branchMismatch') : !publishable ? a('reviewBeforePublish') : undefined} className="admin-button admin-button-secondary" onClick={() => void publish()}>{a('publish')}</button><button disabled title={a('noProvider')} className="admin-button admin-button-secondary">{a('translateWithAi')}</button><button disabled title={a('noProvider')} className="admin-button admin-button-secondary">{a('improveAction')}</button>{revision !== null && <button disabled={busy} className="admin-button admin-button-secondary" onClick={() => void discard()}>{a('discard')}</button>}</div></div>
+        <div className="admin-action-bar"><ol className="admin-flow"><li>{a('draft')}{saved && revision !== null ? ' ✓' : ''}</li><li>{a('preview')}{previewReviewed ? ' ✓' : ''}</li><li>{a('committedPreview')}</li><li>{a('readyLive')}</li><li>{a('liveProduction')}</li></ol><div><button disabled={busy || !sha} className="admin-button admin-button-primary" onClick={() => void save()}>{a('saveDraft')}</button><button className="admin-button admin-button-secondary" onClick={() => { if (!preview && saved) setPreviewReviewed(true); setPreview((previous) => !previous); }}>{a('preview')}</button><button disabled={busy || !saved || revision === null || !previewReviewed || !publishAllowed || !publishable} title={!publishAllowed ? a('branchMismatch') : !publishable ? a('reviewBeforePublish') : undefined} className="admin-button admin-button-secondary" onClick={() => void publish()}>{a('publish')}</button><button disabled title={a('noProvider')} className="admin-button admin-button-secondary">{a('translateWithAi')}</button><button disabled title={a('noProvider')} className="admin-button admin-button-secondary">{a('improveAction')}</button>{revision !== null && <button disabled={busy} className="admin-button admin-button-secondary" onClick={() => void discard()}>{a('discard')}</button>}</div></div>
         {!publishAllowed && <p className="admin-note">{a('branchMismatch')}</p>}
         {!publishable && <p className="admin-note">{a('reviewBeforePublish')}</p>}
         <div className="admin-tab-bar" role="tablist" aria-label={a('content')}>{(['mainTab','relationsTab','mediaTab','localizationTab','seoTab','advancedTab'] as EditorTab[]).map((choice) => <button type="button" role="tab" key={choice} id={`admin-tab-${choice}`} aria-controls="admin-editor-tab-panel" aria-selected={choice === tab} onClick={() => setTab(choice)}>{a(choice)}</button>)}</div>

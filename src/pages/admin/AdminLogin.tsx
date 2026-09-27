@@ -2,10 +2,15 @@ import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import SiteLayout from '@/components/layout/SiteLayout';
 import Seo from '@/components/Seo';
-import { adminApi, adminAuth } from '@/lib/adminApi';
+import { AdminApiError, adminApi, adminAuth, isPreviewOrigin, previewOrigin } from '@/lib/adminApi';
 import { useI18n } from '@/lib/i18n';
 import { Lock, Loader2 } from 'lucide-react';
 import { useAdminText } from './adminText';
+
+const loginErrorKey = (error: unknown) => {
+  if (!(error instanceof AdminApiError)) return 'loginFailure' as const;
+  return ({ origin: 'loginorigin', 'invalid-password': 'logininvalidPassword', 'missing-config': 'loginmissingConfig', 'session-invalid': 'loginsessionInvalid', 'github-config': 'logingithubConfig', network: 'loginnetwork', 'rate-limit': 'loginrateLimit', unknown: 'loginFailure' } as const)[error.code];
+};
 
 export default function AdminLogin() {
   const { t } = useI18n();
@@ -19,8 +24,8 @@ export default function AdminLogin() {
   useEffect(() => {
     if (!adminAuth.isLoggedIn()) return;
     let active = true;
-    adminApi.me().then(() => { if (active) nav('/admin/editor', { replace: true }); }).catch(() => {
-      if (active) { adminAuth.clear(); setChecking(false); }
+    adminApi.me().then(() => { if (active) nav('/admin/editor', { replace: true }); }).catch((err: unknown) => {
+      if (active) { if (err instanceof AdminApiError && err.code === 'session-invalid') adminAuth.clear(); setError(a(loginErrorKey(err))); setChecking(false); }
     });
     return () => { active = false; };
   }, [nav]);
@@ -32,8 +37,8 @@ export default function AdminLogin() {
       const { token } = await adminApi.login(password);
       adminAuth.setToken(token);
       nav('/admin/editor', { replace: true });
-    } catch {
-      setError(a('loginFailure'));
+    } catch (err) {
+      setError(a(loginErrorKey(err)));
     } finally {
       setLoading(false);
     }
@@ -49,6 +54,7 @@ export default function AdminLogin() {
           </div>
           <h1 className="mt-3 text-2xl font-semibold tracking-tight">{t('admin.title')}</h1>
           <p className="mt-3 text-sm text-muted-foreground">{a('cmsIntro')}</p>
+          {!isPreviewOrigin() && <p role="alert" className="mt-4 text-sm text-destructive">{a('loginorigin')} {previewOrigin() && <a href={`${previewOrigin()}/admin`} className="underline">{previewOrigin()}/admin</a>}</p>}
 
           {checking ? <p className="mt-6" role="status">{a('checking')}</p> : <form onSubmit={submit} className="mt-6 space-y-4">
             <div>
@@ -63,10 +69,10 @@ export default function AdminLogin() {
                 className="w-full h-11 px-3 rounded-md bg-background border border-hairline focus:border-signal focus:outline-none focus-visible:ring-2 focus-visible:ring-signal/40 font-mono"
               />
             </div>
-            {error && <p className="text-sm text-destructive">{error}</p>}
+            {error && <p role="alert" className="text-sm text-destructive">{error}</p>}
             <button
               type="submit"
-              disabled={loading}
+              disabled={loading || !isPreviewOrigin()}
               className="w-full h-11 inline-flex items-center justify-center gap-2 rounded-md bg-signal text-primary-foreground font-medium hover:bg-signal/90 transition-colors disabled:opacity-60 active:scale-[0.98]"
             >
               {loading && <Loader2 className="h-4 w-4 animate-spin" />}
