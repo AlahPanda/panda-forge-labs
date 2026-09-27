@@ -1,4 +1,4 @@
-/** Exact HTTPS origins only. No wildcards, paths, credentials, or inferred Vercel hosts. */
+/** Exact HTTPS origins only. No wildcards, paths or credentials in configured values. */
 export function allowedAdminOrigins(list: string | undefined, legacy: string | undefined): string[] | null {
   const raw = list === undefined || list.trim() === '' ? legacy : list;
   if (!raw) return null;
@@ -13,6 +13,16 @@ export function allowedAdminOrigins(list: string | undefined, legacy: string | u
   return [...new Set(entries)];
 }
 
-export function originAllowed(origin: string | null, allowed: readonly string[]): boolean {
-  return origin !== null && allowed.includes(origin);
+// Generated deployment URLs for this one Vercel project and scope only.
+// A host name is not proof of a Preview deployment; Vercel Authentication and
+// the CMS JWT remain mandatory, and GitHub writes stay pinned to the Preview branch.
+const PROJECT_DEPLOYMENT_HOST = /^alahpanda-labs-[a-z0-9]{8,32}-alahpandas-projects\.vercel\.app$/;
+
+export function isAllowedAdminOrigin(origin: string | null, allowed: readonly string[], alias?: string): boolean {
+  if (!origin) return false;
+  try {
+    const url = new URL(origin);
+    if (url.protocol !== 'https:' || url.origin !== origin || url.pathname !== '/' || url.search || url.hash || url.username || url.password) return false;
+    return allowed.includes(origin) || alias === origin || (url.port === '' && PROJECT_DEPLOYMENT_HOST.test(url.hostname));
+  } catch { return false; }
 }

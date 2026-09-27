@@ -1,5 +1,5 @@
 import { ALLOWED_PATHS, validateContent, validateClaims, canSave, isContentKind, parseItem, parseCollection, collectionPath, type ContentKind } from "./policy.ts";
-import { allowedAdminOrigins, originAllowed } from './origins.ts';
+import { allowedAdminOrigins, isAllowedAdminOrigin } from './origins.ts';
 // Admin CMS edge function
 // - POST /login         { password } -> { token }
 // - POST /read          { path } (Bearer token) -> current JSON and blob SHA
@@ -11,7 +11,10 @@ import { allowedAdminOrigins, originAllowed } from './origins.ts';
 //   GITHUB_BRANCH; optional VERCEL_DEPLOY_HOOK (preview-only for preview config)
 
 const ADMIN_ORIGINS = allowedAdminOrigins(Deno.env.get('ADMIN_ORIGINS'), Deno.env.get('ADMIN_ORIGIN'));
-const corsHeaders = (origin: string | null): Record<string, string> => origin && ADMIN_ORIGINS && originAllowed(origin, ADMIN_ORIGINS) ? {
+const ADMIN_PREVIEW_ALIAS_RAW = Deno.env.get('ADMIN_PREVIEW_ALIAS');
+const aliasEntries = ADMIN_PREVIEW_ALIAS_RAW ? allowedAdminOrigins(ADMIN_PREVIEW_ALIAS_RAW, undefined) : null;
+const ADMIN_PREVIEW_ALIAS = aliasEntries?.length === 1 ? aliasEntries[0] : undefined;
+const corsHeaders = (origin: string | null): Record<string, string> => ADMIN_ORIGINS !== null && origin !== null && isAllowedAdminOrigin(origin, ADMIN_ORIGINS, ADMIN_PREVIEW_ALIAS) ? {
   'Access-Control-Allow-Origin': origin,
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
   'Access-Control-Allow-Methods': 'POST, OPTIONS',
@@ -203,8 +206,8 @@ const attempts = new Map<string, { count: number; until: number }>();
 Deno.serve(async (req) => {
   const origin = req.headers.get('Origin');
   const json = (data: unknown, status = 200) => responseJson(data, status, origin);
-  if (!ADMIN_ORIGINS || !JWT_SECRET) return json({ error: 'Server not configured' }, 500);
-  if (!originAllowed(origin, ADMIN_ORIGINS)) return json({ error: 'Forbidden origin', receivedOrigin: origin, expectedOrigins: ADMIN_ORIGINS }, 403);
+  if (!ADMIN_ORIGINS || (ADMIN_PREVIEW_ALIAS_RAW && !ADMIN_PREVIEW_ALIAS) || !JWT_SECRET) return json({ error: 'Server not configured' }, 500);
+  if (!isAllowedAdminOrigin(origin, ADMIN_ORIGINS, ADMIN_PREVIEW_ALIAS)) return json({ error: 'Forbidden origin', receivedOrigin: origin, expectedOrigins: ADMIN_ORIGINS, previewAlias: ADMIN_PREVIEW_ALIAS ?? null }, 403);
   if (req.method === 'OPTIONS') return new Response('ok', { headers: corsHeaders(origin) });
   if (req.method !== 'POST') {
     return new Response(JSON.stringify({ error: 'Method not allowed' }), {

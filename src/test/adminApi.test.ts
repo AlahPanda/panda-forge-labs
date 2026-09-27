@@ -37,6 +37,15 @@ describe('CMS browser transport', () => {
     fetchMock.mockResolvedValue({ok:true,headers:new Headers({'content-type':'application/json'}),json:async()=>({branch:'v2/full-redesign',sha:commit.sha})});
     expect(await isPreviewReady(commit)).toBe(true);
   });
+  it('can verify the current Preview build when the optional preferred alias is absent', async () => {
+    vi.stubEnv('VITE_PREVIEW_ORIGIN', '');
+    const commit = { sha:'a'.repeat(40), branch:'v2/full-redesign', kind:'faq', slug:'general' };
+    const fetchMock = vi.fn().mockResolvedValue({ok:true,headers:new Headers({'content-type':'application/json'}),json:async()=>({branch:commit.branch,sha:commit.sha})});
+    vi.stubGlobal('fetch',fetchMock);
+    expect(await isPreviewReady(commit)).toBe(true);
+    expect(fetchMock).toHaveBeenCalledWith(`${window.location.origin}/preview-build.json`,{cache:'no-store'});
+    vi.unstubAllEnvs();
+  });
   it('sends writes only to the authenticated Edge Function', async () => {
     adminAuth.setToken('session-jwt');
     const fetchMock = vi.fn().mockResolvedValue({ ok: true, json: async () => ({ ok: true, sha: 'new', url: 'https://example.test' }) });

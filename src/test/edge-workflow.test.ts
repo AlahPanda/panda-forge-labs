@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { webcrypto } from 'node:crypto';
-import { allowedAdminOrigins, originAllowed } from '../../supabase/functions/admin-cms/origins';
+import { allowedAdminOrigins, isAllowedAdminOrigin } from '../../supabase/functions/admin-cms/origins';
 
 type Handler = (request: Request) => Promise<Response>;
 let handler: Handler;
@@ -51,8 +51,12 @@ describe('authenticated draft → publish route', () => {
   it('accepts only exact, explicitly configured HTTPS Preview origins', () => {
     const allowed = allowedAdminOrigins('https://preview.example, https://deployment.example', undefined);
     expect(allowed).toEqual(['https://preview.example','https://deployment.example']);
-    expect(originAllowed('https://deployment.example', allowed!)).toBe(true);
-    expect(originAllowed('https://other.example', allowed!)).toBe(false);
+    expect(isAllowedAdminOrigin('https://deployment.example', allowed!)).toBe(true);
+    expect(isAllowedAdminOrigin('https://other.example', allowed!)).toBe(false);
+    expect(isAllowedAdminOrigin('https://alahpanda-labs-7i96i80bt-alahpandas-projects.vercel.app', allowed!)).toBe(true);
+    expect(isAllowedAdminOrigin('https://alahpanda-labs-abcdef123-alahpandas-projects.vercel.app', allowed!)).toBe(true);
+    expect(isAllowedAdminOrigin('https://alahpanda-labs-git-v2-full-redesign-alahpandas-projects.vercel.app', allowed!, 'https://alahpanda-labs-git-v2-full-redesign-alahpandas-projects.vercel.app')).toBe(true);
+    for (const origin of [null, 'null', '*', 'http://alahpanda-labs-7i96i80bt-alahpandas-projects.vercel.app', 'https://evil-7i96i80bt-alahpandas-projects.vercel.app', 'https://alahpanda-labs-7i96i80bt-other-projects.vercel.app', 'https://alahpanda-labs-7i96i80bt-alahpandas-projects.vercel.app.evil.com', 'https://alahpanda-labs-git-v2-full-redesign-alahpandas-projects.vercel.app', 'https://alahpanda-labs-*-alahpandas-projects.vercel.app', 'https://alahpanda-labs-a-alahpandas-projects.vercel.app', 'https://alahpanda-labs-7i96i80bt-alahpandas-projects.vercel.app/path', 'https://alahpanda-labs-7i96i80bt-alahpandas-projects.vercel.app:444']) expect(isAllowedAdminOrigin(origin, allowed!), String(origin)).toBe(false);
     for (const input of ['*','https://*.vercel.app','http://preview.example','https://preview.example/path','https://preview.example/','https://preview.example, *']) expect(allowedAdminOrigins(input,undefined)).toBeNull();
   });
   it('serves a second allowed origin with its own exact CORS header and refuses other origins', async () => {
@@ -68,7 +72,10 @@ describe('authenticated draft → publish route', () => {
     const refused = await handler(new Request('https://supabase.example/functions/v1/admin-cms/login', {method:'POST',headers:{Origin:'https://other.example','Content-Type':'application/json'},body:JSON.stringify({password:'test-password'})}));
     expect(refused.status).toBe(403);
     expect(refused.headers.get('Access-Control-Allow-Origin')).toBeNull();
-    expect(await refused.json()).toEqual({error:'Forbidden origin',receivedOrigin:'https://other.example',expectedOrigins:['https://preview.example','https://deployment.example']});
+    expect(await refused.json()).toEqual({error:'Forbidden origin',receivedOrigin:'https://other.example',expectedOrigins:['https://preview.example','https://deployment.example'],previewAlias:null});
+    const generated = await handler(new Request('https://supabase.example/functions/v1/admin-cms/login', {method:'POST',headers:{Origin:'https://alahpanda-labs-7i96i80bt-alahpandas-projects.vercel.app','Content-Type':'application/json'},body:JSON.stringify({password:'test-password'})}));
+    expect(generated.status).toBe(200);
+    expect(generated.headers.get('Access-Control-Allow-Origin')).toBe('https://alahpanda-labs-7i96i80bt-alahpandas-projects.vercel.app');
     const missing = await handler(new Request('https://supabase.example/functions/v1/admin-cms/login', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({password:'test-password'})}));
     expect(missing.status).toBe(403);
     expect(missing.headers.get('Access-Control-Allow-Origin')).toBeNull();
@@ -76,7 +83,7 @@ describe('authenticated draft → publish route', () => {
   it('rejects a foreign origin before processing login', async () => {
     const r = await handler(new Request('https://supabase.example/functions/v1/admin-cms/login', {method:'POST',headers:{Origin:'https://ephemeral.example','Content-Type':'application/json'},body:JSON.stringify({password:'test-password'})}));
     expect(r.status).toBe(403);
-    expect(await r.json()).toEqual({error:'Forbidden origin',receivedOrigin:'https://ephemeral.example',expectedOrigins:['https://preview.example']});
+    expect(await r.json()).toEqual({error:'Forbidden origin',receivedOrigin:'https://ephemeral.example',expectedOrigins:['https://preview.example'],previewAlias:null});
     expect(requests).toHaveLength(0);
   });
   it('fails closed when the owner password is absent instead of using a default', async () => {

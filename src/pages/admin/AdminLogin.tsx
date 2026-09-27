@@ -71,7 +71,7 @@ export default function AdminLogin() {
               />
             </div>
             {error && <p role="alert" className="text-sm text-destructive">{error}</p>}
-            {originHelp && <p className="text-xs break-words text-muted-foreground">{a('receivedOrigin')}: <code>{window.location.origin}</code>. {a('expectedOrigin')}: <code>{previewOrigin() || a('unavailable')}</code>. {a('originAllowlistHelp')}</p>}
+            {originHelp && <p className="text-xs break-words text-muted-foreground">{a('receivedOrigin')}: <code>{window.location.origin}</code>. {previewOrigin() ? <>{a('expectedOrigin')}: <code>{previewOrigin()}</code>. </> : <>{a('aliasOptional')} </>}{a('originAllowlistHelp')}</p>}
             <button
               type="submit"
               disabled={loading}
