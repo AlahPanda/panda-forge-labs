@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { cleanup, fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import { HelmetProvider } from 'react-helmet-async';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import { ThemeProvider } from '@/lib/theme';
@@ -9,6 +9,8 @@ import AdminGate from '@/pages/admin/AdminGate';
 import AdminEditor from '@/pages/admin/AdminEditor';
 import { adminApi, adminAuth } from '@/lib/adminApi';
 import App from '@/App';
+import V2Workspace from '@/pages/admin/V2Workspace';
+import { projectSchema } from '@/content/v2/schema';
 
 afterEach(() => { cleanup(); vi.restoreAllMocks(); sessionStorage.clear(); });
 
@@ -27,6 +29,22 @@ function stubContent() {
 }
 
 describe('owner CMS routes', () => {
+  it('edits optional V2 translations in the existing private draft workflow and previews their fallback', async () => {
+    const item = projectSchema.parse({ slug: 'mac-native', name: 'Mac Native', summary: 'Resumo original', sourceLocale: 'pt-PT', status: 'beta', releaseSlugs: [] });
+    vi.spyOn(adminApi, 'read').mockResolvedValue({ sha: 'verified-sha', content: JSON.stringify({ schemaVersion: 2, items: [item] }) });
+    vi.spyOn(adminApi, 'draftList').mockResolvedValue({ drafts: [] });
+    const save = vi.spyOn(adminApi, 'draftSave').mockImplementation(async (_kind, _slug, content) => ({ draft: { content, base_sha: 'verified-sha', revision: 1 } }));
+    render(<V2Workspace kind="projects"/>);
+    fireEvent.click(await screen.findByRole('button', { name: 'Mac Native' }));
+    fireEvent.change(screen.getAllByLabelText('Translated name')[1], { target: { value: 'English display name' } });
+    fireEvent.click(screen.getByRole('button', { name: 'Preview' }));
+    fireEvent.change(screen.getByLabelText('Preview language'), { target: { value: 'en' } });
+    const preview = screen.getByRole('article', { name: 'Content preview' });
+    expect(within(preview).getByRole('heading', { name: 'English display name' })).toBeInTheDocument();
+    expect(within(preview).getByText('Resumo original')).toBeInTheDocument();
+    fireEvent.click(screen.getByRole('button', { name: 'Save private draft' }));
+    await waitFor(() => expect(save).toHaveBeenCalledWith('projects', 'mac-native', expect.objectContaining({ translations: expect.objectContaining({ en: expect.objectContaining({ state: 'partial', fields: expect.objectContaining({ name: 'English display name' }) }) }) }), 'verified-sha', null));
+  });
   it('redirects a direct unauthenticated editor visit to the existing login', async () => {
     const check = vi.spyOn(adminApi, 'me');
     adminRoute('/admin/editor');

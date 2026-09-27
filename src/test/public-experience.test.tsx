@@ -1,5 +1,6 @@
-import { afterEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import { HelmetProvider } from 'react-helmet-async';
 import { ThemeProvider } from '@/lib/theme';
@@ -12,11 +13,16 @@ import { MacNativeProduct } from '@/components/experience/MacNativeProduct';
 import { ArticleCard, GuideCard } from '@/components/experience/Shared';
 import { parseItem } from '@/content/v2/schema';
 import Seo from '@/components/Seo';
+import App from '@/App';
 
-afterEach(() => { cleanup(); vi.restoreAllMocks(); localStorage.removeItem('apl.theme'); });
+beforeEach(() => {
+  localStorage.setItem('apl.locale', 'en');
+  vi.stubGlobal('fetch', vi.fn(async () => { throw new Error('Modrinth temporarily unavailable'); }));
+});
+afterEach(() => { cleanup(); vi.restoreAllMocks(); vi.unstubAllGlobals(); localStorage.removeItem('apl.theme'); localStorage.removeItem('apl.locale'); window.history.replaceState({}, '', '/'); });
 
 function publicRoute(path: string, route: string, page: React.ReactElement) {
-  return render(<HelmetProvider><ThemeProvider><I18nProvider><MemoryRouter initialEntries={[path]}><Routes><Route path={route} element={page}/></Routes></MemoryRouter></I18nProvider></ThemeProvider></HelmetProvider>);
+  return render(<QueryClientProvider client={new QueryClient({ defaultOptions: { queries: { retry: false } } })}><HelmetProvider><ThemeProvider><I18nProvider><MemoryRouter initialEntries={[path]}><Routes><Route path={route} element={page}/></Routes></MemoryRouter></I18nProvider></ThemeProvider></HelmetProvider></QueryClientProvider>);
 }
 
 describe('public redesign and editorial boundaries', () => {
@@ -35,6 +41,14 @@ describe('public redesign and editorial boundaries', () => {
     expect(screen.queryByText(/download|release|benchmark|review/i)).not.toBeInTheDocument();
   });
 
+  it('applies a persisted Spanish UI on a direct product URL while keeping original editorial content', () => {
+    localStorage.setItem('apl.locale', 'es');
+    publicRoute('/modpacks/mac-native', '/modpacks/:slug', <ProjectDetailExperience/>);
+    expect(document.documentElement.lang).toBe('es');
+    expect(screen.getByRole('link', { name: /Descargar 0\.3\.1 en Modrinth/ })).toBeInTheDocument();
+    expect(screen.getByText(/Modpack Minecraft para macOS/)).toBeInTheDocument();
+  });
+
   it('keeps the verified Mac Native release and official destination', () => {
     publicRoute('/modpacks/mac-native', '/modpacks/:slug', <ProjectDetailExperience/>);
     expect(screen.getByRole('heading', { name: 'Mac Native' })).toBeInTheDocument();
@@ -47,6 +61,18 @@ describe('public redesign and editorial boundaries', () => {
     expect(screen.queryByText(/412 MB|8 GB|1\.4\.2|community rating|592 FPS/i)).not.toBeInTheDocument();
     expect(screen.queryByRole('heading', { name: 'Screenshots' })).not.toBeInTheDocument();
     expect(screen.queryByRole('heading', { name: 'Known issues' })).not.toBeInTheDocument();
+    expect(screen.queryByText('Downloads on Modrinth')).not.toBeInTheDocument();
+    expect(screen.queryByText('0 downloads')).not.toBeInTheDocument();
+  });
+
+  it('shows only API supplied Modrinth downloads and followers without replacing the V2 release', async () => {
+    vi.stubGlobal('fetch', vi.fn(async () => new Response(JSON.stringify({ downloads: 129, followers: 31 }), { status: 200 })));
+    publicRoute('/modpacks/mac-native', '/modpacks/:slug', <ProjectDetailExperience/>);
+    await waitFor(() => expect(screen.getByText('129')).toBeInTheDocument());
+    expect(screen.getByText('31')).toBeInTheDocument();
+    expect(screen.getByText('Downloads on Modrinth')).toBeInTheDocument();
+    expect(screen.getByText(/v0\.3\.1/)).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: /Download 0\.3\.1 on Modrinth/ })).toHaveAttribute('href', 'https://modrinth.com/modpack/mac-native/version/0.3.1');
   });
 
   it('lists historical launchers safely and migrates verified SKLauncher fields', () => {
@@ -90,7 +116,7 @@ describe('public redesign and editorial boundaries', () => {
   });
 
   it('shows the two projects without a marketplace filter or Soon', () => {
-    publicRoute('/projects', '/projects', <ProjectsExperience/>);
+    publicRoute('/modpacks', '/modpacks', <ProjectsExperience/>);
     expect(screen.getByRole('heading', { name: 'CraftToons' })).toBeInTheDocument();
     expect(screen.getByRole('heading', { name: 'Mac Native' })).toBeInTheDocument();
     expect(screen.queryByRole('searchbox')).not.toBeInTheDocument();
@@ -177,14 +203,23 @@ describe('public redesign and editorial boundaries', () => {
 
   it('keeps main routes and the owner CMS entry discoverable', () => {
     publicRoute('/', '/', <HomeExperience/>);
-    for (const path of ['/projects','/modpacks','/launchers','/guides','/news','/about','/faq','/support','/modpacks/mac-native','/modpacks/crafttoons','/admin']) {
+    for (const path of ['/modpacks','/launchers','/guides','/news','/about','/faq','/support','/modpacks/mac-native','/modpacks/crafttoons','/admin']) {
       expect(screen.getAllByRole('link').some((link) => link.getAttribute('href') === path)).toBe(true);
     }
+    expect(screen.queryByRole('link', { name: 'Projects' })).not.toBeInTheDocument();
     cleanup();
     for (const [path, view, title] of [['/about', <AboutExperience/>, 'About AlahPanda Labs'], ['/support', <SupportExperience/>, 'Support'], ['/missing', <MissingExperience/>, 'Page not found']] as const) {
       const { unmount } = publicRoute(path, path, view);
       expect(screen.getByRole('heading', { name: title })).toBeInTheDocument();
       unmount();
     }
+  });
+
+  it('redirects the historical /projects route to the canonical /modpacks hub', async () => {
+    vi.stubGlobal('scrollTo', vi.fn());
+    window.history.replaceState({}, '', '/projects');
+    render(<App/>);
+    await waitFor(() => expect(window.location.pathname).toBe('/modpacks'));
+    expect(screen.getByRole('heading', { name: 'Mac Native' })).toBeInTheDocument();
   });
 });

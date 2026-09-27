@@ -3,6 +3,8 @@ import { toast } from 'sonner';
 import RichMarkdown from '@/components/RichMarkdown';
 import { adminApi } from '@/lib/adminApi';
 import { collectionPath, parseCollection, parseItem, type ContentKind } from '@/content/v2/schema';
+import { localizeItem, type LocalizedEntry } from '@/content/v2/localize';
+import type { Locale } from '@/content';
 
 type Entry = Record<string, unknown>;
 type DraftInfo = { kind: ContentKind; slug: string; revision: number; updated_at: string };
@@ -57,9 +59,11 @@ export default function V2Workspace({ kind, draftsOnly = false }: { kind: Conten
   const [saved, setSaved] = useState(false);
   const [slugLocked, setSlugLocked] = useState(false);
   const [preview, setPreview] = useState(false);
+  const [previewLocale, setPreviewLocale] = useState<Locale>('pt-PT');
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
   const draftForEntry = useMemo(() => drafts.find((draft) => draft.kind === kind && draft.slug === entry?.slug), [drafts, kind, entry]);
+  const previewEntry = entry ? localizeItem(entry as Entry & LocalizedEntry, previewLocale) : null;
 
   const refresh = async () => {
     const [file, list] = await Promise.all([adminApi.read(collectionPath(kind)), adminApi.draftList()]);
@@ -77,10 +81,10 @@ export default function V2Workspace({ kind, draftsOnly = false }: { kind: Conten
     return () => { active = false; };
   }, [kind]);
 
-  const editPublished = (item: Entry) => { setEntry(structuredClone(item)); setRevision(null); setBaseSha(sha); setSaved(false); setPreview(false); setSlugLocked(true); };
+  const editPublished = (item: Entry) => { setEntry(structuredClone(item)); setPreviewLocale((item.sourceLocale as Locale) || 'pt-PT'); setRevision(null); setBaseSha(sha); setSaved(false); setPreview(false); setSlugLocked(true); };
   const editDraft = async (draft: DraftInfo) => {
     setBusy(true);
-    try { const result = await adminApi.draftRead(draft.kind, draft.slug); setEntry(result.draft.content as Entry); setBaseSha(result.draft.base_sha); setRevision(result.draft.revision); setSaved(true); setPreview(false); setSlugLocked(true); }
+    try { const result = await adminApi.draftRead(draft.kind, draft.slug); setEntry(result.draft.content as Entry); setPreviewLocale(((result.draft.content as Entry).sourceLocale as Locale) || 'pt-PT'); setBaseSha(result.draft.base_sha); setRevision(result.draft.revision); setSaved(true); setPreview(false); setSlugLocked(true); }
     catch (err) { toast.error(err instanceof Error ? err.message : 'Cannot read draft'); }
     finally { setBusy(false); }
   };
@@ -114,7 +118,7 @@ export default function V2Workspace({ kind, draftsOnly = false }: { kind: Conten
 
   return <div className="grid lg:grid-cols-[280px_1fr] gap-6">
     <aside className="border border-hairline bg-elev rounded-lg p-4 h-fit space-y-5">
-      <div><div className="label-mono">{kind} · V2</div><button className="text-signal mt-3 text-sm" onClick={() => { setEntry(fresh(kind)); setRevision(null); setBaseSha(sha); setSaved(false); setPreview(false); setSlugLocked(false); }}>+ New private draft</button></div>
+      <div><div className="label-mono">{kind} · V2</div><button className="text-signal mt-3 text-sm" onClick={() => { setEntry(fresh(kind)); setPreviewLocale('pt-PT'); setRevision(null); setBaseSha(sha); setSaved(false); setPreview(false); setSlugLocked(false); }}>+ New private draft</button></div>
       {!draftsOnly && <div><div className="label-mono mb-2">Published in Git · {items.length}</div>{items.map((item) => <button key={value(item, 'slug')} className="block text-left w-full py-1 text-sm" onClick={() => editPublished(item)}>{value(item, 'name')}</button>)}</div>}
       <div><div className="label-mono mb-2">Private drafts</div>{drafts.filter((draft) => draft.kind === kind).map((draft) => <button key={`${draft.kind}/${draft.slug}`} className="block text-left w-full py-1 text-sm" onClick={() => void editDraft(draft)}>{draft.kind}/{draft.slug} · r{draft.revision}</button>)}</div>
     </aside>
@@ -173,7 +177,7 @@ export default function V2Workspace({ kind, draftsOnly = false }: { kind: Conten
           })}
         </fieldset>
         <div className="flex flex-wrap gap-3"><button disabled={busy || !sha} className="px-4 h-10 rounded-md bg-signal text-primary-foreground disabled:opacity-50" onClick={() => void save()}>Save private draft</button><button className="px-4 h-10 border border-hairline rounded-md" onClick={() => setPreview((v) => !v)}>Preview</button><button disabled={busy || !saved || revision === null} className="px-4 h-10 border border-hairline rounded-md disabled:opacity-50" onClick={() => void publish()}>Publish to Git</button>{revision !== null && <button disabled={busy} className="text-destructive" onClick={() => void discard()}>Discard draft</button>}</div>
-        {preview && <article className="border border-hairline rounded-lg p-6 space-y-3" aria-label="Content preview"><p className="label-mono">Private preview · {kind}</p><h3 className="text-2xl font-semibold">{value(entry, 'name')}</h3><p>{value(entry, 'summary')}</p><RichMarkdown markdown={value(entry, 'body') || value(entry, 'description')} /></article>}
+        {preview && previewEntry && <article className="border border-hairline rounded-lg p-6 space-y-3" aria-label="Content preview"><p className="label-mono">Private preview · {kind}</p><Select label="Preview language" value={previewLocale} choices={['pt-PT', 'pt-BR', 'en', 'es']} onChange={(next) => setPreviewLocale(next as Locale)} /><h3 className="text-2xl font-semibold">{value(previewEntry, 'name')}</h3><p>{value(previewEntry, 'summary')}</p><RichMarkdown markdown={value(previewEntry, 'body') || value(previewEntry, 'description')} /></article>}
       </>}
     </section>
   </div>;

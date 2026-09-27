@@ -40,8 +40,8 @@ const App = () => (
               <ScrollToTop />
               <Routes>
                 <Route path="/" element={<HomeExperience />} />
-                <Route path="/projects" element={<ProjectsExperience />} />
-                <Route path="/modpacks" element={<ProjectsExperience modpacks />} />
+                <Route path="/projects" element={<Navigate to="/modpacks" replace />} />
+                <Route path="/modpacks" element={<ProjectsExperience />} />
                 <Route path="/modpacks/:slug" element={<ProjectDetailExperience />} />
                 <Route path="/guides" element={<GuidesExperience />} />
                 <Route path="/guides/:slug" element={<GuideDetailExperience />} />

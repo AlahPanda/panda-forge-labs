@@ -8,9 +8,9 @@ import type { Modpack } from '@/content';
 import type { LauncherItem } from '@/lib/launchers';
 import { publicReleasesFor } from '@/content/publicResolver';
 import { useI18n } from '@/lib/i18n';
+import { localizeItem } from '@/content/v2/localize';
 
 export const destinations: { path: string; label: string; Icon: LucideIcon }[] = [
-  { path: '/projects', label: 'Projects', Icon: Compass },
   { path: '/modpacks', label: 'Modpacks', Icon: Leaf },
   { path: '/launchers', label: 'Launchers', Icon: Box },
   { path: '/guides', label: 'Guides', Icon: BookOpen },
@@ -48,11 +48,11 @@ export function EmptyCollection({ title, description, to, link }: { title: strin
 }
 
 export function ProjectCard({ entry }: { entry: PublicEntry<ProjectV2, Modpack> }) {
-  const { t } = useI18n();
+  const { t, locale } = useI18n();
   if (entry.source === 'legacy') return <Link className="experience-card experience-project-card" to={'/modpacks/' + entry.slug}>
     <div className="experience-card-visual experience-card-visual-project"><Compass size={46} aria-hidden="true" /></div>
-    <div className="experience-card-body"><h3>{entry.item.name}</h3><p>{entry.item.summary}</p><span className="experience-text-link">Explore <ArrowRight size={16}/></span></div></Link>;
-  const project = entry.item;
+    <div className="experience-card-body"><h3>{entry.item.name}</h3><p>{entry.item.summary}</p><span className="experience-text-link">{t('ui.explore')} <ArrowRight size={16}/></span></div></Link>;
+  const project = localizeItem(entry.item, locale);
   const teaser = project.status === 'internal-prototype';
   const image = project.media?.find((media) => media.kind === 'image');
   const releases = teaser ? [] : publicReleasesFor(project);
@@ -69,9 +69,9 @@ export function ProjectCard({ entry }: { entry: PublicEntry<ProjectV2, Modpack> 
 }
 
 export function LauncherCard({ entry }: { entry: PublicEntry<LauncherV2, LauncherItem> }) {
-  const { t } = useI18n();
-  if (entry.source === 'legacy') return <article className="experience-card experience-launcher-card"><div className="experience-launcher-icon"><Box size={30} aria-hidden="true"/></div><div className="experience-card-body"><h2>{entry.item.name}</h2><p>Launcher details are being checked against the publisher's information.</p><span className="experience-meta">{t('ui.review')}</span><div className="experience-card-actions"><Link to={'/launchers/' + entry.slug} className="experience-button experience-button-soft">{t('ui.viewStatus')} <ArrowRight size={16}/></Link></div></div></article>;
-  const item = entry.item;
+  const { t, locale } = useI18n();
+  if (entry.source === 'legacy') return <article className="experience-card experience-launcher-card"><div className="experience-launcher-icon"><Box size={30} aria-hidden="true"/></div><div className="experience-card-body"><h2>{entry.item.name}</h2><p>{t('ui.pendingLauncher')}</p><span className="experience-meta">{t('ui.review')}</span><div className="experience-card-actions"><Link to={'/launchers/' + entry.slug} className="experience-button experience-button-soft">{t('ui.viewStatus')} <ArrowRight size={16}/></Link></div></div></article>;
+  const item = localizeItem(entry.item, locale);
   return <article className="experience-card experience-launcher-card"><div className="experience-launcher-icon"><Box size={30} aria-hidden="true"/></div><div className="experience-card-body">
     <h2>{item.name}</h2>{item.summary && <p>{item.summary}</p>}
     {item.platforms.length > 0 && <p className="experience-meta">{item.platforms.join(' · ')}</p>}
@@ -80,8 +80,9 @@ export function LauncherCard({ entry }: { entry: PublicEntry<LauncherV2, Launche
   </div></article>;
 }
 
-export function ArticleCard({ item }: { item: ArticleV2 }) {
-  const { t } = useI18n();
+export function ArticleCard({ item: source }: { item: ArticleV2 }) {
+  const { t, locale } = useI18n();
+  const item = localizeItem(source, locale);
   const image = item.media?.find((media) => media.kind === 'image')?.url;
   return <Link to={'/news/' + item.slug} className="experience-card experience-article-card">
     {image ? <img className="experience-article-image" src={image} alt="" loading="lazy" width="560" height="320" /> : <div className="experience-article-image experience-image-fallback"><Newspaper size={44} aria-hidden="true"/></div>}
@@ -89,7 +90,8 @@ export function ArticleCard({ item }: { item: ArticleV2 }) {
   </Link>;
 }
 
-export function GuideCard({ guide }: { guide: GuideV2 }) {
-  const { t } = useI18n();
+export function GuideCard({ guide: source }: { guide: GuideV2 }) {
+  const { t, locale } = useI18n();
+  const guide = localizeItem(source, locale);
   return <Link className="experience-card experience-guide-card" to={'/guides/' + guide.slug}><div className="experience-guide-icon"><BookOpen size={26} /></div><div className="experience-card-body"><h3>{guide.name}</h3>{guide.summary && <p>{guide.summary}</p>}<span className="experience-text-link">{t('ui.readGuide')} <ArrowRight size={16}/></span></div></Link>;
 }

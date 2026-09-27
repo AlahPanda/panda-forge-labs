@@ -28,6 +28,9 @@
       ]
     }
   ],
+  "redirects": [
+    { "source": "/projects", "destination": "/modpacks", "permanent": true }
+  ],
   "rewrites": [
     {
       "source": "/(.*)",

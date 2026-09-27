@@ -1,9 +1,10 @@
 import SiteLayout from '@/components/layout/SiteLayout';
 import Seo from '@/components/Seo';
-import { site } from '@/content';
 import { useSearchParams } from 'react-router-dom';
 import type { ReactNode } from 'react';
 import { PageHero } from '@/components/experience/Shared';
+import { useI18n } from '@/lib/i18n';
+import { publicContactEmail } from '@/content/publicResolver';
 
 type LegalKind = 'privacy' | 'terms';
 
@@ -182,6 +183,7 @@ function TermsContent() {
 }
 
 export default function Legal({ kind }: Props) {
+  const { t } = useI18n();
   const [searchParams] = useSearchParams();
   const kindFromQuery = searchParams.get('kind');
   const resolvedKind: LegalKind =
@@ -191,7 +193,7 @@ export default function Legal({ kind }: Props) {
   const contactEmail =
     (import.meta.env.VITE_CONTACT_EMAIL as string | undefined) ||
     (import.meta.env.VITE_SUPPORT_EMAIL as string | undefined) ||
-    site.contactEmail ||
+    publicContactEmail() ||
     null;
   return (
     <SiteLayout>
@@ -203,9 +205,9 @@ export default function Legal({ kind }: Props) {
             : 'Terms of Service applicable to the use of the AlahPanda Labs website.'
         }
       />
-      <PageHero tone="quiet" eyebrow="Legal" title={isPrivacy ? 'Privacy Policy' : 'Terms of Service'} description="Information about using AlahPanda Labs." />
+      <PageHero tone="quiet" eyebrow={t('footer.legal')} title={isPrivacy ? t('footer.privacy') : t('footer.terms')} description={t('ui.legalInformation')} />
       <section className="container experience-detail-body">
-        <article className="experience-content-panel experience-reading text-foreground/85">
+        <article lang="en" className="experience-content-panel experience-reading text-foreground/85">
           {isPrivacy ? <PrivacyContent contactEmail={contactEmail} /> : <TermsContent />}
         </article>
       </section>

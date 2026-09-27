@@ -47,6 +47,24 @@ const post = (action: string, body: unknown, token?: string) => handler(new Requ
 const login = async () => ((await (await post('login', { password: 'test-password' })).json()) as { token: string }).token;
 
 describe('authenticated draft → publish route', () => {
+  it('fails closed when the owner password is absent instead of using a default', async () => {
+    vi.resetModules();
+    vi.stubGlobal('Deno', { env: { get: (key: string) => key === 'ADMIN_PASSWORD' ? undefined : ({ ADMIN_ORIGIN: 'https://preview.example', ADMIN_JWT_SECRET: 'test-secret' } as Record<string, string>)[key] }, serve: (fn: Handler) => { handler = fn; } });
+    await import('../../supabase/functions/admin-cms/index.ts');
+    const result = await post('login', { password: 'anything' });
+    expect(result.status).toBe(500);
+    expect(await result.json()).toEqual({ error: 'Server not configured' });
+    expect(requests).toHaveLength(0);
+  });
+
+  it('accepts only the configured server-side password', async () => {
+    const denied = await post('login', { password: 'wrong' });
+    expect(denied.status).toBe(401);
+    const accepted = await post('login', { password: 'test-password' });
+    expect(accepted.status).toBe(200);
+    expect(typeof (await accepted.json()).token).toBe('string');
+    expect(requests).toHaveLength(0);
+  });
   it('rejects unauthenticated writes before accessing storage', async () => {
     expect((await post('draft-save', { kind: 'projects', slug: 'example', item })).status).toBe(401);
     expect(requests).toHaveLength(0);
