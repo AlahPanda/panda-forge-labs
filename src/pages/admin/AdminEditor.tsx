@@ -1,808 +1,207 @@
-import { useEffect, useMemo, useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
-import SiteLayout from '@/components/layout/SiteLayout';
+import { lazy, Suspense, useEffect, useMemo, useRef, useState } from 'react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { Activity, BookOpen, Box, ExternalLink, FileText, Globe, HelpCircle, Home, Image, Languages, LayoutDashboard, LogOut, Menu, Newspaper, Rocket, Search, Settings, Sparkles, X } from 'lucide-react';
 import Seo from '@/components/Seo';
 import { adminApi, adminAuth } from '@/lib/adminApi';
-import { Save, Rocket, Loader2, LogOut, Plus, Trash2, Pencil, X, ChevronLeft, Box, Newspaper, HelpCircle, Star, Settings as SettingsIcon } from 'lucide-react';
-import MarkdownEditor from '@/components/MarkdownEditor';
-import { toast } from 'sonner';
+import { useModrinthStats } from '@/lib/modrinthStats';
+import { useI18n } from '@/lib/i18n';
+import { collectionPath, CONTENT_KINDS, parseCollection, parseItem, type ContentKind, type ValidatedItem } from '@/content/v2/schema';
+import { localizationStatus, type LocalizedEntry } from '@/content/v2/localize';
+import { BrandSymbol } from '@/components/design-system/BrandSymbol';
 import V2Workspace from './V2Workspace';
-import { type ContentKind } from '@/content/v2/schema';
+import { useAdminText, adminText } from './adminText';
+import { editorLabel } from './editorLabels';
+import './admin.css';
 
-type TabKey = 'dashboard' | 'v2' | 'drafts' | 'system' | 'modpacks' | 'news' | 'faq' | 'reviews' | 'settings';
+const LegacyArchive = lazy(() => import('./LegacyArchive'));
+const AIStudio = lazy(() => import('./AIStudio'));
+type Collection = { items: ValidatedItem[]; sha: string };
+type DraftInfo = { kind: ContentKind; slug: string; revision: number; updated_at: string };
+type Status = Awaited<ReturnType<typeof adminApi.status>>;
+const path = '/admin/editor';
+const collections: Record<string, ContentKind> = { modpacks: 'projects', launchers: 'launchers', articles: 'articles', guides: 'guides', faq: 'faq', releases: 'releases', homepage: 'homepage', settings: 'settings', navigation: 'settings', seo: 'settings' };
+const routeFor = (kind: ContentKind) => ({ projects: 'modpacks', articles: 'articles' } as Partial<Record<ContentKind, string>>)[kind] || kind;
+const groups = [
+  { title: 'content', links: [['modpacks', Box], ['launchers', Globe], ['articles', Newspaper], ['guides', BookOpen], ['faq', HelpCircle], ['releases', Rocket], ['media', Image]] },
+  { title: 'website', links: [['homepage', Home], ['navigation', Menu], ['seo', Search], ['settings', Settings]] },
+  { title: 'system', links: [['drafts', FileText], ['deployments', Rocket], ['activity', Activity]] },
+] as const;
 
-const TABS: { key: TabKey; label: string; icon: React.ReactNode }[] = [
-  { key: 'modpacks', label: 'Modpacks', icon: <Box className="h-4 w-4" /> },
-  { key: 'news', label: 'News', icon: <Newspaper className="h-4 w-4" /> },
-  { key: 'faq', label: 'FAQ', icon: <HelpCircle className="h-4 w-4" /> },
-  { key: 'reviews', label: 'Reviews', icon: <Star className="h-4 w-4" /> },
-  { key: 'settings', label: 'Settings', icon: <SettingsIcon className="h-4 w-4" /> },
-];
+function useOwnerContent() {
+  const [data, setData] = useState<Partial<Record<ContentKind, Collection>>>({});
+  const [drafts, setDrafts] = useState<DraftInfo[]>([]);
+  const [status, setStatus] = useState<Status | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
+  const refresh = async () => {
+    const results = await Promise.allSettled(CONTENT_KINDS.map(async (kind) => {
+      const file = await adminApi.read(collectionPath(kind));
+      return { kind, items: parseCollection(kind, JSON.parse(file.content)).items, sha: file.sha };
+    }));
+    const next: Partial<Record<ContentKind, Collection>> = {};
+    results.forEach((result) => { if (result.status === 'fulfilled') next[result.value.kind] = result.value; });
+    setData(next);
+    setError(results.some((result) => result.status === 'rejected') ? 'load-error' : '');
+    const [draftResult, statusResult] = await Promise.allSettled([adminApi.draftList(), adminApi.status()]);
+    setDrafts(draftResult.status === 'fulfilled' ? draftResult.value.drafts : []);
+    setStatus(statusResult.status === 'fulfilled' ? statusResult.value : null);
+    if (draftResult.status === 'rejected' || statusResult.status === 'rejected') setError('load-error');
+    setLoading(false);
+  };
+  useEffect(() => { void refresh(); }, []);
+  return { data, drafts, status, loading, error, refresh };
+}
+
+function Panel({ title, children, className = '' }: { title: string; children: React.ReactNode; className?: string }) {
+  return <section className={`admin-panel ${className}`}><h2>{title}</h2>{children}</section>;
+}
+
+function OwnerDashboard({ owner }: { owner: ReturnType<typeof useOwnerContent> }) {
+  const a = useAdminText();
+  const { locale } = useI18n();
+  const mac = owner.data.projects?.items.find((item) => item.slug === 'mac-native');
+  const distribution = (mac?.distribution as Array<{ provider: string; url?: string; state?: string }> | undefined)?.find((item) => item.provider === 'modrinth' && item.state === 'active')?.url;
+  const metrics = useModrinthStats(distribution);
+  const total = Object.values(owner.data).reduce((count, collection) => count + (collection?.items.length || 0), 0);
+  const previewOrigin = import.meta.env.VITE_PREVIEW_ORIGIN;
+  const verifiedPreview = typeof previewOrigin === 'string' && previewOrigin === window.location.origin && owner.status?.branch === 'v2/full-redesign';
+  const tiles = [
+    [a('siteStatus'), a('unknown'), Home], [a('preview'), verifiedPreview ? a('connected') : a('unknown'), ExternalLink],
+    [a('lastDeploy'), a('unknown'), Rocket], [a('cmsStatus'), owner.status ? a('connected') : a('unknown'), Activity],
+    [a('github'), owner.status?.repo && owner.status?.branch ? a('configured') : a('unknown'), Globe],
+    [a('modrinth'), metrics.data ? `${metrics.data.downloads.toLocaleString(locale)} / ${metrics.data.followers.toLocaleString(locale)}` : a('unknown'), Box],
+  ] as const;
+  const localeTotals = (['pt-PT', 'pt-BR', 'en', 'es'] as const).map((language) => {
+    let translated = 0; let fields = 0;
+    for (const [kind, collection] of Object.entries(owner.data) as [ContentKind, Collection][]) for (const item of collection.items) {
+      const report = localizationStatus(item as LocalizedEntry, kind, language);
+      translated += report.translated; fields += report.total;
+    }
+    return { language, percent: fields ? Math.round(translated / fields * 100) : null };
+  });
+  const recent = [...owner.drafts].sort((a, b) => b.updated_at.localeCompare(a.updated_at)).slice(0, 4);
+  return <div className="admin-dashboard">
+    <div className="admin-page-heading"><div><span className="admin-eyebrow">AlahPanda Labs · CMS V2</span><h1>{a('dashboard')}</h1><p>{a('overview')}</p></div><Link to={`${path}/drafts`} className="admin-button admin-button-secondary">{owner.drafts.length} {a('drafts')}</Link></div>
+    <div className="admin-status-grid">{tiles.map(([label, value, Icon]) => <div className="admin-status-card" key={label}><span>{label}</span><strong>{value}</strong><Icon size={21} aria-hidden="true"/></div>)}</div>
+    <div className="admin-dashboard-main">
+      <Panel title={a('studio')} className="admin-ai-teaser"><Sparkles size={22} aria-hidden="true"/><p>{a('aiUnavailable')}</p><Link className="admin-button admin-button-primary" to={`${path}/ai`}>{a('proposal')}</Link></Panel>
+      <Panel title={a('workflow')}><ol className="admin-steps"><li>{a('draft')}</li><li>{a('preview')}</li><li>{a('publish')}</li></ol><p>{a('releaseInfo')}</p><Link to={`${path}/drafts`} className="admin-button admin-button-secondary">{a('drafts')}</Link></Panel>
+      <Panel title={a('livePreview')}><p>{verifiedPreview ? a('published') : a('previewUnavailable')}</p>{verifiedPreview && <a className="admin-button admin-button-secondary" href="/" target="_blank" rel="noopener noreferrer">{a('visit')} <ExternalLink size={14}/></a>}</Panel>
+    </div>
+    <Panel title={a('quick')} className="admin-quick"><div className="admin-quick-grid">{(['articles', 'guides', 'faq', 'modpacks', 'releases', 'settings'] as const).map((key) => <Link to={`${path}/${key}`} key={key}>{a(key)} <span aria-hidden="true">↗</span></Link>)}</div></Panel>
+    <div className="admin-dashboard-bottom">
+      <Panel title={a('overview')}><p><strong>{total}</strong> {a('counts')}</p><p><strong>{owner.drafts.length}</strong> {a('drafts')}</p><Link to={`${path}/modpacks`}>{a('open')} →</Link></Panel>
+      <Panel title={a('translations')}><ul className="admin-locales-list">{localeTotals.map(({language,percent}) => <li key={language}><span>{language}</span><meter min="0" max="100" value={percent ?? 0} aria-label={language} /> <strong>{percent === null ? a('unknown') : `${percent}%`}</strong></li>)}</ul><Link to={`${path}/locales`}>{a('locales')} →</Link></Panel>
+      <Panel title={a('activity')}><p>{a('activityEmpty')}</p>{recent.map((draft) => <Link className="admin-activity-row" key={`${draft.kind}/${draft.slug}`} to={`${path}/${routeFor(draft.kind)}?entry=${encodeURIComponent(draft.slug)}`}>{draft.slug} <small>{a('draft')} · r{draft.revision}</small></Link>)}</Panel>
+      <Panel title={a('modpacks')}><p>{owner.data.projects?.items.map((item) => item.name).join(' · ') || a('noRecords')}</p><Link to={`${path}/modpacks`}>{a('open')} →</Link></Panel>
+    </div>
+  </div>;
+}
+
+function ModpackOverview({ owner }: { owner: ReturnType<typeof useOwnerContent> }) {
+  const a = useAdminText();
+  const { locale } = useI18n();
+  const projects = owner.data.projects?.items || [];
+  const mac = projects.find((item) => item.slug === 'mac-native');
+  const distribution = (mac?.distribution as Array<{provider:string;url?:string;state?:string}> | undefined)?.find((link) => link.provider === 'modrinth' && link.state === 'active')?.url;
+  const metrics = useModrinthStats(distribution);
+  return <Panel title={a('overview')}><div className="admin-table-wrap"><table><thead><tr><th>{a('content')}</th><th>{a('status')}</th><th>{a('releases')}</th><th>{a('modrinth')}</th><th>{a('locales')}</th></tr></thead><tbody>{projects.map((item) => {
+    const versions = owner.data.releases?.items.filter((release) => (item.releaseSlugs as string[] | undefined)?.includes(release.slug)).map((release) => release.version).join(', ');
+    const coverage = localizationStatus(item as LocalizedEntry,'projects',locale);
+    return <tr key={item.slug}><td><Link to={`${path}/modpacks?entry=${encodeURIComponent(item.slug)}`}>{item.name}</Link></td><td><span className="admin-badge">{editorLabel(locale,String(item.status || a('unknown')))}</span></td><td>{versions || '—'}</td><td>{item.slug === 'mac-native' ? metrics.data ? `${metrics.data.downloads.toLocaleString(locale)} ${a('downloads')} · ${metrics.data.followers.toLocaleString(locale)} ${a('followers')}` : a('unknown') : '—'}</td><td>{coverage.percent === null ? a('unavailable') : `${coverage.percent}%`}</td></tr>;
+  })}</tbody></table></div>{!projects.length && <p>{a('noRecords')}</p>}</Panel>;
+}
+
+function LocalesPage({ owner }: { owner: ReturnType<typeof useOwnerContent> }) {
+  const a = useAdminText();
+  const [language, setLanguage] = useState<'pt-PT' | 'pt-BR' | 'en' | 'es'>('pt-PT');
+  const [filter, setFilter] = useState('all');
+  const [privateItems, setPrivateItems] = useState<Array<{kind: ContentKind; item: ValidatedItem}>>([]);
+  const [privateError, setPrivateError] = useState(false);
+  useEffect(() => {
+    let active = true;
+    void Promise.allSettled(owner.drafts.map(async ({kind, slug}) => ({kind, item: parseItem(kind, (await adminApi.draftRead(kind, slug)).draft.content)})))
+      .then((results) => {
+        if (!active) return;
+        setPrivateItems(results.filter((row): row is PromiseFulfilledResult<{kind: ContentKind; item: ValidatedItem}> => row.status === 'fulfilled').map((row) => row.value));
+        setPrivateError(results.some((row) => row.status === 'rejected'));
+      });
+    return () => { active = false; };
+  }, [owner.drafts]);
+  const rows = [
+    ...privateItems.map(({kind,item}) => ({kind,item,isDraft:true,...localizationStatus(item as LocalizedEntry, kind, language)})),
+    ...(Object.entries(owner.data) as [ContentKind, Collection][]).flatMap(([kind, collection]) => collection.items.map((item) => ({ kind, item, isDraft:false, ...localizationStatus(item as LocalizedEntry, kind, language) }))),
+  ];
+  const shown = rows.filter((row) => filter === 'all' || row.status === filter);
+  return <><div className="admin-page-heading"><div><span className="admin-eyebrow">{a('locales')}</span><h1>{a('locales')}</h1><p>{a('translations')} · {shown.length}/{rows.length}</p></div></div>
+    <div className="admin-filter-row"><label>{a('locale')} <select value={language} onChange={(event) => setLanguage(event.target.value as typeof language)}>{['pt-PT','pt-BR','en','es'].map((loc) => <option key={loc}>{loc}</option>)}</select></label><label>{a('filter')} <select value={filter} onChange={(event) => setFilter(event.target.value)}>{['all','original','complete','partial','missing','needs-review','unavailable'].map((value) => <option key={value} value={value}>{value === 'needs-review' ? a('review') : value === 'all' ? a('all') : a(value as 'original'|'complete'|'partial'|'missing'|'unavailable')}</option>)}</select></label></div>
+    <Panel title={a('translations')}>{privateError && <p role="alert">{a('loadError')}</p>}<div className="admin-table-wrap"><table><thead><tr><th>{a('content')}</th><th>{a('locale')}</th><th>{a('status')}</th><th>{a('translations')}</th><th/></tr></thead><tbody>{shown.map(({kind,item,isDraft,percent,status}) => <tr key={`${kind}/${item.slug}/${isDraft ? 'draft' : 'published'}`}><td><strong>{item.name}</strong><small>{kind}/{item.slug} · {a(isDraft ? 'draft' : 'alreadyPublished')}</small></td><td>{language}</td><td><span className="admin-badge">{status === 'needs-review' ? a('review') : a(status)}</span></td><td>{percent === null ? a('unavailable') : `${percent}%`}</td><td><Link to={`${path}/${routeFor(kind)}?entry=${encodeURIComponent(item.slug)}&locale=${language}`}>{a('edit')}</Link></td></tr>)}</tbody></table></div>{!shown.length && <p>{a('noRecords')}</p>}</Panel></>;
+}
+
+function DraftsPage({ owner }: { owner: ReturnType<typeof useOwnerContent> }) {
+  const a = useAdminText();
+  return <><div className="admin-page-heading"><div><h1>{a('drafts')}</h1><p>{owner.drafts.length} {a('draft')}</p></div></div><Panel title={a('drafts')}><div className="admin-table-wrap"><table><thead><tr><th>{a('content')}</th><th>{a('status')}</th><th>{a('activity')}</th><th/></tr></thead><tbody>{owner.drafts.map((draft) => <tr key={`${draft.kind}/${draft.slug}`}><td>{draft.kind}/{draft.slug}</td><td><span className="admin-badge">{a('draft')} · r{draft.revision}</span></td><td><time dateTime={draft.updated_at}>{new Date(draft.updated_at).toLocaleString()}</time></td><td><Link to={`${path}/${routeFor(draft.kind)}?entry=${encodeURIComponent(draft.slug)}`}>{a('open')}</Link></td></tr>)}</tbody></table></div>{!owner.drafts.length && <p>{a('noRecords')}</p>}</Panel></>;
+}
+
+function SystemPage({ owner, page }: { owner: ReturnType<typeof useOwnerContent>; page: string }) {
+  const a = useAdminText();
+  return <><div className="admin-page-heading"><div><h1>{a(page === 'activity' ? 'activity' : 'deployments')}</h1></div></div><Panel title={a('status')}><dl className="admin-system-list"><div><dt>Supabase · admin-cms</dt><dd>{owner.status ? a('connected') : a('unknown')}</dd></div><div><dt>GitHub</dt><dd>{owner.status?.repo || a('unknown')} · {owner.status?.branch || a('unknown')}</dd></div><div><dt>{a('drafts')}</dt><dd>{owner.status?.draftStorageConfigured ? a('configured') : a('unknown')}</dd></div><div><dt>Vercel Preview</dt><dd>{a('unknown')}</dd></div><div><dt>{a('lastDeploy')}</dt><dd>{a('unknown')}</dd></div><div><dt>Deploy hook</dt><dd>{owner.status?.deployHookConfigured ? a('configured') : a('unavailable')}</dd></div></dl><p>{a('releaseInfo')}</p></Panel>{page === 'activity' && <Panel title={a('activity')}><p>{a('activityEmpty')}</p></Panel>}</>;
+}
+
+function MediaPage({ owner }: { owner: ReturnType<typeof useOwnerContent> }) {
+  const a = useAdminText();
+  const media = (Object.entries(owner.data) as [ContentKind, Collection][]).flatMap(([kind, collection]) => collection.items.flatMap((item) => (Array.isArray(item.media) ? item.media : []).map((entry) => ({ kind, item, media: entry as { url: string; alt?: string; kind?: string } }))));
+  return <><div className="admin-page-heading"><div><h1>{a('media')}</h1><p>{media.length} {a('counts')}</p></div></div><Panel title={a('media')}>{!media.length && <p>{a('noRecords')}</p>}<div className="admin-media-grid">{media.map(({kind,item,media:asset}) => <Link key={`${item.slug}/${asset.url}`} to={`${path}/${routeFor(kind)}?entry=${encodeURIComponent(item.slug)}`}>{asset.kind === 'image' && <img src={asset.url} alt={asset.alt || ''} loading="lazy"/>}<span>{item.name}</span></Link>)}</div></Panel></>;
+}
 
 export default function AdminEditor() {
-  const nav = useNavigate();
-  const [tab, setTab] = useState<TabKey>('dashboard');
-  const [kind, setKind] = useState<ContentKind>('projects');
-  const [systemStatus, setSystemStatus] = useState<{ repo: string; branch: string; draftStorageConfigured: boolean; deployHookConfigured: boolean } | null>(null);
-  const [redeploying, setRedeploying] = useState(false);
-
-  // Draft state for each content file
-  const [modpacks, setModpacks] = useState<any[]>([]);
-  const [articles, setArticles] = useState<any[]>([]);
-  const [faqCats, setFaqCats] = useState<any[]>([]);
-  const [reviews, setReviews] = useState<any[]>([]);
-  const [siteCfg, setSiteCfg] = useState<any>(null);
-  const [ready, setReady] = useState(false);
-  const [loadError, setLoadError] = useState('');
-
-  useEffect(() => {
-    if (!adminAuth.isLoggedIn()) { nav('/admin', { replace: true }); return; }
-    let active = true;
-    (async () => {
-      try {
-        await adminApi.me();
-        const paths = ['src/content/modpacks.json', 'src/content/news.json', 'src/content/faq.json', 'src/content/reviews.json', 'src/content/site.json'];
-        const files = await Promise.all(paths.map((path) => adminApi.read(path)));
-        if (!active) return;
-        files.forEach((file, index) => versions.set(paths[index], file.sha));
-        setModpacks(JSON.parse(files[0].content).modpacks);
-        setArticles(JSON.parse(files[1].content).articles);
-        setFaqCats(JSON.parse(files[2].content).categories);
-        setReviews(JSON.parse(files[3].content).reviews);
-        setSiteCfg(JSON.parse(files[4].content).site);
-        setReady(true);
-        adminApi.status().then(setSystemStatus).catch(() => { /* status is optional */ });
-      } catch (error) {
-        if (!active) return;
-        if (!adminAuth.isLoggedIn()) nav('/admin', { replace: true });
-        else setLoadError(error instanceof Error ? error.message : 'Failed to load content');
-      }
-    })();
-    return () => { active = false; };
-  }, [nav]);
-
-  const redeploy = async () => {
-    setRedeploying(true);
-    try {
-      await adminApi.redeploy();
-      toast.success('Vercel rebuild triggered. Live in ~30–60s.');
-    } catch (err) {
-      toast.error(err instanceof Error ? err.message : 'Redeploy failed');
-    } finally { setRedeploying(false); }
+  const { locale, setLocale } = useI18n();
+  const a = useAdminText();
+  const navigate = useNavigate();
+  const location = useLocation();
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [mobile, setMobile] = useState(() => typeof window.matchMedia === 'function' && window.matchMedia('(max-width: 820px)').matches);
+  const [search, setSearch] = useState('');
+  const searchRef = useRef<HTMLInputElement>(null);
+  const menuRef = useRef<HTMLButtonElement>(null);
+  const closeRef = useRef<HTMLButtonElement>(null);
+  const owner = useOwnerContent();
+  const page = location.pathname.slice(path.length).split('/').filter(Boolean).join('/') || 'dashboard';
+  const searchMatches = useMemo(() => search.trim().length < 2 ? [] : (Object.entries(owner.data) as [ContentKind, Collection][]).flatMap(([kind, collection]) => collection.items.filter((item) => (item.name + ' ' + item.slug).toLocaleLowerCase().includes(search.toLocaleLowerCase())).map((item) => ({ kind, item }))).slice(0, 9), [search, owner.data]);
+  useEffect(() => { setMenuOpen(false); setSearch(''); }, [page]);
+  useEffect(() => { const shortcut = (event: KeyboardEvent) => { if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === 'k') { event.preventDefault(); searchRef.current?.focus(); } }; document.addEventListener('keydown', shortcut); return () => document.removeEventListener('keydown', shortcut); }, []);
+  useEffect(() => { if (!window.matchMedia) return; const mq = window.matchMedia('(max-width: 820px)'); const update = () => setMobile(mq.matches); update(); mq.addEventListener('change', update); return () => mq.removeEventListener('change', update); }, []);
+  useEffect(() => { if (!menuOpen || !mobile) return; closeRef.current?.focus(); const escape = (event: KeyboardEvent) => { if (event.key === 'Escape') { setMenuOpen(false); menuRef.current?.focus(); } }; document.addEventListener('keydown', escape); return () => document.removeEventListener('keydown', escape); }, [menuOpen,mobile]);
+  const logout = () => { adminAuth.clear(); navigate('/admin', { replace: true }); };
+  const link = (key: string, Icon: typeof Home) => <Link key={key} to={`${path}/${key}`} aria-current={page === key ? 'page' : undefined} className={page === key ? 'admin-nav-active' : ''}><Icon size={17} aria-hidden="true"/>{a(key as Parameters<typeof a>[0])}</Link>;
+  const contentPage = () => {
+    if (page === 'dashboard') return <OwnerDashboard owner={owner}/>;
+    if (page === 'ai') return <Suspense fallback={<p role="status">{a('loading')}</p>}><AIStudio onSaved={owner.refresh}/></Suspense>;
+    if (page === 'locales') return <LocalesPage owner={owner}/>;
+    if (page === 'drafts') return <DraftsPage owner={owner}/>;
+    if (page === 'deployments' || page === 'activity') return <SystemPage owner={owner} page={page}/>;
+    if (page === 'media') return <MediaPage owner={owner}/>;
+    if (page === 'advanced/legacy') return <>
+      <div className="admin-page-heading"><h1>{a('legacy')}</h1><p>{a('legacyWarning')}</p></div>
+      <Suspense fallback={<p role="status">{a('loading')}</p>}><LegacyArchive/></Suspense>
+    </>;
+    if (collections[page]) return <>
+      <div className="admin-page-heading"><div><span className="admin-eyebrow">{a('contentVersion')} · {a('published')}</span><h1>{a(page as Parameters<typeof a>[0])}</h1><p>{a('contentReady')}</p></div><Link to={`${path}/locales`} className="admin-button admin-button-secondary">{a('locales')}</Link></div>
+      {page === 'modpacks' && <ModpackOverview owner={owner}/>}
+      <V2Workspace key={page} kind={collections[page]} onChanged={owner.refresh} publishAllowed={owner.status?.branch === 'v2/full-redesign' && owner.status?.repo === 'AlahPanda/panda-forge-labs'}/>
+    </>;
+    return <div role="alert">{a('unavailable')} <Link to={path}>{a('dashboard')}</Link></div>;
   };
-
-  const logout = () => { adminAuth.clear(); nav('/admin', { replace: true }); };
-
-  return (
-    <SiteLayout>
-      <Seo title="Dashboard — AlahPanda Admin" />
-      <section className="container py-10">
-        <div className="flex items-center justify-between mb-8 flex-wrap gap-4">
-          <div>
-            <div className="label-mono flex items-center gap-2"><span className="signal-dot" /> Admin · Signed in</div>
-            <h1 className="mt-2 text-3xl font-semibold tracking-tight">Lab Dashboard</h1>
-          </div>
-          <div className="flex items-center gap-2">
-            <button onClick={redeploy} disabled={redeploying}
-              className="inline-flex items-center gap-2 px-4 h-10 rounded-md border border-hairline hover:bg-secondary/60 transition-colors disabled:opacity-60">
-              {redeploying ? <Loader2 className="h-4 w-4 animate-spin" /> : <Rocket className="h-4 w-4" />}
-              Redeploy
-            </button>
-            <button onClick={logout}
-              className="inline-flex items-center gap-2 px-4 h-10 rounded-md border border-hairline hover:bg-secondary/60 text-muted-foreground">
-              <LogOut className="h-4 w-4" /> Sign out
-            </button>
-          </div>
-        </div>
-
-        <nav aria-label="CMS sections" className="border border-hairline rounded-md p-4 bg-elev space-y-3">
-          <div><span className="label-mono mr-3">Dashboard</span><button className={tab === 'dashboard' ? 'text-signal' : ''} onClick={() => setTab('dashboard')}>Overview</button></div>
-          <div className="flex flex-wrap gap-3 items-center"><span className="label-mono">Content</span>{(['projects', 'launchers', 'articles', 'guides', 'faq', 'releases'] as ContentKind[]).map((section) => <button key={section} className={tab === 'v2' && kind === section ? 'text-signal' : ''} onClick={() => { setKind(section); setTab('v2'); }}>{section}</button>)}</div>
-          <div className="flex flex-wrap gap-3 items-center"><span className="label-mono">Website</span>{(['homepage', 'settings'] as ContentKind[]).map((section) => <button key={section} className={tab === 'v2' && kind === section ? 'text-signal' : ''} onClick={() => { setKind(section); setTab('v2'); }}>{section}</button>)}</div>
-          <div className="flex flex-wrap gap-3 items-center"><span className="label-mono">System</span><button onClick={() => setTab('drafts')}>Drafts</button><button onClick={() => setTab('system')}>Deployments / session</button></div>
-          <div className="flex flex-wrap gap-3 items-center"><span className="label-mono">Legacy editing</span>{TABS.map((t) => <button key={t.key} className={tab === t.key ? 'text-signal' : ''} onClick={() => setTab(t.key)}>{t.label}</button>)}</div>
-        </nav>
-
-        {loadError && <p role="alert" className="mt-8 text-destructive">{loadError}</p>}
-        {!ready && !loadError && <p className="mt-8">Loading content…</p>}
-        {ready && <div className="mt-8">
-          {tab === 'dashboard' && <div className="border border-hairline rounded-lg p-6 space-y-3"><h2 className="text-xl font-semibold">Content overview</h2><p>Legacy: {modpacks.length} modpacks, {articles.length} articles, {faqCats.length} FAQ groups. V2 collections are managed under Content and Website.</p><p className="text-sm text-muted-foreground">New entries start as private drafts. Published V2 data does not yet replace public legacy pages.</p></div>}
-          {tab === 'v2' && <V2Workspace kind={kind} />}
-          {tab === 'drafts' && <><label className="block text-sm mb-4">Draft collection <select className="ml-2 border border-hairline bg-elev rounded p-2" value={kind} onChange={(event) => setKind(event.target.value as ContentKind)}>{(['projects', 'launchers', 'articles', 'guides', 'faq', 'releases', 'homepage', 'settings'] as ContentKind[]).map((section) => <option key={section} value={section}>{section}</option>)}</select></label><V2Workspace kind={kind} draftsOnly /></>}
-          {tab === 'system' && <div className="border border-hairline rounded-lg p-6 space-y-3"><h2 className="text-xl font-semibold">Deployment and session</h2><p>Repository: {systemStatus?.repo || 'Unknown'}</p><p>Branch: {systemStatus?.branch || 'Unknown'}</p><p>Private draft storage: {systemStatus?.draftStorageConfigured ? 'Configured' : 'Not configured'}</p><p>Deploy hook: {systemStatus?.deployHookConfigured ? 'Configured' : 'Not configured'}</p><p>Authentication: active browser session; sign out to end it.</p></div>}
-          {tab === 'modpacks' && (
-            <ModpacksTab items={modpacks} setItems={setModpacks} />
-          )}
-          {tab === 'news' && (
-            <NewsTab items={articles} setItems={setArticles} />
-          )}
-          {tab === 'faq' && (
-            <FaqTab items={faqCats} setItems={setFaqCats} />
-          )}
-          {tab === 'reviews' && (
-            <ReviewsTab items={reviews} setItems={setReviews} modpacks={modpacks} />
-          )}
-          {tab === 'settings' && (
-            <SettingsTab cfg={siteCfg} setCfg={setSiteCfg} />
-          )}
-        </div>}
-
-        <p className="mt-10 text-xs text-muted-foreground">
-          Saving commits to GitHub. Trigger a redeploy to publish.
-          Need raw JSON access? <Link to="#" className="text-signal underline">Coming soon</Link>.
-        </p>
-      </section>
-    </SiteLayout>
-  );
-}
-
-/* =========================================================================
-   Save helper — commits the wrapped object to the right path
-   ========================================================================= */
-const versions = new Map<string, string>();
-
-async function commitFile(path: string, obj: any, msg: string) {
-  const content = JSON.stringify(obj, null, 2) + '\n';
-  const sha = versions.get(path);
-  if (!sha) throw new Error('Missing content version. Reload before saving.');
-  const result = await adminApi.save(path, content, sha, msg);
-  versions.set(path, result.sha);
-}
-
-/* =========================================================================
-   Generic primitives
-   ========================================================================= */
-function Field({ label, children, hint }: { label: string; children: React.ReactNode; hint?: string }) {
-  return (
-    <label className="block">
-      <span className="label-mono">{label}</span>
-      <div className="mt-1.5">{children}</div>
-      {hint && <span className="mt-1 block text-[11px] text-muted-foreground">{hint}</span>}
-    </label>
-  );
-}
-const inputCls =
-  'w-full h-10 px-3 rounded-md border border-hairline bg-background focus:outline-none focus:border-signal transition-colors text-sm';
-const textareaCls =
-  'w-full px-3 py-2 rounded-md border border-hairline bg-background focus:outline-none focus:border-signal transition-colors text-sm font-mono';
-
-function PrimaryBtn({ children, onClick, disabled, loading }: any) {
-  return (
-    <button
-      onClick={onClick}
-      disabled={disabled || loading}
-      className="inline-flex items-center gap-1.5 px-4 h-10 rounded-md bg-signal text-primary-foreground font-medium hover:bg-signal/90 disabled:opacity-50 transition-colors active:scale-[0.97]"
-    >
-      {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4" />}
-      {children}
-    </button>
-  );
-}
-function GhostBtn({ children, ...rest }: any) {
-  return (
-    <button
-      {...rest}
-      className="inline-flex items-center gap-1.5 px-3 h-9 rounded-md border border-hairline text-sm hover:bg-secondary/60 transition-colors active:scale-[0.97]"
-    >
-      {children}
-    </button>
-  );
-}
-function DangerBtn({ children, ...rest }: any) {
-  return (
-    <button
-      {...rest}
-      className="inline-flex items-center gap-1.5 px-3 h-9 rounded-md border border-destructive/40 text-destructive text-sm hover:bg-destructive/10 transition-colors active:scale-[0.97]"
-    >
-      {children}
-    </button>
-  );
-}
-
-/* =========================================================================
-   List + Editor scaffold
-   ========================================================================= */
-function ListShell<T>({
-  title,
-  items,
-  renderItem,
-  onCreate,
-  onEdit,
-  onDelete,
-  onSave,
-  saving,
-  editor,
-}: {
-  title: string;
-  items: T[];
-  renderItem: (it: T) => { key: string; primary: string; secondary?: string };
-  onCreate: () => void;
-  onEdit: (key: string) => void;
-  onDelete: (key: string) => void;
-  onSave: () => void;
-  saving: boolean;
-  editor?: React.ReactNode;
-}) {
-  return (
-    <div className="grid lg:grid-cols-[340px_1fr] gap-6">
-      <div className="border border-hairline rounded-lg p-4 bg-elev h-fit">
-        <div className="flex items-center justify-between mb-4">
-          <div className="label-mono">{title} · {items.length}</div>
-          <GhostBtn onClick={onCreate}><Plus className="h-3.5 w-3.5" /> New</GhostBtn>
-        </div>
-        <ul className="space-y-1">
-          {items.map((it) => {
-            const r = renderItem(it);
-            return (
-              <li key={r.key} className="flex items-center justify-between gap-2 px-2 py-2 rounded hover:bg-secondary/60 group">
-                <button onClick={() => onEdit(r.key)} className="flex-1 text-left">
-                  <div className="text-sm font-medium truncate">{r.primary}</div>
-                  {r.secondary && <div className="text-[11px] text-muted-foreground truncate">{r.secondary}</div>}
-                </button>
-                <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                  <button onClick={() => onEdit(r.key)} className="p-1.5 text-muted-foreground hover:text-foreground" aria-label="Edit"><Pencil className="h-3.5 w-3.5" /></button>
-                  <button onClick={() => onDelete(r.key)} className="p-1.5 text-muted-foreground hover:text-destructive" aria-label="Delete"><Trash2 className="h-3.5 w-3.5" /></button>
-                </div>
-              </li>
-            );
-          })}
-          {items.length === 0 && (
-            <li className="text-xs text-muted-foreground p-3 text-center">Nothing yet. Click <em>New</em>.</li>
-          )}
-        </ul>
-        <div className="mt-4 pt-4 border-t border-hairline">
-          <PrimaryBtn onClick={onSave} loading={saving}>Save & commit</PrimaryBtn>
-        </div>
-      </div>
-      <div className="min-h-[400px]">
-        {editor ?? (
-          <div className="h-full border border-dashed border-hairline rounded-lg flex items-center justify-center text-sm text-muted-foreground p-12">
-            Select an item on the left, or click <em className="mx-1">New</em> to create one.
-          </div>
-        )}
-      </div>
+  return <div className="admin-control"><Seo title={`${a('dashboard')} — AlahPanda Labs`} noindex/><a href="#admin-main" className="sr-only focus:not-sr-only">{a('open')}</a>
+    <aside className={`admin-sidebar ${menuOpen ? 'admin-sidebar-open' : ''}`} hidden={mobile && !menuOpen} aria-label={a('ownerTitle')}><div className="admin-brand"><span className="admin-brand-mark" aria-hidden="true"><BrandSymbol/></span><span><strong>AlahPanda Labs</strong><small>{a('ownerTitle')}</small></span><button ref={closeRef} className="admin-close-menu" aria-label={a('closeMenu')} onClick={() => { setMenuOpen(false); menuRef.current?.focus(); }}><X size={20}/></button></div>
+      <nav>{link('dashboard', LayoutDashboard)}{link('ai', Sparkles)}{groups.map((group) => <div className="admin-nav-group" key={group.title}><span>{a(group.title)}</span>{group.links.map(([key, Icon]) => link(key, Icon))}</div>)}{link('locales', Languages)}<div className="admin-nav-group"><span>{a('legacy')}</span><Link to={`${path}/advanced/legacy`} aria-current={page === 'advanced/legacy' ? 'page' : undefined}>{a('legacy')}</Link></div></nav>
+      <div className="admin-sidebar-foot"><span>{a('drafts')} · {owner.drafts.length}</span><Link to="/">{a('visit')} ↗</Link></div>
+    </aside>
+    {menuOpen && mobile && <button className="admin-backdrop" aria-label={a('closeMenu')} onClick={() => { setMenuOpen(false); menuRef.current?.focus(); }}/>}
+    <div className="admin-workspace"><header className="admin-topbar"><button ref={menuRef} className="admin-menu-button" aria-label={a('openMenu')} aria-expanded={menuOpen} onClick={() => setMenuOpen(true)}><Menu size={21}/></button><div className="admin-search-wrap"><Search size={17} aria-hidden="true"/><input ref={searchRef} value={search} onChange={(event) => setSearch(event.target.value)} placeholder={a('search')} aria-label={a('search')}/><kbd>⌘K</kbd>{searchMatches.length > 0 && <div className="admin-search-results">{searchMatches.map(({kind,item}) => <Link key={`${kind}/${item.slug}`} to={`${path}/${routeFor(kind)}?entry=${encodeURIComponent(item.slug)}`}>{item.name} <small>{kind}</small></Link>)}</div>}</div><div className="admin-topbar-actions"><span className="admin-badge">{owner.status ? a('connected') : a('unknown')}</span><select aria-label={a('locale')} value={locale} onChange={(event) => setLocale(event.target.value as typeof locale)}>{['pt-PT','pt-BR','en','es'].map((code) => <option key={code}>{code}</option>)}</select><button onClick={logout} title={a('signout')} aria-label={a('signout')}><LogOut size={18}/></button></div></header>
+      <main id="admin-main" className="admin-main">{owner.loading ? <p role="status">{a('loading')}</p> : <>{owner.error && <div role="alert" className="admin-error">{a('loadError')} <button onClick={() => void owner.refresh()}>{a('retry')}</button></div>}
+        {contentPage()}</>}
+      </main>
     </div>
-  );
-}
-
-/* =========================================================================
-   MODPACKS TAB
-   ========================================================================= */
-function blankModpack() {
-  return {
-    slug: 'new-modpack',
-    name: 'New Modpack',
-    tagline: '',
-    summary: '',
-    description: '',
-    version: '0.1.0',
-    mcVersion: '1.21.1',
-    loader: 'Fabric',
-    modCount: 0,
-    tags: [],
-    accent: '190 95% 55%',
-    featured: false,
-    trending: false,
-    downloads: '0',
-    rating: 5,
-    layoutType: 'standard',
-    image: '',
-    downloadLinks: { modrinth: '', curseforge: '', github: '', mirror: '' },
-    benchmarks: [],
-    features: [],
-    specs: { minRam: '4 GB', recommendedRam: '8 GB', javaVersion: '21', size: '0 MB' },
-    installGuide: '',
-    changelog: [],
-  };
-}
-
-function ModpacksTab({ items, setItems }: { items: any[]; setItems: (n: any[]) => void }) {
-  const [editingSlug, setEditingSlug] = useState<string | null>(null);
-  const [saving, setSaving] = useState(false);
-  const editing = useMemo(() => items.find((m) => m.slug === editingSlug) ?? null, [items, editingSlug]);
-
-  const update = (patch: any) => {
-    if (!editing) return;
-    setItems(items.map((m) => (m.slug === editing.slug ? { ...m, ...patch } : m)));
-    if (patch.slug && patch.slug !== editing.slug) setEditingSlug(patch.slug);
-  };
-
-  const create = () => {
-    const np = blankModpack();
-    let slug = np.slug;
-    let i = 1;
-    while (items.some((m) => m.slug === slug)) { slug = `${np.slug}-${i++}`; }
-    np.slug = slug;
-    setItems([...items, np]);
-    setEditingSlug(slug);
-  };
-
-  const remove = (slug: string) => {
-    if (!confirm(`Delete "${slug}"?`)) return;
-    setItems(items.filter((m) => m.slug !== slug));
-    if (editingSlug === slug) setEditingSlug(null);
-  };
-
-  const save = async () => {
-    setSaving(true);
-    try {
-      await commitFile('src/content/modpacks.json', { modpacks: items }, 'cms: update modpacks');
-      toast.success('Modpacks committed. Trigger redeploy to publish.');
-    } catch (e) { toast.error(e instanceof Error ? e.message : 'Save failed'); }
-    finally { setSaving(false); }
-  };
-
-  return (
-    <ListShell
-      title="Modpacks"
-      items={items}
-      renderItem={(m: any) => ({
-        key: m.slug,
-        primary: m.name,
-        secondary: `${m.layoutType} · v${m.version} · ${m.downloads} dl`,
-      })}
-      onCreate={create}
-      onEdit={setEditingSlug}
-      onDelete={remove}
-      onSave={save}
-      saving={saving}
-      editor={editing && (
-        <div className="border border-hairline rounded-lg p-6 bg-elev space-y-5">
-          <div className="flex items-center justify-between">
-            <div>
-              <div className="label-mono">Editing modpack</div>
-              <h2 className="mt-1 text-xl font-semibold tracking-tight">{editing.name}</h2>
-            </div>
-            <GhostBtn onClick={() => setEditingSlug(null)}><ChevronLeft className="h-4 w-4" /> Close</GhostBtn>
-          </div>
-
-          <div className="grid sm:grid-cols-2 gap-4">
-            <Field label="Name"><input className={inputCls} value={editing.name} onChange={(e) => update({ name: e.target.value })} /></Field>
-            <Field label="Slug" hint="URL identifier — lowercase, no spaces"><input className={inputCls} value={editing.slug} onChange={(e) => update({ slug: e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, '-') })} /></Field>
-            <Field label="Tagline"><input className={inputCls} value={editing.tagline} onChange={(e) => update({ tagline: e.target.value })} /></Field>
-            <Field label="Layout type">
-              <select className={inputCls} value={editing.layoutType} onChange={(e) => update({ layoutType: e.target.value })}>
-                <option value="performance">performance</option>
-                <option value="immersion">immersion</option>
-                <option value="standard">standard</option>
-              </select>
-            </Field>
-            <Field label="Version"><input className={inputCls} value={editing.version} onChange={(e) => update({ version: e.target.value })} /></Field>
-            <Field label="MC Version"><input className={inputCls} value={editing.mcVersion} onChange={(e) => update({ mcVersion: e.target.value })} /></Field>
-            <Field label="Loader"><input className={inputCls} value={editing.loader} onChange={(e) => update({ loader: e.target.value })} /></Field>
-            <Field label="Mod count"><input type="number" className={inputCls} value={editing.modCount} onChange={(e) => update({ modCount: +e.target.value })} /></Field>
-            <Field label="Downloads (display)"><input className={inputCls} value={editing.downloads} onChange={(e) => update({ downloads: e.target.value })} /></Field>
-            <Field label="Rating (0–5)"><input type="number" step="0.1" className={inputCls} value={editing.rating} onChange={(e) => update({ rating: +e.target.value })} /></Field>
-            <Field label="Accent (HSL)" hint="e.g. 190 95% 55%"><input className={inputCls} value={editing.accent} onChange={(e) => update({ accent: e.target.value })} /></Field>
-            <Field label="Tags (comma-separated)">
-              <input className={inputCls} value={editing.tags.join(', ')} onChange={(e) => update({ tags: e.target.value.split(',').map((s) => s.trim()).filter(Boolean) })} />
-            </Field>
-          </div>
-
-          <div className="flex items-center gap-6">
-            <label className="flex items-center gap-2 text-sm">
-              <input type="checkbox" checked={editing.featured} onChange={(e) => update({ featured: e.target.checked })} /> Featured
-            </label>
-            <label className="flex items-center gap-2 text-sm">
-              <input type="checkbox" checked={editing.trending} onChange={(e) => update({ trending: e.target.checked })} /> Trending
-            </label>
-          </div>
-
-          <Field label="Cover image URL" hint="Square (1:1) — used as card thumbnail and OG share image"><input className={inputCls} value={editing.image ?? ''} onChange={(e) => update({ image: e.target.value })} placeholder="https://…" /></Field>
-          <Field label="Summary"><textarea rows={2} className={textareaCls} value={editing.summary} onChange={(e) => update({ summary: e.target.value })} /></Field>
-          <MarkdownEditor
-            label="Description (Markdown)"
-            value={editing.description}
-            onChange={(v) => update({ description: v })}
-            rows={10}
-          />
-
-          <div>
-            <div className="label-mono mb-2">Download links</div>
-            <div className="grid sm:grid-cols-2 gap-3">
-              {(['modrinth', 'curseforge', 'github', 'mirror'] as const).map((k) => (
-                <Field key={k} label={k}>
-                  <input className={inputCls} value={editing.downloadLinks?.[k] ?? ''} onChange={(e) => update({ downloadLinks: { ...editing.downloadLinks, [k]: e.target.value } })} />
-                </Field>
-              ))}
-            </div>
-          </div>
-
-          <div className="grid sm:grid-cols-4 gap-3">
-            {(['minRam', 'recommendedRam', 'javaVersion', 'size'] as const).map((k) => (
-              <Field key={k} label={k}>
-                <input className={inputCls} value={editing.specs?.[k] ?? ''} onChange={(e) => update({ specs: { ...editing.specs, [k]: e.target.value } })} />
-              </Field>
-            ))}
-          </div>
-
-          {editing.layoutType === 'performance' && (
-            <BenchmarksEditor data={editing.benchmarks} onChange={(b) => update({ benchmarks: b })} />
-          )}
-          {editing.layoutType === 'immersion' && (
-            <FeaturesEditor data={editing.features} onChange={(f) => update({ features: f })} />
-          )}
-
-          <MarkdownEditor
-            label="Installation guide (Markdown)"
-            value={editing.installGuide}
-            onChange={(v) => update({ installGuide: v })}
-            rows={12}
-          />
-
-          <ChangelogEditor data={editing.changelog} onChange={(c) => update({ changelog: c })} />
-        </div>
-      )}
-    />
-  );
-}
-
-function BenchmarksEditor({ data, onChange }: { data: any[]; onChange: (n: any[]) => void }) {
-  return (
-    <div>
-      <div className="flex items-center justify-between mb-2">
-        <div className="label-mono">Benchmarks · single-machine FPS</div>
-        <GhostBtn onClick={() => onChange([...data, { label: 'New rig', vanilla: 60, fabulous: 90, modded: 120 }])}>
-          <Plus className="h-3.5 w-3.5" /> Row
-        </GhostBtn>
-      </div>
-      <div className="space-y-2">
-        {data.map((row, idx) => (
-          <div key={idx} className="grid grid-cols-[1fr_80px_80px_80px_auto] gap-2 items-end">
-            <Field label="Hardware"><input className={inputCls} value={row.label} onChange={(e) => { const n = [...data]; n[idx] = { ...row, label: e.target.value }; onChange(n); }} /></Field>
-            <Field label="Vanilla"><input type="number" className={inputCls} value={row.vanilla} onChange={(e) => { const n = [...data]; n[idx] = { ...row, vanilla: +e.target.value }; onChange(n); }} /></Field>
-            <Field label="Perf King"><input type="number" className={inputCls} value={row.fabulous ?? 0} onChange={(e) => { const n = [...data]; n[idx] = { ...row, fabulous: +e.target.value }; onChange(n); }} /></Field>
-            <Field label="Modded"><input type="number" className={inputCls} value={row.modded} onChange={(e) => { const n = [...data]; n[idx] = { ...row, modded: +e.target.value }; onChange(n); }} /></Field>
-            <button onClick={() => onChange(data.filter((_, i) => i !== idx))} className="h-10 px-2 text-destructive hover:bg-destructive/10 rounded-md"><X className="h-4 w-4" /></button>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-}
-
-function FeaturesEditor({ data, onChange }: { data: any[]; onChange: (n: any[]) => void }) {
-  return (
-    <div>
-      <div className="flex items-center justify-between mb-2">
-        <div className="label-mono">Feature showcase</div>
-        <GhostBtn onClick={() => onChange([...data, { title: 'New feature', description: '', icon: 'Sparkles' }])}>
-          <Plus className="h-3.5 w-3.5" /> Feature
-        </GhostBtn>
-      </div>
-      <div className="space-y-3">
-        {data.map((f, idx) => (
-          <div key={idx} className="grid sm:grid-cols-[1fr_1fr_140px_auto] gap-2 items-end border border-hairline rounded-md p-3 bg-background">
-            <Field label="Title"><input className={inputCls} value={f.title} onChange={(e) => { const n = [...data]; n[idx] = { ...f, title: e.target.value }; onChange(n); }} /></Field>
-            <Field label="Description"><input className={inputCls} value={f.description} onChange={(e) => { const n = [...data]; n[idx] = { ...f, description: e.target.value }; onChange(n); }} /></Field>
-            <Field label="Icon (lucide)"><input className={inputCls} value={f.icon ?? ''} onChange={(e) => { const n = [...data]; n[idx] = { ...f, icon: e.target.value }; onChange(n); }} /></Field>
-            <button onClick={() => onChange(data.filter((_, i) => i !== idx))} className="h-10 px-2 text-destructive hover:bg-destructive/10 rounded-md"><X className="h-4 w-4" /></button>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-}
-
-function ChangelogEditor({ data, onChange }: { data: any[]; onChange: (n: any[]) => void }) {
-  return (
-    <div>
-      <div className="flex items-center justify-between mb-2">
-        <div className="label-mono">Changelog</div>
-        <GhostBtn onClick={() => onChange([{ version: '0.0.0', date: new Date().toISOString().slice(0, 10), notes: '' }, ...data])}>
-          <Plus className="h-3.5 w-3.5" /> Entry
-        </GhostBtn>
-      </div>
-      <div className="space-y-3">
-        {data.map((c, idx) => (
-          <div key={idx} className="grid sm:grid-cols-[120px_140px_1fr_auto] gap-2 items-end border border-hairline rounded-md p-3 bg-background">
-            <Field label="Version"><input className={inputCls} value={c.version} onChange={(e) => { const n = [...data]; n[idx] = { ...c, version: e.target.value }; onChange(n); }} /></Field>
-            <Field label="Date"><input type="date" className={inputCls} value={c.date} onChange={(e) => { const n = [...data]; n[idx] = { ...c, date: e.target.value }; onChange(n); }} /></Field>
-            <Field label="Notes"><input className={inputCls} value={c.notes} onChange={(e) => { const n = [...data]; n[idx] = { ...c, notes: e.target.value }; onChange(n); }} /></Field>
-            <button onClick={() => onChange(data.filter((_, i) => i !== idx))} className="h-10 px-2 text-destructive hover:bg-destructive/10 rounded-md"><X className="h-4 w-4" /></button>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-}
-
-/* =========================================================================
-   NEWS TAB
-   ========================================================================= */
-function NewsTab({ items, setItems }: { items: any[]; setItems: (n: any[]) => void }) {
-  const [editingSlug, setEditingSlug] = useState<string | null>(null);
-  const [saving, setSaving] = useState(false);
-  const editing = useMemo(() => items.find((a) => a.slug === editingSlug) ?? null, [items, editingSlug]);
-
-  const update = (patch: any) => {
-    if (!editing) return;
-    setItems(items.map((a) => (a.slug === editing.slug ? { ...a, ...patch } : a)));
-    if (patch.slug && patch.slug !== editing.slug) setEditingSlug(patch.slug);
-  };
-  const create = () => toast('Create new articles under Content → articles to keep drafts private.');
-  const remove = (slug: string) => {
-    if (!confirm(`Delete "${slug}"?`)) return;
-    setItems(items.filter((a) => a.slug !== slug));
-    if (editingSlug === slug) setEditingSlug(null);
-  };
-  const save = async () => {
-    setSaving(true);
-    try {
-      await commitFile('src/content/news.json', { articles: items }, 'cms: update news');
-      toast.success('News committed.');
-    } catch (e) { toast.error(e instanceof Error ? e.message : 'Save failed'); }
-    finally { setSaving(false); }
-  };
-
-  return (
-    <ListShell
-      title="Articles"
-      items={items}
-      renderItem={(a: any) => ({ key: a.slug, primary: a.title, secondary: `${a.category} · ${a.publishedAt}${a.draft ? ' · draft' : ''}` })}
-      onCreate={create}
-      onEdit={setEditingSlug}
-      onDelete={remove}
-      onSave={save}
-      saving={saving}
-      editor={editing && (
-        <div className="border border-hairline rounded-lg p-6 bg-elev space-y-4">
-          <div className="flex items-center justify-between">
-            <div className="label-mono">Editing article</div>
-            <GhostBtn onClick={() => setEditingSlug(null)}><ChevronLeft className="h-4 w-4" /> Close</GhostBtn>
-          </div>
-          <div className="grid sm:grid-cols-2 gap-4">
-            <Field label="Title"><input className={inputCls} value={editing.title} onChange={(e) => update({ title: e.target.value })} /></Field>
-            <Field label="Slug"><input className={inputCls} value={editing.slug} onChange={(e) => update({ slug: e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, '-') })} /></Field>
-            <Field label="Category"><input className={inputCls} value={editing.category} onChange={(e) => update({ category: e.target.value })} /></Field>
-            <Field label="Author"><input className={inputCls} value={editing.author} onChange={(e) => update({ author: e.target.value })} /></Field>
-            <Field label="Published at"><input type="date" className={inputCls} value={editing.publishedAt} onChange={(e) => update({ publishedAt: e.target.value })} /></Field>
-            <Field label="Read minutes"><input type="number" className={inputCls} value={editing.readMinutes} onChange={(e) => update({ readMinutes: +e.target.value })} /></Field>
-            <Field label="Modpack slug (optional)"><input className={inputCls} value={editing.modpackSlug ?? ''} onChange={(e) => update({ modpackSlug: e.target.value || null })} /></Field>
-            <Field label="Tags (comma-separated)"><input className={inputCls} value={editing.tags.join(', ')} onChange={(e) => update({ tags: e.target.value.split(',').map((s) => s.trim()).filter(Boolean) })} /></Field>
-          </div>
-          <div className="flex items-center gap-6">
-            <label className="flex items-center gap-2 text-sm"><input type="checkbox" checked={editing.featured} onChange={(e) => update({ featured: e.target.checked })} /> Featured</label>
-            <label className="flex items-center gap-2 text-sm"><input type="checkbox" checked={editing.draft} onChange={(e) => update({ draft: e.target.checked })} /> Draft</label>
-          </div>
-          <Field label="Cover image URL" hint="16:9 aspect — used as card thumbnail and OG image"><input className={inputCls} value={editing.image ?? ''} onChange={(e) => update({ image: e.target.value })} placeholder="https://…" /></Field>
-          <Field label="Excerpt"><textarea rows={2} className={textareaCls} value={editing.excerpt} onChange={(e) => update({ excerpt: e.target.value })} /></Field>
-          <MarkdownEditor
-            label="Body (Markdown)"
-            value={editing.body}
-            onChange={(v) => update({ body: v })}
-            rows={14}
-          />
-        </div>
-      )}
-    />
-  );
-}
-
-/* =========================================================================
-   FAQ TAB
-   ========================================================================= */
-function FaqTab({ items, setItems }: { items: any[]; setItems: (n: any[]) => void }) {
-  const [editingId, setEditingId] = useState<string | null>(null);
-  const [saving, setSaving] = useState(false);
-  const editing = useMemo(() => items.find((c) => c.id === editingId) ?? null, [items, editingId]);
-
-  const update = (patch: any) => {
-    if (!editing) return;
-    setItems(items.map((c) => (c.id === editing.id ? { ...c, ...patch } : c)));
-    if (patch.id && patch.id !== editing.id) setEditingId(patch.id);
-  };
-  const create = () => {
-    const id = `cat-${Date.now().toString(36)}`;
-    setItems([...items, { id, title: 'New category', items: [] }]);
-    setEditingId(id);
-  };
-  const remove = (id: string) => {
-    if (!confirm(`Delete category?`)) return;
-    setItems(items.filter((c) => c.id !== id));
-    if (editingId === id) setEditingId(null);
-  };
-  const save = async () => {
-    setSaving(true);
-    try {
-      await commitFile('src/content/faq.json', { categories: items }, 'cms: update faq');
-      toast.success('FAQ committed.');
-    } catch (e) { toast.error(e instanceof Error ? e.message : 'Save failed'); }
-    finally { setSaving(false); }
-  };
-
-  return (
-    <ListShell
-      title="FAQ categories"
-      items={items}
-      renderItem={(c: any) => ({ key: c.id, primary: c.title, secondary: `${c.items?.length ?? 0} questions` })}
-      onCreate={create}
-      onEdit={setEditingId}
-      onDelete={remove}
-      onSave={save}
-      saving={saving}
-      editor={editing && (
-        <div className="border border-hairline rounded-lg p-6 bg-elev space-y-4">
-          <div className="flex items-center justify-between">
-            <div className="label-mono">Editing category</div>
-            <GhostBtn onClick={() => setEditingId(null)}><ChevronLeft className="h-4 w-4" /> Close</GhostBtn>
-          </div>
-          <div className="grid sm:grid-cols-2 gap-4">
-            <Field label="ID"><input className={inputCls} value={editing.id} onChange={(e) => update({ id: e.target.value })} /></Field>
-            <Field label="Title"><input className={inputCls} value={editing.title} onChange={(e) => update({ title: e.target.value })} /></Field>
-          </div>
-          <div>
-            <div className="flex items-center justify-between mb-2">
-              <div className="label-mono">Questions</div>
-              <GhostBtn onClick={() => update({ items: [...(editing.items ?? []), { q: '', a: '' }] })}><Plus className="h-3.5 w-3.5" /> Question</GhostBtn>
-            </div>
-            <div className="space-y-3">
-              {(editing.items ?? []).map((qa: any, idx: number) => (
-                <div key={idx} className="border border-hairline rounded-md p-3 bg-background space-y-2">
-                  <div className="flex items-center justify-between">
-                    <span className="label-mono">Q{idx + 1}</span>
-                    <button onClick={() => update({ items: editing.items.filter((_: any, i: number) => i !== idx) })} className="text-destructive hover:bg-destructive/10 p-1 rounded"><X className="h-4 w-4" /></button>
-                  </div>
-                  <input className={inputCls} placeholder="Question" value={qa.q} onChange={(e) => { const n = [...editing.items]; n[idx] = { ...qa, q: e.target.value }; update({ items: n }); }} />
-                  <textarea rows={3} className={textareaCls} placeholder="Answer" value={qa.a} onChange={(e) => { const n = [...editing.items]; n[idx] = { ...qa, a: e.target.value }; update({ items: n }); }} />
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      )}
-    />
-  );
-}
-
-/* =========================================================================
-   REVIEWS TAB
-   ========================================================================= */
-function ReviewsTab({ items, setItems, modpacks }: { items: any[]; setItems: (n: any[]) => void; modpacks: any[] }) {
-  const [editingId, setEditingId] = useState<string | null>(null);
-  const [saving, setSaving] = useState(false);
-  const editing = useMemo(() => items.find((r) => r.id === editingId) ?? null, [items, editingId]);
-
-  const update = (patch: any) => {
-    if (!editing) return;
-    setItems(items.map((r) => (r.id === editing.id ? { ...r, ...patch } : r)));
-  };
-  const create = () => {
-    const id = `rev-${Date.now().toString(36)}`;
-    setItems([{ id, modpackSlug: modpacks[0]?.slug ?? '', author: '', rating: 5, body: '', publishedAt: new Date().toISOString().slice(0, 10) }, ...items]);
-    setEditingId(id);
-  };
-  const remove = (id: string) => {
-    if (!confirm('Delete review?')) return;
-    setItems(items.filter((r) => r.id !== id));
-    if (editingId === id) setEditingId(null);
-  };
-  const save = async () => {
-    setSaving(true);
-    try {
-      await commitFile('src/content/reviews.json', { reviews: items }, 'cms: update reviews');
-      toast.success('Reviews committed.');
-    } catch (e) { toast.error(e instanceof Error ? e.message : 'Save failed'); }
-    finally { setSaving(false); }
-  };
-
-  return (
-    <ListShell
-      title="Reviews"
-      items={items}
-      renderItem={(r: any) => ({ key: r.id, primary: `${r.author || '—'} · ${r.modpackSlug}`, secondary: `★ ${r.rating} · ${r.publishedAt}` })}
-      onCreate={create}
-      onEdit={setEditingId}
-      onDelete={remove}
-      onSave={save}
-      saving={saving}
-      editor={editing && (
-        <div className="border border-hairline rounded-lg p-6 bg-elev space-y-4">
-          <div className="flex items-center justify-between">
-            <div className="label-mono">Editing review</div>
-            <GhostBtn onClick={() => setEditingId(null)}><ChevronLeft className="h-4 w-4" /> Close</GhostBtn>
-          </div>
-          <div className="grid sm:grid-cols-2 gap-4">
-            <Field label="Author"><input className={inputCls} value={editing.author} onChange={(e) => update({ author: e.target.value })} /></Field>
-            <Field label="Modpack">
-              <select className={inputCls} value={editing.modpackSlug} onChange={(e) => update({ modpackSlug: e.target.value })}>
-                {modpacks.map((m) => <option key={m.slug} value={m.slug}>{m.name}</option>)}
-              </select>
-            </Field>
-            <Field label="Rating (1–5)"><input type="number" min={1} max={5} step="0.1" className={inputCls} value={editing.rating} onChange={(e) => update({ rating: +e.target.value })} /></Field>
-            <Field label="Published at"><input type="date" className={inputCls} value={editing.publishedAt} onChange={(e) => update({ publishedAt: e.target.value })} /></Field>
-          </div>
-          <Field label="Body"><textarea rows={5} className={textareaCls} value={editing.body} onChange={(e) => update({ body: e.target.value })} /></Field>
-        </div>
-      )}
-    />
-  );
-}
-
-/* =========================================================================
-   SETTINGS TAB
-   ========================================================================= */
-function SettingsTab({ cfg, setCfg }: { cfg: any; setCfg: (n: any) => void }) {
-  const [saving, setSaving] = useState(false);
-  const upd = (patch: any) => setCfg({ ...cfg, ...patch });
-  const updSocial = (patch: any) => upd({ social: { ...(cfg.social ?? {}), ...patch } });
-  const updAds = (patch: any) => upd({ ads: { ...(cfg.ads ?? {}), ...patch } });
-  const updPopups = (patch: any) => upd({ popups: { ...(cfg.popups ?? {}), ...patch } });
-  const updStats = (patch: any) => upd({ stats: { ...(cfg.stats ?? {}), ...patch } });
-
-  const save = async () => {
-    setSaving(true);
-    try {
-      await commitFile('src/content/site.json', { site: cfg }, 'cms: update site settings');
-      toast.success('Settings committed.');
-    } catch (e) { toast.error(e instanceof Error ? e.message : 'Save failed'); }
-    finally { setSaving(false); }
-  };
-
-  return (
-    <div className="grid lg:grid-cols-2 gap-6">
-      <Section title="Identity">
-        <Field label="Site name"><input className={inputCls} value={cfg.name} onChange={(e) => upd({ name: e.target.value })} /></Field>
-        <Field label="Tagline"><input className={inputCls} value={cfg.tagline} onChange={(e) => upd({ tagline: e.target.value })} /></Field>
-        <Field label="Description"><textarea rows={3} className={textareaCls} value={cfg.description} onChange={(e) => upd({ description: e.target.value })} /></Field>
-        <Field label="Contact email"><input className={inputCls} value={cfg.contactEmail} onChange={(e) => upd({ contactEmail: e.target.value })} /></Field>
-      </Section>
-
-      <Section title="Social links">
-        <Field label="Discord URL"><input className={inputCls} value={cfg.discordUrl} onChange={(e) => upd({ discordUrl: e.target.value })} /></Field>
-        <Field label="GitHub URL"><input className={inputCls} value={cfg.githubUrl} onChange={(e) => upd({ githubUrl: e.target.value })} /></Field>
-        <Field label="Ko-fi URL"><input className={inputCls} value={cfg.supportUrl} onChange={(e) => upd({ supportUrl: e.target.value })} /></Field>
-        <Field label="Twitter / X"><input className={inputCls} value={cfg.social?.twitter ?? ''} onChange={(e) => updSocial({ twitter: e.target.value })} /></Field>
-        <Field label="YouTube"><input className={inputCls} value={cfg.social?.youtube ?? ''} onChange={(e) => updSocial({ youtube: e.target.value })} /></Field>
-        <Field label="Twitch"><input className={inputCls} value={cfg.social?.twitch ?? ''} onChange={(e) => updSocial({ twitch: e.target.value })} /></Field>
-      </Section>
-
-      <Section title="Ads & monetization">
-        <label className="flex items-center justify-between gap-4 p-3 border border-hairline rounded-md bg-background">
-          <div>
-            <div className="text-sm font-medium">Enable AdSense slots</div>
-            <div className="text-[11px] text-muted-foreground">When off, every &lt;AdSlot /&gt; shows the placeholder.</div>
-          </div>
-          <input type="checkbox" checked={cfg.ads?.adsenseEnabled ?? false} onChange={(e) => updAds({ adsenseEnabled: e.target.checked })} className="h-5 w-5 accent-current text-signal" />
-        </label>
-        <Field label="AdSense Client ID" hint="e.g. ca-pub-1234567890123456">
-          <input className={inputCls} value={cfg.ads?.adsenseClient ?? ''} onChange={(e) => updAds({ adsenseClient: e.target.value })} />
-        </Field>
-        <label className="flex items-center justify-between gap-4 p-3 border border-hairline rounded-md bg-background">
-          <div>
-            <div className="text-sm font-medium">Show Ko-fi support button</div>
-            <div className="text-[11px] text-muted-foreground">Footer + modpack sidebar.</div>
-          </div>
-          <input type="checkbox" checked={cfg.ads?.showSupportButton ?? false} onChange={(e) => updAds({ showSupportButton: e.target.checked })} className="h-5 w-5 accent-current text-signal" />
-        </label>
-      </Section>
-
-      <Section title="Popups & stats">
-        <label className="flex items-center justify-between gap-4 p-3 border border-hairline rounded-md bg-background">
-          <div className="text-sm font-medium">Discord popup on download</div>
-          <input type="checkbox" checked={cfg.popups?.discordOnDownload ?? false} onChange={(e) => updPopups({ discordOnDownload: e.target.checked })} className="h-5 w-5" />
-        </label>
-        <Field label="Newsletter delay (seconds)"><input type="number" className={inputCls} value={cfg.popups?.newsletterDelaySec ?? 0} onChange={(e) => updPopups({ newsletterDelaySec: +e.target.value })} /></Field>
-        <div className="grid sm:grid-cols-2 gap-3">
-          <Field label="Downloads (display)"><input className={inputCls} value={cfg.stats?.downloads ?? ''} onChange={(e) => updStats({ downloads: e.target.value })} /></Field>
-          <Field label="Modpacks (display)"><input className={inputCls} value={cfg.stats?.modpacks ?? ''} onChange={(e) => updStats({ modpacks: e.target.value })} /></Field>
-          <Field label="Members (display)"><input className={inputCls} value={cfg.stats?.members ?? ''} onChange={(e) => updStats({ members: e.target.value })} /></Field>
-          <Field label="Builds shipped"><input className={inputCls} value={cfg.stats?.buildsShipped ?? ''} onChange={(e) => updStats({ buildsShipped: e.target.value })} /></Field>
-        </div>
-      </Section>
-
-      <div className="lg:col-span-2 flex justify-end">
-        <PrimaryBtn onClick={save} loading={saving}>Save & commit settings</PrimaryBtn>
-      </div>
-    </div>
-  );
-}
-
-function Section({ title, children }: { title: string; children: React.ReactNode }) {
-  return (
-    <div className="border border-hairline rounded-lg p-6 bg-elev space-y-4">
-      <div className="label-mono">{title}</div>
-      {children}
-    </div>
-  );
+  </div>;
 }

@@ -6,7 +6,7 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { ThemeProvider } from "@/lib/theme";
-import { I18nProvider } from "@/lib/i18n";
+import { I18nProvider, useI18n } from "@/lib/i18n";
 import CookieConsent from "@/components/CookieConsent";
 
 import { HomeExperience, ProjectsExperience, ProjectDetailExperience, GuidesExperience, GuideDetailExperience, NewsExperience, ArticleExperience, FaqExperience, AboutExperience, SupportExperience, LaunchersExperience, LauncherDetailExperience, MissingExperience } from "./pages/PublicExperience";
@@ -17,6 +17,7 @@ const AdminEditor = lazy(() => import("./pages/admin/AdminEditor"));
 const AdminGate = lazy(() => import("./pages/admin/AdminGate"));
 
 const queryClient = new QueryClient();
+const OwnerLoading = () => { const { t } = useI18n(); return <div role="status">{t('admin.loading')}</div>; };
 
 // Componente para resetar o scroll automaticamente
 const ScrollToTop = () => {
@@ -55,8 +56,8 @@ const App = () => (
                 <Route path="/legal/privacy" element={<Navigate to="/legal?kind=privacy" replace />} />
                 <Route path="/legal/terms" element={<Navigate to="/legal?kind=terms" replace />} />
                 <Route path="/support" element={<SupportExperience />} />
-                <Route path="/admin" element={<Suspense fallback={<div role="status">Loading owner access…</div>}><AdminLogin /></Suspense>} />
-                <Route path="/admin/editor" element={<Suspense fallback={<div role="status">Loading owner workspace…</div>}><AdminGate><AdminEditor /></AdminGate></Suspense>} />
+                <Route path="/admin" element={<Suspense fallback={<OwnerLoading/>}><AdminLogin /></Suspense>} />
+                <Route path="/admin/editor/*" element={<Suspense fallback={<OwnerLoading/>}><AdminGate><AdminEditor /></AdminGate></Suspense>} />
                 <Route path="*" element={<MissingExperience />} />
               </Routes>
             </BrowserRouter>

@@ -5,9 +5,11 @@ import Seo from '@/components/Seo';
 import { adminApi, adminAuth } from '@/lib/adminApi';
 import { useI18n } from '@/lib/i18n';
 import { Lock, Loader2 } from 'lucide-react';
+import { useAdminText } from './adminText';
 
 export default function AdminLogin() {
   const { t } = useI18n();
+  const a = useAdminText();
   const nav = useNavigate();
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
@@ -30,8 +32,8 @@ export default function AdminLogin() {
       const { token } = await adminApi.login(password);
       adminAuth.setToken(token);
       nav('/admin/editor', { replace: true });
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Login failed');
+    } catch {
+      setError(a('loginFailure'));
     } finally {
       setLoading(false);
     }
@@ -39,16 +41,16 @@ export default function AdminLogin() {
 
   return (
     <SiteLayout>
-      <Seo title="Admin — AlahPanda Labs" description="Authorized access only." />
+      <Seo title={`${a('ownerTitle')} — AlahPanda Labs`} noindex />
       <section className="container max-w-md py-24">
         <div className="glass-card rounded-lg p-8">
           <div className="flex items-center gap-2 label-mono">
-            <Lock className="h-3.5 w-3.5" /> Restricted
+            <Lock className="h-3.5 w-3.5" /> {a('checked')}
           </div>
           <h1 className="mt-3 text-2xl font-semibold tracking-tight">{t('admin.title')}</h1>
-          <p className="mt-3 text-sm text-muted-foreground">Owner CMS · published content and private drafts</p>
+          <p className="mt-3 text-sm text-muted-foreground">{a('cmsIntro')}</p>
 
-          {checking ? <p className="mt-6" role="status">Checking CMS session…</p> : <form onSubmit={submit} className="mt-6 space-y-4">
+          {checking ? <p className="mt-6" role="status">{a('checking')}</p> : <form onSubmit={submit} className="mt-6 space-y-4">
             <div>
               <label htmlFor="pw" className="label-mono block mb-2">{t('admin.password')}</label>
               <input
@@ -71,7 +73,7 @@ export default function AdminLogin() {
               {t('admin.signin')}
             </button>
           </form>}
-          <Link to="/" className="mt-6 inline-block text-sm text-signal underline">Back to site</Link>
+          <Link to="/" className="mt-6 inline-block text-sm text-signal underline">{a('backToSite')}</Link>
         </div>
       </section>
     </SiteLayout>
