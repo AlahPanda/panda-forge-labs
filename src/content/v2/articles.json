@@ -7,24 +7,27 @@
       "sourceLocale": "en",
       "translations": {
         "pt-PT": {
-          "state": "partial",
+          "state": "complete",
           "fields": {
             "name": "Mac Native 0.3.1 Beta: o que está publicado",
-            "summary": "A release oficial no Modrinth confirma versão e compatibilidade; os resultados de desempenho não são presumidos."
+            "summary": "A release oficial no Modrinth confirma versão e compatibilidade; os resultados de desempenho não são presumidos.",
+            "body": "## A publicação\nMac Native 0.3.1 aparece como release beta no projeto oficial no Modrinth. A compatibilidade publicada indica Minecraft: Java Edition 1.21.11, Fabric e utilização client-side. A descrição do projeto refere Macs Apple Silicon e Intel. São dados de compatibilidade, não garantias de FPS ou autonomia.\n\n## O que mudou\nAs notas da release referem alterações de rede relacionadas com e4all e VMP, configuração de AsyncParticles e ModernFix e atualizações às opções predefinidas. Consulta o separador Content da release para a lista exata de ficheiros e dependências. O Labs não apresenta benchmarks não verificados como testes independentes.\n\n## Instalar pelo publicador\nUsa a ligação oficial da [página Mac Native](/modpacks/mac-native), confirma loader e versão do jogo e faz backup dos mundos. Se surgir uma versão mais recente, a página Modrinth continua a ser a fonte de verdade. O [guia Mac Native](/guides/complete-mac-native) descreve uma instalação cuidadosa."
           }
         },
         "pt-BR": {
-          "state": "partial",
+          "state": "complete",
           "fields": {
             "name": "Mac Native 0.3.1 Beta: o que foi publicado",
-            "summary": "A versão oficial no Modrinth confirma versão e compatibilidade; resultados de desempenho não são presumidos."
+            "summary": "A versão oficial no Modrinth confirma versão e compatibilidade; resultados de desempenho não são presumidos.",
+            "body": "## A publicação\nMac Native 0.3.1 aparece como versão beta no projeto oficial no Modrinth. A compatibilidade publicada indica Minecraft: Java Edition 1.21.11, Fabric e uso client-side. A descrição contempla Macs Apple Silicon e Intel. Esses são dados de compatibilidade, não garantias de FPS ou duração da bateria.\n\n## O que mudou\nAs notas da versão mencionam alterações de rede com e4all e VMP, configuração de AsyncParticles e ModernFix e atualizações das opções padrão. Consulte a aba Content para a lista exata de arquivos e dependências. O Labs não apresenta benchmarks não verificados como testes independentes.\n\n## Instale pelo publicador\nUse o link oficial da [página Mac Native](/modpacks/mac-native), confira loader e versão do jogo e faça backup dos mundos. Se houver uma versão mais recente, a página do Modrinth continua sendo a fonte oficial. O [guia Mac Native](/guides/complete-mac-native) explica uma instalação cuidadosa."
           }
         },
         "es": {
-          "state": "partial",
+          "state": "complete",
           "fields": {
             "name": "Mac Native 0.3.1 Beta: qué se ha publicado",
-            "summary": "La versión oficial en Modrinth confirma versión y compatibilidad; no se presuponen resultados de rendimiento."
+            "summary": "La versión oficial en Modrinth confirma versión y compatibilidad; no se presuponen resultados de rendimiento.",
+            "body": "## La publicación\nMac Native 0.3.1 figura como versión beta en el proyecto oficial de Modrinth. La compatibilidad publicada indica Minecraft: Java Edition 1.21.11, Fabric y uso client-side. La descripción menciona Macs Apple Silicon e Intel. Son datos de compatibilidad, no garantías de FPS o autonomía.\n\n## Qué cambió\nLas notas de versión mencionan cambios de red relacionados con e4all y VMP, configuración de AsyncParticles y ModernFix y ajustes predeterminados actualizados. Consulta Content para ver la lista exacta de archivos y dependencias. Labs no presenta benchmarks no verificados como pruebas independientes.\n\n## Instalar desde el editor\nUsa el enlace oficial en la [página de Mac Native](/modpacks/mac-native), comprueba loader y versión del juego y guarda una copia de tus mundos. Si aparece una versión posterior, la página de Modrinth sigue siendo la fuente oficial. La [guía Mac Native](/guides/complete-mac-native) explica una instalación prudente."
           }
         }
       },
@@ -64,24 +67,27 @@
       "sourceLocale": "en",
       "translations": {
         "pt-PT": {
-          "state": "partial",
+          "state": "complete",
           "fields": {
             "name": "Instalar Mac Native sem adivinhar a configuração",
-            "summary": "Um percurso cuidadoso desde a release oficial até uma instância separada em macOS."
+            "summary": "Um percurso cuidadoso desde a release oficial até uma instância separada em macOS.",
+            "body": "## Começar pela compatibilidade\nA release verificada de Mac Native é para Minecraft Java 1.21.11 com Fabric. Compara estes campos antes de transferires. A descrição refere macOS em Apple Silicon e Intel, mas os resultados variam com o hardware.\n\n## Manter uma instância separada\nInstala o pack do projeto oficial no Modrinth numa nova instância do launcher. Assim, não alteras inadvertidamente outro pack ou mundo vanilla. Entra com uma conta que possua Minecraft: Java Edition. Outro launcher pode importar packs compatíveis, mas segue a documentação própria para os passos exatos.\n\n## Tornar as alterações reversíveis\nInicia primeiro com as opções publicadas. Faz backup dos mundos antes de atualizações ou mods opcionais. Se falhar, guarda o log do launcher e compara versão, loader e últimas mudanças. Usa o [guia completo](/guides/complete-mac-native) e o [apoio](/support) em vez de aplicares uma regra universal de RAM ou shaders."
           }
         },
         "pt-BR": {
-          "state": "partial",
+          "state": "complete",
           "fields": {
             "name": "Instalar Mac Native sem adivinhar a configuração",
-            "summary": "Um caminho cuidadoso desde a versão oficial até uma instância separada no macOS."
+            "summary": "Um caminho cuidadoso desde a versão oficial até uma instância separada no macOS.",
+            "body": "## Comece pela compatibilidade\nA versão verificada do Mac Native é para Minecraft Java 1.21.11 com Fabric. Compare esses campos antes de baixar. A descrição menciona macOS em Apple Silicon e Intel, mas os resultados variam conforme o hardware.\n\n## Mantenha uma instância separada\nInstale o pacote do projeto oficial no Modrinth numa nova instância. Assim, outro pacote ou mundo vanilla não é alterado sem querer. Entre com uma conta que possui Minecraft: Java Edition. Outro launcher pode importar pacotes compatíveis, mas siga a documentação dele para os passos exatos.\n\n## Faça mudanças reversíveis\nInicie primeiro com as opções publicadas. Faça backup dos mundos antes de atualizar ou adicionar mods opcionais. Se falhar, guarde o log e compare versão, loader e últimas mudanças. Use o [guia completo](/guides/complete-mac-native) e o [suporte](/support), não uma regra universal de RAM ou shaders."
           }
         },
         "es": {
-          "state": "partial",
+          "state": "complete",
           "fields": {
             "name": "Instalar Mac Native sin adivinar la configuración",
-            "summary": "Un camino prudente desde la versión oficial hasta una instancia separada en macOS."
+            "summary": "Un camino prudente desde la versión oficial hasta una instancia separada en macOS.",
+            "body": "## Empieza por la compatibilidad\nLa versión verificada de Mac Native es para Minecraft Java 1.21.11 con Fabric. Compara estos datos antes de descargar. La descripción menciona macOS en Apple Silicon e Intel, pero los resultados dependen del equipo.\n\n## Mantén una instancia separada\nInstala el paquete del proyecto oficial de Modrinth en una instancia nueva. Así no modificarás sin querer otro paquete o mundo vanilla. Entra con una cuenta que posea Minecraft: Java Edition. Otro launcher puede importar paquetes compatibles, pero sigue su documentación para conocer los pasos exactos.\n\n## Haz cambios reversibles\nInicia primero con la configuración publicada. Guarda una copia de tus mundos antes de actualizar o añadir mods opcionales. Si falla, conserva el registro y compara versión, loader y cambios recientes. Usa la [guía completa](/guides/complete-mac-native) y [soporte](/support), no una regla universal de RAM o shaders."
           }
         }
       },
@@ -121,24 +127,27 @@
       "sourceLocale": "en",
       "translations": {
         "pt-PT": {
-          "state": "partial",
+          "state": "complete",
           "fields": {
             "name": "CraftToons: o que é público hoje",
-            "summary": "CraftToons permanece um conceito em desenvolvimento, sem release nem download público."
+            "summary": "CraftToons permanece um conceito em desenvolvimento, sem release nem download público.",
+            "body": "## Uma experiência diferente\nA página pública de CraftToons é deliberadamente um teaser. Apresenta o nome do projeto e indica que está em desenvolvimento. Não anuncia build, versão, data, lista de funcionalidades ou download. Um conceito pode despertar curiosidade sem fingir que já está disponível.\n\n## Acompanhar o projeto\nA [página CraftToons](/modpacks/crafttoons) é o destino estável para informação aprovada. Quando existir uma release pública, Content V2 poderá apresentar compatibilidade e distribuição. Até lá, Mac Native é o produto beta utilizável pelo público.\n\n## Limite editorial\nImagens ou descrições de experiências iniciais não devem ser interpretadas como promessas. Os conceitos de trabalho serão distinguidos das releases, tal como o Labs separa o estado interno dos números de versão pública."
           }
         },
         "pt-BR": {
-          "state": "partial",
+          "state": "complete",
           "fields": {
             "name": "CraftToons: o que é público hoje",
-            "summary": "CraftToons continua um conceito em desenvolvimento, sem versão nem download público."
+            "summary": "CraftToons continua um conceito em desenvolvimento, sem versão nem download público.",
+            "body": "## Uma experiência diferente\nA página pública do CraftToons é intencionalmente um teaser. Ela apresenta o nome do projeto e informa que está em desenvolvimento. Não anuncia build, versão, data, lista de recursos nem download. Um conceito pode ser interessante sem fingir disponibilidade.\n\n## Acompanhe o projeto\nA [página CraftToons](/modpacks/crafttoons) é o destino estável para informações aprovadas. Quando existir uma versão pública, Content V2 poderá mostrar compatibilidade e distribuição. Até lá, Mac Native é o produto beta disponível para uso público.\n\n## Limite editorial\nImagens e descrições de experimentos iniciais não devem ser tratadas como promessas. Vamos distinguir conceitos em desenvolvimento de versões publicadas, assim como o Labs separa o status interno dos números de versão."
           }
         },
         "es": {
-          "state": "partial",
+          "state": "complete",
           "fields": {
             "name": "CraftToons: qué es público hoy",
-            "summary": "CraftToons sigue siendo un concepto en desarrollo, sin versión ni descarga pública."
+            "summary": "CraftToons sigue siendo un concepto en desarrollo, sin versión ni descarga pública.",
+            "body": "## Una experiencia diferente\nLa página pública de CraftToons es deliberadamente un adelanto. Presenta el nombre y comunica que está en desarrollo. No anuncia compilación, versión, fecha, lista de funciones ni descarga. Un concepto puede resultar interesante sin fingir que ya está disponible.\n\n## Sigue el proyecto\nLa [página de CraftToons](/modpacks/crafttoons) es el destino estable para información aprobada. Cuando exista una versión pública, Content V2 podrá presentar compatibilidad y distribución. Hasta entonces, Mac Native es el producto beta disponible para el público.\n\n## Límite editorial\nLas imágenes y descripciones de pruebas iniciales no son promesas. Distinguiremos los conceptos de trabajo de las versiones publicadas, del mismo modo que Labs separa el estado interno del número de versión pública."
           }
         }
       },
@@ -173,24 +182,27 @@
       "sourceLocale": "en",
       "translations": {
         "pt-PT": {
-          "state": "partial",
+          "state": "complete",
           "fields": {
             "name": "Como o Labs publica conteúdo",
-            "summary": "Registos versionados, drafts privados e uma passagem controlada para o Preview."
+            "summary": "Registos versionados, drafts privados e uma passagem controlada para o Preview.",
+            "body": "## Uma fonte pública versionada\nProjetos, releases, launchers, artigos, guias, FAQ e configurações do site têm registos V2 validados no repositório. O JSON publicado entra no bundle público; uma rota pública não lê acidentalmente um draft privado. Um schema verifica os campos antes da publicação.\n\n## Draft, preview e publicação\nO painel do proprietário utiliza autenticação, draft privado, preview e uma função de publicação no servidor. Antes de criar um commit na branch Preview, a função compara a revisão Git esperada com a atual, evitando substituir silenciosamente trabalho recente. Um commit ainda precisa de uma build Vercel Preview para a página atualizada ficar disponível.\n\n## Porque interessa ao leitor\nUm URL estável preserva a história de um artigo enquanto este é revisto. Traduções editoriais podem estar incompletas; o original continua disponível em vez de se inventarem traduções automáticas. Consulta o [arquivo News](/news) e os [Guides](/guides) para entradas publicadas."
           }
         },
         "pt-BR": {
-          "state": "partial",
+          "state": "complete",
           "fields": {
             "name": "Como o Labs publica conteúdo",
-            "summary": "Registros versionados, rascunhos privados e uma passagem controlada para o Preview."
+            "summary": "Registros versionados, rascunhos privados e uma passagem controlada para o Preview.",
+            "body": "## Uma fonte pública versionada\nProjetos, versões, launchers, artigos, guias, FAQ e configurações do site possuem registros V2 validados no repositório. O JSON publicado entra no bundle público; uma rota pública não lê um rascunho privado por engano. Um schema confere os campos antes da publicação.\n\n## Rascunho, preview e publicação\nO painel do proprietário usa autenticação, rascunho privado, prévia e uma função de publicação no servidor. Antes do commit na branch Preview, a função compara a revisão Git esperada com a atual, evitando substituir alterações recentes. Um commit ainda precisa de uma build Vercel Preview para a página atualizada ficar disponível.\n\n## Por que isso importa\nUma URL estável conserva o histórico do artigo enquanto ele é revisado. Traduções editoriais podem estar incompletas; o original continua disponível em vez de gerar traduções automaticamente. Veja o [arquivo News](/news) e os [Guides](/guides) para publicações disponíveis."
           }
         },
         "es": {
-          "state": "partial",
+          "state": "complete",
           "fields": {
             "name": "Cómo publica contenido Labs",
-            "summary": "Registros versionados, borradores privados y un paso controlado al Preview."
+            "summary": "Registros versionados, borradores privados y un paso controlado al Preview.",
+            "body": "## Una fuente pública versionada\nProyectos, versiones, launchers, artículos, guías, FAQ y ajustes del sitio tienen registros V2 validados en el repositorio. El JSON publicado entra en el bundle público; una ruta pública no lee por accidente un borrador privado. Un esquema comprueba los campos antes de publicar.\n\n## Borrador, vista previa y publicación\nEl panel del propietario utiliza autenticación, borrador privado, vista previa y una función de publicación en el servidor. Antes del commit a la rama Preview, la función compara la revisión Git esperada con la actual y evita sobrescribir cambios recientes. Un commit necesita todavía una compilación de Vercel Preview para que la página esté disponible.\n\n## Por qué importa al lector\nUna URL estable conserva la historia del artículo mientras se revisa. Las traducciones pueden estar incompletas: se conserva el original en vez de inventar traducciones automáticas. Consulta el [archivo News](/news) y las [Guides](/guides) para las entradas disponibles."
           }
         }
       },
@@ -224,24 +236,27 @@
       "sourceLocale": "en",
       "translations": {
         "pt-PT": {
-          "state": "partial",
+          "state": "complete",
           "fields": {
             "name": "Escolher um launcher a partir da fonte verificada",
-            "summary": "Compara percursos de instalação e consulta as páginas do próprio publicador."
+            "summary": "Compara percursos de instalação e consulta as páginas do próprio publicador.",
+            "body": "## Conhecer o publicador\nLaunchers de Minecraft podem gerir instâncias separadas, versões de Java e modpacks, mas um launcher de terceiros não substitui uma conta legítima do jogo. Segue o site ou a página de releases do próprio responsável. Uma ligação antiga encurtada não prova a origem.\n\n## Comparar um percurso concreto\nPrism suporta instâncias independentes e fontes de packs como Modrinth e CurseForge. A Modrinth App concentra-se no conteúdo da própria plataforma. ATLauncher e outros têm formas distintas de instalação. São percursos diferentes, não um ranking universal. Confirma sistema operativo, loader e fonte do pack de que precisas.\n\n## Continuar a ler\nO [catálogo de launchers](/launchers) inclui ligações a fontes e datas de verificação onde foram revistas. O [guia Prism](/guides/prism-launcher-setup) percorre uma instalação. Confirma sempre se a documentação corresponde à release transferida."
           }
         },
         "pt-BR": {
-          "state": "partial",
+          "state": "complete",
           "fields": {
             "name": "Escolher um launcher pela fonte verificada",
-            "summary": "Compare os caminhos de instalação e consulte as páginas do próprio publicador."
+            "summary": "Compare os caminhos de instalação e consulte as páginas do próprio publicador.",
+            "body": "## Conheça o publicador\nLaunchers de Minecraft podem gerenciar instâncias separadas, versões do Java e modpacks, mas um launcher de terceiros não substitui uma conta legítima do jogo. Use o site ou a página de versões do próprio desenvolvedor. Um link antigo encurtado não comprova a origem.\n\n## Compare um caminho concreto\nPrism oferece instâncias independentes e fontes de pacotes como Modrinth e CurseForge. O Modrinth App foca o conteúdo da própria plataforma. ATLauncher e outros possuem processos de instalação diferentes. São caminhos distintos, não uma classificação universal. Confira sistema operacional, loader e origem do pacote que deseja.\n\n## Leia mais\nO [catálogo de launchers](/launchers) inclui fontes e datas de verificação onde foram revisadas. O [guia Prism](/guides/prism-launcher-setup) mostra uma instalação. Confira se a documentação corresponde à versão baixada."
           }
         },
         "es": {
-          "state": "partial",
+          "state": "complete",
           "fields": {
             "name": "Elegir un launcher desde una fuente verificada",
-            "summary": "Compara las formas de instalación y consulta las páginas del editor."
+            "summary": "Compara las formas de instalación y consulta las páginas del editor.",
+            "body": "## Conoce al editor\nLos launchers de Minecraft pueden gestionar instancias separadas, versiones de Java y modpacks, pero un launcher externo no sustituye una cuenta legítima del juego. Sigue el sitio web o la página de versiones del propio desarrollador. Un enlace antiguo acortado no prueba su procedencia.\n\n## Compara un proceso concreto\nPrism permite instancias independientes y fuentes de paquetes como Modrinth y CurseForge. Modrinth App se centra en el contenido de su plataforma. ATLauncher y otros tienen rutas de instalación propias. Son formas distintas de trabajar, no una clasificación universal. Comprueba sistema operativo, loader y origen del paquete que necesitas.\n\n## Sigue leyendo\nEl [catálogo de launchers](/launchers) incluye enlaces a las fuentes y fechas de verificación donde se revisaron. La [guía Prism](/guides/prism-launcher-setup) explica una instalación. Confirma siempre que la documentación coincide con la versión descargada."
           }
         }
       },
@@ -285,24 +300,27 @@
       "sourceLocale": "en",
       "translations": {
         "pt-PT": {
-          "state": "partial",
+          "state": "complete",
           "fields": {
             "name": "Encontrar uma resposta antes de mudar a instalação",
-            "summary": "FAQ, guides, projectos e apoio cumprem funções complementares."
+            "summary": "FAQ, guides, projectos e apoio cumprem funções complementares.",
+            "body": "## Começar pelo projeto\nA [FAQ](/faq) cobre contas, estado dos projetos, compatibilidade, downloads e apoio. Deve responder ao que se sabe e encaminhar dúvidas específicas de versão para o projeto ou release publicada. Mac Native é beta; CraftToons está em desenvolvimento sem release pública.\n\n## Encontrar o documento certo\nUm guia pode explicar uma sequência com mais pormenor do que uma resposta curta da FAQ. Uma página de launcher mostra onde o publicador fornece downloads; uma página de projeto liga à fonte oficial do pack. Mantém a versão do jogo e o loader presentes quando passas de um para o outro.\n\n## Pedir ajuda com contexto\nSe ainda precisares de apoio, indica projeto, release, sistema operativo, launcher e um log de erro quando for seguro. Nunca envies passwords, tokens de acesso ou dados privados de conta. A [página de apoio](/support) contém os contactos atuais."
           }
         },
         "pt-BR": {
-          "state": "partial",
+          "state": "complete",
           "fields": {
             "name": "Encontre uma resposta antes de mudar sua instalação",
-            "summary": "FAQ, guias, projetos e suporte cumprem funções complementares."
+            "summary": "FAQ, guias, projetos e suporte cumprem funções complementares.",
+            "body": "## Comece pelo projeto\nO [FAQ](/faq) cobre contas, status de projetos, compatibilidade, downloads e suporte. Ele deve responder ao que é conhecido e encaminhar dúvidas sobre uma versão específica ao projeto ou à publicação. Mac Native está em beta; CraftToons está em desenvolvimento sem versão pública.\n\n## Encontre o documento certo\nUm guia descreve uma sequência em mais detalhe do que uma resposta curta do FAQ. A página de um launcher mostra onde seu desenvolvedor publica downloads; a página do projeto aponta para a fonte oficial do pacote. Confira versão do jogo e loader ao passar entre esses recursos.\n\n## Peça ajuda com contexto\nSe ainda precisar de suporte, informe projeto, versão, sistema operacional, launcher e log de erro quando for seguro. Nunca envie senhas, tokens de acesso ou informações privadas da conta. A [página de suporte](/support) contém os contatos disponíveis."
           }
         },
         "es": {
-          "state": "partial",
+          "state": "complete",
           "fields": {
             "name": "Encuentra una respuesta antes de cambiar tu instalación",
-            "summary": "Preguntas frecuentes, guías, proyectos y soporte tienen funciones complementarias."
+            "summary": "Preguntas frecuentes, guías, proyectos y soporte tienen funciones complementarias.",
+            "body": "## Empieza por el proyecto\nLas [FAQ](/faq) cubren cuentas, estado de proyectos, compatibilidad, descargas y soporte. Deben responder a lo conocido y dirigir las preguntas de una versión concreta al proyecto o publicación oficial. Mac Native es beta; CraftToons está en desarrollo sin versión pública.\n\n## Encuentra el documento adecuado\nUna guía puede explicar pasos con más detalle que una respuesta breve. La página de un launcher indica dónde publica las descargas su editor; la página de un proyecto enlaza a la fuente oficial del paquete. Comprueba versión del juego y loader al pasar de un recurso a otro.\n\n## Pide ayuda con contexto\nSi aún necesitas ayuda, indica proyecto, versión, sistema operativo, launcher y registro de errores cuando sea seguro. Nunca envíes contraseñas, tokens de acceso ni información privada de cuenta. La [página de soporte](/support) ofrece las vías de contacto actuales."
           }
         }
       },
@@ -336,24 +354,27 @@
       "sourceLocale": "en",
       "translations": {
         "pt-PT": {
-          "state": "partial",
+          "state": "complete",
           "fields": {
             "name": "O que os números públicos do Modrinth podem dizer",
-            "summary": "Downloads e seguidores são dados da plataforma, não provas de desempenho ou avaliações."
+            "summary": "Downloads e seguidores são dados da plataforma, não provas de desempenho ou avaliações.",
+            "body": "## Dados em tempo real e factos editoriais\nO Labs lê contagens de downloads e seguidores da API pública oficial do projeto no Modrinth. A resposta é guardada em cache durante um intervalo curto e os números desaparecem se a API estiver indisponível; uma falha de rede nunca se transforma num falso zero. A versão e o changelog de uma release são validados editorialmente em separado.\n\n## Não interpretar demasiado os números\nUm download é um evento contado pela plataforma. Não demonstra desempenho, utilizadores ativos ou satisfação. Seguidores representam uma ação no Modrinth, não uma classificação. Comparações exigem método, dispositivo e condições reproduzíveis.\n\n## Verificar a fonte\nAbre a [publicação Mac Native](https://modrinth.com/modpack/mac-native) para informação atual da plataforma. Na [página do projeto](/modpacks/mac-native), compatibilidade e dados da release continuam úteis mesmo quando a API de métricas falha."
           }
         },
         "pt-BR": {
-          "state": "partial",
+          "state": "complete",
           "fields": {
             "name": "O que os números públicos do Modrinth podem dizer",
-            "summary": "Downloads e seguidores são dados da plataforma, não provas de desempenho nem avaliações."
+            "summary": "Downloads e seguidores são dados da plataforma, não provas de desempenho nem avaliações.",
+            "body": "## Dados ao vivo e fatos editoriais\nO Labs lê contagens de downloads e seguidores da API pública oficial do projeto no Modrinth. A resposta fica em cache por um intervalo curto e os números desaparecem se a API não estiver disponível; uma falha de rede nunca vira um falso zero. A versão e o changelog de uma publicação são validados editorialmente em separado.\n\n## Não leia demais os números\nUm download é um evento contado pela plataforma. Não prova desempenho, usuários ativos nem satisfação. Seguidores representam uma ação no Modrinth, não uma avaliação. Comparações exigem método, dispositivo e condições reproduzíveis.\n\n## Confira a fonte\nAbra a [publicação Mac Native](https://modrinth.com/modpack/mac-native) para os dados atuais da plataforma. Na [página do projeto](/modpacks/mac-native), compatibilidade e fatos da versão continuam acessíveis mesmo quando a API de métricas falha."
           }
         },
         "es": {
-          "state": "partial",
+          "state": "complete",
           "fields": {
             "name": "Qué dicen las cifras públicas de Modrinth",
-            "summary": "Descargas y seguidores son datos de la plataforma, no pruebas de rendimiento ni valoraciones."
+            "summary": "Descargas y seguidores son datos de la plataforma, no pruebas de rendimiento ni valoraciones.",
+            "body": "## Datos en vivo y hechos editoriales\nLabs consulta las cifras de descargas y seguidores en la API pública oficial del proyecto de Modrinth. La respuesta se almacena temporalmente y las cifras desaparecen si la API no está disponible; un fallo de red nunca se convierte en un cero falso. La versión y el registro de cambios se validan editorialmente por separado.\n\n## No sobreinterpretes las cifras\nUna descarga es un evento contabilizado por la plataforma. No demuestra rendimiento, usuarios activos ni satisfacción. Los seguidores representan una acción en Modrinth, no una valoración. Las comparaciones necesitan método, dispositivo y condiciones repetibles.\n\n## Comprueba la fuente\nAbre la [publicación de Mac Native](https://modrinth.com/modpack/mac-native) para obtener datos actuales de la plataforma. En la [página del proyecto](/modpacks/mac-native), compatibilidad y datos de la versión siguen disponibles cuando falla la API de métricas."
           }
         }
       },
@@ -393,24 +414,27 @@
       "sourceLocale": "en",
       "translations": {
         "pt-PT": {
-          "state": "partial",
+          "state": "complete",
           "fields": {
             "name": "Uma biblioteca de guias orientada por tarefas",
-            "summary": "Os primeiros guias cobrem instalação, instâncias e conceitos básicos com fontes verificáveis."
+            "summary": "Os primeiros guias cobrem instalação, instâncias e conceitos básicos com fontes verificáveis.",
+            "body": "## Percursos práticos\nOs primeiros [Guides](/guides) cobrem a instalação de Mac Native, a configuração do Prism, a distinção entre AstralRinth e Modrinth App e os conceitos básicos de launchers e modpacks. Cada texto deve proporcionar um ponto de partida, uma sequência e uma saída quando surge um problema.\n\n## Conselhos atentos à versão\nUm guia não deve fingir que deteta hardware nem prescrever a mesma quantidade de memória para todas as máquinas. Antes de seguires um passo, compara a data do guia com a release e consulta a compatibilidade atual no publicador. Faz backup dos mundos antes de alterar instâncias.\n\n## Continuar a aprender\nUsa as fontes primárias ligadas para confirmar detalhes técnicos que mudam. Se um passo não corresponder ao que vês, pede [apoio](/support) com a versão da aplicação e um log de erro sem dados privados. A biblioteca pode ser atualizada no CMS do proprietário sem trocar a arquitetura das páginas."
           }
         },
         "pt-BR": {
-          "state": "partial",
+          "state": "complete",
           "fields": {
             "name": "Uma biblioteca de guias organizada por tarefas",
-            "summary": "Os primeiros guias cobrem instalação, instâncias e conceitos básicos com fontes verificáveis."
+            "summary": "Os primeiros guias cobrem instalação, instâncias e conceitos básicos com fontes verificáveis.",
+            "body": "## Caminhos práticos\nOs primeiros [Guides](/guides) cobrem instalação do Mac Native, configuração do Prism, diferença entre AstralRinth e Modrinth App e conceitos básicos de launchers e modpacks. Cada texto deve oferecer um ponto de partida, uma sequência e um caminho quando ocorre um problema.\n\n## Orientações dependem da versão\nUm guia não pode fingir que detecta o hardware nem recomendar a mesma memória para todo computador. Antes de seguir um passo, compare a data do guia com a publicação e consulte a compatibilidade atual no site do desenvolvedor. Faça backup dos mundos antes de mudar instâncias.\n\n## Continue aprendendo\nUse as fontes primárias indicadas para conferir detalhes técnicos sujeitos a mudanças. Se um passo for diferente do que você vê, procure [suporte](/support) com a versão do aplicativo e um log sem dados privados. A biblioteca pode ser atualizada pelo CMS sem trocar a arquitetura da página."
           }
         },
         "es": {
-          "state": "partial",
+          "state": "complete",
           "fields": {
             "name": "Una biblioteca de guías orientada a tareas",
-            "summary": "Las primeras guías cubren instalación, instancias y conceptos básicos con fuentes verificables."
+            "summary": "Las primeras guías cubren instalación, instancias y conceptos básicos con fuentes verificables.",
+            "body": "## Caminos prácticos\nLas primeras [Guides](/guides) cubren la instalación de Mac Native, la configuración de Prism, la diferencia entre AstralRinth y Modrinth App y las ideas básicas de launchers y modpacks. Cada texto debe ofrecer un punto de partida, pasos y una salida si algo falla.\n\n## Consejos atentos a la versión\nUna guía no debe fingir que detecta el equipo ni prescribir la misma memoria para todas las máquinas. Antes de seguir un paso, compara la fecha de la guía con la versión publicada y consulta la compatibilidad actual del editor. Guarda copias de los mundos antes de modificar instancias.\n\n## Sigue aprendiendo\nUsa las fuentes primarias enlazadas para confirmar detalles técnicos cambiantes. Si un paso no coincide con lo que ves, solicita [ayuda](/support) con la versión de la aplicación y un registro sin datos privados. El propietario puede actualizar la biblioteca desde el CMS sin cambiar la arquitectura de las páginas."
           }
         }
       },

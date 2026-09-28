@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { publicProject, publicProjects, publicReleasesFor, publicLauncher, publicLaunchers, publicArticles, publicFaq, publicSettings, publicArticle, publicGuides, publicGuide, publicHomepage, validatedPublicItems, resolveEntries } from '@/content/publicResolver';
+import { localizeItem } from '@/content/v2/localize';
 
 describe('public Content V2 resolution', () => {
   const v2 = { slug: 'known', name: 'Reviewed' };
@@ -82,5 +83,19 @@ describe('public Content V2 resolution', () => {
     expect(publicArticle('missing')).toBeUndefined();
     expect(publicGuides()).toHaveLength(5);
     expect(publicHomepage()?.sections).toEqual([{ id: 'metrics', visible: false }]);
+  });
+
+  it('keeps eight sourced article drafts in V2 with full associated translations and noindex pending review', () => {
+    const articles = publicArticles().filter((entry) => entry.source === 'v2');
+    expect(articles).toHaveLength(8);
+    for (const entry of articles) {
+      if (entry.source !== 'v2') continue;
+      expect(entry.item.seo?.noindex).toBe(true);
+      expect(entry.item.sources?.length).toBeGreaterThan(0);
+      for (const locale of ['pt-PT', 'pt-BR', 'es'] as const) {
+        expect(entry.item.translations[locale]?.state).toBe('complete');
+        expect(localizeItem(entry.item, locale).body).toMatch(/^## /);
+      }
+    }
   });
 });
