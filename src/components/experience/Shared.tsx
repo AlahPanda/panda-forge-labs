@@ -73,9 +73,10 @@ export function LauncherCard({ entry }: { entry: PublicEntry<LauncherV2, Launche
   const { t, locale } = useI18n();
   if (entry.source === 'legacy') return <article className="experience-card experience-launcher-card reveal"><div className="experience-launcher-icon"><Box size={30} aria-hidden="true"/></div><div className="experience-card-body"><h2>{entry.item.name}</h2><p>{entry.slug === 'astralrinth' ? t('ui.astralSummary') : t('ui.pendingLauncher')}</p>{entry.slug === 'astralrinth' && <p className="experience-meta">macOS · Windows · Linux</p>}<span className="experience-meta">{t('ui.review')}</span><div className="experience-card-actions"><Link to={'/launchers/' + entry.slug} className="experience-button experience-button-soft">{t('ui.viewStatus')} <ArrowRight size={16}/></Link></div></div></article>;
   const item = localizeItem(entry.item, locale);
-  return <article className="experience-card experience-launcher-card reveal"><div className="experience-launcher-icon" aria-hidden="true">{item.name.slice(0, 1).toUpperCase()}</div><div className="experience-card-body">
+  return <article className={'experience-card experience-launcher-card reveal launcher-tone-' + item.slug + (item.featured ? ' experience-launcher-featured' : '')}><div className="experience-card-visual experience-launcher-visual" aria-hidden="true"><Box size={48}/></div><div className="experience-launcher-icon" aria-hidden="true"><Box size={26}/></div><div className="experience-card-body">
+    {item.featured && <span className="experience-launcher-verified">{t('launcher.ourPick')}</span>}
     <h2>{item.name}</h2>{item.summary && <p>{item.summary}</p>}
-    {item.platforms.length > 0 && <p className="experience-meta">{item.platforms.join(' · ')}</p>}
+    {item.platforms.length > 0 && <p className="experience-meta">{item.platforms.join(' · ')}</p>}{item.currentVersion && <p className="experience-meta">v{item.currentVersion}</p>}
     {item.officialLinks?.length > 0 && <span className="experience-launcher-verified">{t('ui.officialLinks')}</span>}
     <div className="experience-card-actions"><Link to={'/launchers/' + item.slug} className="experience-button experience-button-soft">{t('ui.details')} <ArrowRight size={16} /></Link>
       {item.officialLinks?.[0] && <a className="experience-button experience-button-primary" href={item.officialLinks[0].url} target="_blank" rel="noopener noreferrer">{t('ui.official')} <ArrowRight size={16}/></a>}</div>

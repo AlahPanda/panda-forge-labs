@@ -12,3 +12,5 @@ Allow: /
 
 User-agent: *
 Allow: /
+
+Sitemap: https://alahpanda-labs.vercel.app/sitemap.xml

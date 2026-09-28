@@ -37,9 +37,9 @@ describe('V2 owner control', () => {
 
   it('serves the published V2 FAQ groups from the Git collection', () => {
     const groups = faqPublished.items.map((item) => parseItem('faq', item));
-    expect(groups).toHaveLength(4);
+    expect(groups).toHaveLength(9);
     expect(groups[0].slug).toBe('general');
-    expect((groups[0].items as Array<{id:string}>)[0].id).toBe('minecraft-account');
+    expect((groups[0].items as Array<{id:string}>)[0].id).toBe('what-is-labs');
   });
 
   it('validates proposed content, shows field paths, and rejects accidental field loss', () => {

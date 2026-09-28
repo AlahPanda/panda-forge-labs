@@ -45,14 +45,11 @@ describe('public redesign and editorial boundaries', () => {
     expect(screen.queryByText('Soon')).not.toBeInTheDocument();
   });
 
-  it('separates official launcher links from a legacy entry under review', () => {
+  it('features the verified AstralRinth entry and retains the full catalog', () => {
     publicRoute('/launchers', '/launchers', <LaunchersExperience/>);
-    fireEvent.click(screen.getByRole('button', { name: 'Official links' }));
-    expect(screen.getByRole('heading', { name: 'Prism Launcher' })).toBeInTheDocument();
-    expect(screen.queryByRole('heading', { name: 'AstralRinth' })).not.toBeInTheDocument();
-    fireEvent.click(screen.getByRole('button', { name: 'Under review' }));
     expect(screen.getByRole('heading', { name: 'AstralRinth' })).toBeInTheDocument();
-    expect(screen.queryByRole('heading', { name: 'Prism Launcher' })).not.toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: 'Prism Launcher' })).toBeInTheDocument();
+    expect(screen.getAllByRole('link', { name: 'Official site' })[0]).toHaveAttribute('href', 'https://git.xorison.dev/didirus/AstralRinth');
   });
 
   it('keeps the CraftToons URL a versionless teaser', () => {
@@ -108,26 +105,19 @@ describe('public redesign and editorial boundaries', () => {
     expect(screen.getByRole('img', { name: 'Second world' })).toBeInTheDocument();
   });
 
-  it('lists historical launchers safely and migrates verified SKLauncher fields', () => {
+  it('serves verified AstralRinth platform downloads without old shorteners', () => {
     const rendered = publicRoute('/launchers', '/launchers', <LaunchersExperience/>);
     for (const name of ['Prism Launcher', 'Modrinth App', 'ATLauncher', 'CurseForge App', 'MultiMC', 'GDLauncher', 'SKLauncher', 'AstralRinth']) {
       expect(screen.getByRole('heading', { name })).toBeInTheDocument();
     }
-    expect(screen.getByRole('link', { name: /view status/i })).toHaveAttribute('href', '/launchers/astralrinth');
-    fireEvent.change(screen.getByRole('searchbox', { name: 'Search launchers' }), { target: { value: 'Prism' } });
-    expect(screen.getByRole('heading', { name: 'Prism Launcher' })).toBeInTheDocument();
-    expect(screen.queryByRole('heading', { name: 'MultiMC' })).not.toBeInTheDocument();
+    expect(screen.getAllByRole('link', { name: 'Details' }).some((link) => link.getAttribute('href') === '/launchers/astralrinth')).toBe(true);
     rendered.unmount();
     publicRoute('/launchers/astralrinth', '/launchers/:slug', <LauncherDetailExperience/>);
     expect(screen.getByRole('heading', { name: 'AstralRinth' })).toBeInTheDocument();
-    for (const label of ['Windows (.exe)', 'macOS (ARM/M1/M2)', 'Linux (.deb)', 'Linux (.rpm)', 'Linux (.AppImage)']) {
-      expect(screen.getByRole('link', { name: new RegExp(label.replace(/[().]/g, '\\$&')) })).toHaveAttribute('href', expect.stringMatching(/^https:\/\/ouo\.io\//));
-    }
-    expect(screen.getByText(/não foram verificados de forma independente|have not been independently verified/i)).toBeInTheDocument();
-    cleanup();
-    publicRoute('/launchers/sklauncher', '/launchers/:slug', <LauncherDetailExperience/>);
-    expect(screen.getByRole('link', { name: 'Official SKLauncher website' })).toHaveAttribute('href', 'https://skmedix.pl/');
-    expect(screen.getByText(/Windows · Linux · macOS/)).toBeInTheDocument();
+    const downloads = document.querySelectorAll('.launcher-download-list a');
+    expect(downloads.length).toBeGreaterThanOrEqual(3);
+    for (const link of downloads) expect(link.getAttribute('href')).toMatch(/^https:\/\/git\.xorison\.dev\/didirus\/AstralRinth\/releases\/download\//);
+    expect(document.body.textContent).not.toContain('ouo.io');
   });
 
   it('withholds articles pending provenance review at their original URL', () => {
@@ -138,13 +128,14 @@ describe('public redesign and editorial boundaries', () => {
     expect(screen.queryByText(old.item.title)).not.toBeInTheDocument();
   });
 
-  it('shows eight labelled editorial demos with thumbnails and keeps Guides empty', () => {
+  it('shows eight sourced editorial drafts with thumbnails and five guides', () => {
     publicRoute('/news', '/news', <NewsExperience/>);
-    expect(screen.getAllByRole('link', { name: /\[Demo\]/i })).toHaveLength(8);
-    expect(document.querySelectorAll('.experience-article-card img')).toHaveLength(8);
+    expect(document.querySelectorAll('.experience-article-card img')).toHaveLength(6);
+    expect(screen.getByRole('navigation', { name: 'News pages' })).toBeInTheDocument();
+    expect(screen.queryByText(/\[Demo\]/)).not.toBeInTheDocument();
     cleanup();
     publicRoute('/guides', '/guides', <GuidesExperience/>);
-    expect(screen.getByRole('heading', { name: 'No guides published yet' })).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: /Mac Native: installation and configuration/i })).toHaveAttribute('href', '/guides/complete-mac-native');
   });
 
   it('shows the verified, published V2 FAQ and keeps the unreviewed legacy answers private from the V2 page', () => {
@@ -170,7 +161,7 @@ describe('public redesign and editorial boundaries', () => {
     const release = publicReleasesFor(mac.item)[0];
     expect(screen.getByRole('link', { name: /download.*modrinth/i })).toHaveAttribute('href', release.distribution?.[0]?.url);
     expect(screen.getAllByRole('link', { name: /support/i }).some((link) => link.getAttribute('href') === '/support')).toBe(true);
-    expect(screen.getAllByRole('link', { name: /\[Demo\]/i }).length).toBeGreaterThan(0);
+    expect(screen.getAllByRole('link', { name: /Mac Native 0\.3\.1 Beta/i }).length).toBeGreaterThan(0);
   });
 
   it('renders a different published release, compatibility and optional content from props', () => {

@@ -7,10 +7,11 @@ interface Props {
   url?: string;
   type?: 'website' | 'article';
   noindex?: boolean;
+  jsonLd?: Record<string, unknown> | Record<string, unknown>[];
 }
 
 /** Dynamic metadata via react-helmet-async — works for OG/Twitter previews. */
-export default function Seo({ title, description, image, url, type = 'website', noindex = false }: Props) {
+export default function Seo({ title, description, image, url, type = 'website', noindex = false, jsonLd }: Props) {
   const desc = description ?? '';
   const origin = typeof window !== 'undefined' ? window.location.origin : '';
   const pathname = typeof window !== 'undefined' ? window.location.pathname : '/';
@@ -36,6 +37,7 @@ export default function Seo({ title, description, image, url, type = 'website', 
       <meta name="twitter:title" content={title} />
       {desc && <meta name="twitter:description" content={desc} />}
       {img && <meta name="twitter:image" content={img} />}
+      {jsonLd && <script type="application/ld+json">{JSON.stringify(jsonLd).replace(/</g, '\\u003c')}</script>}
     </Helmet>
   );
 }

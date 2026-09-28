@@ -3,78 +3,215 @@
   "items": [
     {
       "slug": "mac-native-031-beta",
-      "name": "[Demo] Mac Native 0.3.1 Beta: publicação oficial",
-      "sourceLocale": "pt-PT",
-      "translations": {},
-      "summary": "A release 0.3.1 Beta está publicada no Modrinth. Consulta a versão, compatibilidade e alterações na fonte oficial.",
-      "body": "Mac Native é um modpack Minecraft para macOS. A publicação oficial no Modrinth contém a release 0.3.1 Beta e é a referência para download, lista de mods e notas da versão.\n\nEsta entrada demonstra o formato editorial do novo hub; revê o texto antes de o levar para produção.",
-      "category": "Projetos",
-      "publishedAt": "2026-09-28T12:00:00.000Z",
+      "name": "Mac Native 0.3.1 Beta: what is published",
+      "sourceLocale": "en",
+      "translations": {
+        "pt-PT": {
+          "state": "partial",
+          "fields": {
+            "name": "Mac Native 0.3.1 Beta: o que está publicado",
+            "summary": "A release oficial no Modrinth confirma versão e compatibilidade; os resultados de desempenho não são presumidos."
+          }
+        },
+        "pt-BR": {
+          "state": "partial",
+          "fields": {
+            "name": "Mac Native 0.3.1 Beta: o que foi publicado",
+            "summary": "A versão oficial no Modrinth confirma versão e compatibilidade; resultados de desempenho não são presumidos."
+          }
+        },
+        "es": {
+          "state": "partial",
+          "fields": {
+            "name": "Mac Native 0.3.1 Beta: qué se ha publicado",
+            "summary": "La versión oficial en Modrinth confirma versión y compatibilidad; no se presuponen resultados de rendimiento."
+          }
+        }
+      },
+      "summary": "Mac Native 0.3.1 Beta has an official Modrinth release. Here is what the public record confirms and what it does not.",
+      "body": "## The publication\nMac Native 0.3.1 is listed as a beta release on the official Modrinth project. Its published compatibility is Minecraft: Java Edition 1.21.11, Fabric and client-side use. The project description addresses Apple Silicon and Intel Macs. These are compatibility statements, not a guarantee of a particular frame rate or battery life.\n\n## What changed\nThe release notes mention network changes involving e4all and VMP, configuration for AsyncParticles and ModernFix, and updates to default options. For an exact list of files and dependencies, follow the release Content tab. The Labs does not reproduce unverified benchmark numbers as an independent test.\n\n## Install from the publisher\nUse the official release link on the [Mac Native page](/modpacks/mac-native), check its loader and game version, and keep a backup of your worlds. If the project publishes a newer version, its Modrinth release page remains the source of truth. The [Mac Native guide](/guides/complete-mac-native) explains a careful installation workflow.",
+      "category": "Projects",
+      "author": "AlahPanda Labs editorial draft",
+      "publishedAt": "2026-09-28T00:00:00.000Z",
+      "modifiedAt": "2026-09-28T00:00:00.000Z",
       "media": [
         {
           "kind": "image",
           "url": "/brand/mac-day.webp",
-          "alt": "Ilustração AlahPanda Labs para Projetos"
+          "alt": "Original AlahPanda illustration"
+        }
+      ],
+      "sources": [
+        {
+          "label": "Source 1",
+          "url": "https://modrinth.com/modpack/mac-native",
+          "checkedAt": "2026-09-28T00:00:00.000Z"
+        },
+        {
+          "label": "Source 2",
+          "url": "https://modrinth.com/modpack/mac-native/version/0.3.1",
+          "checkedAt": "2026-09-28T00:00:00.000Z"
         }
       ],
       "seo": {
         "noindex": true
-      }
+      },
+      "projectSlug": "mac-native"
     },
     {
       "slug": "mac-native-onde-instalar",
-      "name": "[Demo] Onde começar com Mac Native",
-      "sourceLocale": "pt-PT",
-      "translations": {},
-      "summary": "A página de Mac Native reúne instalação, requisitos conhecidos e ligações oficiais.",
-      "body": "Para começar, abre a página de Mac Native e consulta a secção de instalação. Confirma a versão de Minecraft e o loader indicados na release antes de escolher a instância. O download oficial está ligado ao Modrinth.\n\nNota de demonstração editorial: este texto precisa de aprovação antes de produção.",
-      "category": "Guias e ajuda",
-      "publishedAt": "2026-09-28T12:00:00.000Z",
+      "name": "Installing Mac Native without guessing your setup",
+      "sourceLocale": "en",
+      "translations": {
+        "pt-PT": {
+          "state": "partial",
+          "fields": {
+            "name": "Instalar Mac Native sem adivinhar a configuração",
+            "summary": "Um percurso cuidadoso desde a release oficial até uma instância separada em macOS."
+          }
+        },
+        "pt-BR": {
+          "state": "partial",
+          "fields": {
+            "name": "Instalar Mac Native sem adivinhar a configuração",
+            "summary": "Um caminho cuidadoso desde a versão oficial até uma instância separada no macOS."
+          }
+        },
+        "es": {
+          "state": "partial",
+          "fields": {
+            "name": "Instalar Mac Native sin adivinar la configuración",
+            "summary": "Un camino prudente desde la versión oficial hasta una instancia separada en macOS."
+          }
+        }
+      },
+      "summary": "A careful route from the official release page to a separate instance on macOS.",
+      "body": "## Begin with compatibility\nMac Native is published for Minecraft Java 1.21.11 with Fabric in its current verified release. Before downloading, compare those fields with the pack you intend to play. macOS support covers Apple Silicon and Intel in the project description, but hardware results vary.\n\n## Keep a separate instance\nInstall the pack from the official Modrinth project into a new launcher instance. This keeps another pack or vanilla world from being silently changed. Sign in with an account that owns Minecraft: Java Edition. A different launcher can import compatible packs, but its own documentation should control the exact steps.\n\n## Make changes reversible\nLaunch once with the published defaults. Back up worlds before updates or adding optional mods. If it crashes, capture the launcher log and compare version, loader and recent changes. Use the [complete guide](/guides/complete-mac-native) and [support](/support) instead of relying on a universal RAM or shader setting.",
+      "category": "Guides",
+      "author": "AlahPanda Labs editorial draft",
+      "publishedAt": "2026-09-28T00:00:00.000Z",
+      "modifiedAt": "2026-09-28T00:00:00.000Z",
       "media": [
         {
           "kind": "image",
-          "url": "/brand/projects-day.webp",
-          "alt": "Ilustração AlahPanda Labs para Guias e ajuda"
+          "url": "/brand/mac-day.webp",
+          "alt": "Original AlahPanda illustration"
+        }
+      ],
+      "sources": [
+        {
+          "label": "Source 1",
+          "url": "https://modrinth.com/modpack/mac-native/version/0.3.1",
+          "checkedAt": "2026-09-28T00:00:00.000Z"
+        },
+        {
+          "label": "Source 2",
+          "url": "https://prismlauncher.org/wiki/getting-started/download-modpacks/",
+          "checkedAt": "2026-09-28T00:00:00.000Z"
         }
       ],
       "seo": {
         "noindex": true
-      }
+      },
+      "projectSlug": "mac-native"
     },
     {
       "slug": "crafttoons-em-desenvolvimento",
-      "name": "[Demo] CraftToons está em desenvolvimento",
-      "sourceLocale": "pt-PT",
-      "translations": {},
-      "summary": "CraftToons é um protótipo interno. A página pública é apenas um teaser.",
-      "body": "CraftToons é um projeto em desenvolvimento. Ainda não existe uma release pública para instalar, nem foi anunciada uma data de lançamento. A página do projeto apresenta apenas a informação aprovada até ao momento.\n\nNota de demonstração editorial: revê antes de produção.",
-      "category": "Projetos",
-      "publishedAt": "2026-09-28T12:00:00.000Z",
+      "name": "CraftToons: what is public today",
+      "sourceLocale": "en",
+      "translations": {
+        "pt-PT": {
+          "state": "partial",
+          "fields": {
+            "name": "CraftToons: o que é público hoje",
+            "summary": "CraftToons permanece um conceito em desenvolvimento, sem release nem download público."
+          }
+        },
+        "pt-BR": {
+          "state": "partial",
+          "fields": {
+            "name": "CraftToons: o que é público hoje",
+            "summary": "CraftToons continua um conceito em desenvolvimento, sem versão nem download público."
+          }
+        },
+        "es": {
+          "state": "partial",
+          "fields": {
+            "name": "CraftToons: qué es público hoy",
+            "summary": "CraftToons sigue siendo un concepto en desarrollo, sin versión ni descarga pública."
+          }
+        }
+      },
+      "summary": "CraftToons remains an in-development concept, with no public release or download to announce.",
+      "body": "## A different experience\nThe public CraftToons page is deliberately a teaser. It names the project and communicates that development is under way. It does not publish a build, version, date, feature list or download link. A concept can be interesting without pretending to be available.\n\n## How to follow it\nThe [CraftToons page](/modpacks/crafttoons) is the stable destination for approved information. When a release is actually published, the project can receive compatibility and distribution facts through Content V2. Until then, Mac Native is the publicly usable beta product.\n\n## Editorial boundary\nScreenshots or descriptions from early experiments should not be treated as promised features. We will separate working concepts from releases in the same way that the Labs separates internal status from public version numbers.",
+      "category": "Projects",
+      "author": "AlahPanda Labs editorial draft",
+      "publishedAt": "2026-09-28T00:00:00.000Z",
+      "modifiedAt": "2026-09-28T00:00:00.000Z",
       "media": [
         {
           "kind": "image",
           "url": "/brand/projects-day.webp",
-          "alt": "Ilustração AlahPanda Labs para Projetos"
+          "alt": "Original AlahPanda illustration"
+        }
+      ],
+      "sources": [
+        {
+          "label": "Source 1",
+          "url": "https://github.com/AlahPanda/panda-forge-labs/tree/v2/full-redesign/src/content/v2/projects.json",
+          "checkedAt": "2026-09-28T00:00:00.000Z"
         }
       ],
       "seo": {
         "noindex": true
-      }
+      },
+      "projectSlug": "crafttoons"
     },
     {
       "slug": "content-v2-como-funciona",
-      "name": "[Demo] Como o conteúdo do Labs chega ao site",
-      "sourceLocale": "pt-PT",
-      "translations": {},
-      "summary": "O Content V2 separa rascunhos privados de conteúdo publicado e permite rever alterações antes da publicação.",
-      "body": "O conteúdo editorial do Labs é versionado no Git. O painel permite preparar um rascunho privado, pré-visualizar e publicar na branch de Preview após validação. Os conteúdos só entram nas rotas públicas quando publicados.\n\nEste é um texto de demonstração editorial para revisão do proprietário.",
-      "category": "Bastidores",
-      "publishedAt": "2026-09-28T12:00:00.000Z",
+      "name": "How the Labs publishes content",
+      "sourceLocale": "en",
+      "translations": {
+        "pt-PT": {
+          "state": "partial",
+          "fields": {
+            "name": "Como o Labs publica conteúdo",
+            "summary": "Registos versionados, drafts privados e uma passagem controlada para o Preview."
+          }
+        },
+        "pt-BR": {
+          "state": "partial",
+          "fields": {
+            "name": "Como o Labs publica conteúdo",
+            "summary": "Registros versionados, rascunhos privados e uma passagem controlada para o Preview."
+          }
+        },
+        "es": {
+          "state": "partial",
+          "fields": {
+            "name": "Cómo publica contenido Labs",
+            "summary": "Registros versionados, borradores privados y un paso controlado al Preview."
+          }
+        }
+      },
+      "summary": "A look at the Git-first workflow behind projects, guides and news.",
+      "body": "## A versioned public source\nProjects, releases, launchers, articles, guides, FAQ and website settings have validated V2 records in the repository. Published JSON is bundled with the site so a public route cannot accidentally read a private draft. A schema checks fields before publication.\n\n## Draft, preview, publish\nThe owner workspace uses authentication, a private draft, preview and a server-side publishing function. The function checks the expected Git revision before committing to the Preview branch, preventing a quiet overwrite of newer work. A Git commit still needs a Vercel Preview build before the changed page is ready.\n\n## Why it matters to readers\nA stable URL can keep its history while an article is reviewed and improved. Editorial translations can be incomplete; the original text remains available rather than automatically fabricating translations. See the [News archive](/news) and [Guides](/guides) for currently published entries.",
+      "category": "Behind the scenes",
+      "author": "AlahPanda Labs editorial draft",
+      "publishedAt": "2026-09-28T00:00:00.000Z",
+      "modifiedAt": "2026-09-28T00:00:00.000Z",
       "media": [
         {
           "kind": "image",
           "url": "/brand/about-day.webp",
-          "alt": "Ilustração AlahPanda Labs para Bastidores"
+          "alt": "Original AlahPanda illustration"
+        }
+      ],
+      "sources": [
+        {
+          "label": "Source 1",
+          "url": "https://github.com/AlahPanda/panda-forge-labs/tree/v2/full-redesign/docs/V2_PHASE_4B21_DATA_I18N_CMS.md",
+          "checkedAt": "2026-09-28T00:00:00.000Z"
         }
       ],
       "seo": {
@@ -83,18 +220,59 @@
     },
     {
       "slug": "launchers-destinos-oficiais",
-      "name": "[Demo] Encontrar o site oficial de um launcher",
-      "sourceLocale": "pt-PT",
-      "translations": {},
-      "summary": "O catálogo de launchers apresenta links oficiais quando a entrada tem origem confirmada.",
-      "body": "A área de Launchers reúne páginas para diferentes aplicações Minecraft. Quando existe uma ligação oficial revista, podes abrir o destino a partir do respetivo cartão. Campos ainda não revistos ficam identificados como tal.\n\nEste texto é uma demonstração editorial e não é uma recomendação técnica de um launcher específico.",
+      "name": "Choosing a launcher from a verified source",
+      "sourceLocale": "en",
+      "translations": {
+        "pt-PT": {
+          "state": "partial",
+          "fields": {
+            "name": "Escolher um launcher a partir da fonte verificada",
+            "summary": "Compara percursos de instalação e consulta as páginas do próprio publicador."
+          }
+        },
+        "pt-BR": {
+          "state": "partial",
+          "fields": {
+            "name": "Escolher um launcher pela fonte verificada",
+            "summary": "Compare os caminhos de instalação e consulte as páginas do próprio publicador."
+          }
+        },
+        "es": {
+          "state": "partial",
+          "fields": {
+            "name": "Elegir un launcher desde una fuente verificada",
+            "summary": "Compara las formas de instalación y consulta las páginas del editor."
+          }
+        }
+      },
+      "summary": "Why the official download destination matters more than a rating badge.",
+      "body": "## Know the publisher\nMinecraft launchers can manage separate instances, Java versions and modpacks, but a third-party launcher is not a substitute for a legitimate game account. Follow the developer’s own website or release page; a shortened historical link is not proof of provenance.\n\n## Compare a concrete workflow\nPrism supports independent instances and pack sources including Modrinth and CurseForge. Modrinth App focuses on content from its own platform. ATLauncher and others have their own installation paths. These are different workflows, not a universal ranking. Check the OS, loader and source of the pack you need.\n\n## Read further\nThe [launcher catalog](/launchers) keeps source links and verification dates where reviewed. Our [Prism guide](/guides/prism-launcher-setup) walks through one instance. Always confirm that documentation matches the specific release you download.",
       "category": "Launchers",
-      "publishedAt": "2026-09-28T12:00:00.000Z",
+      "author": "AlahPanda Labs editorial draft",
+      "publishedAt": "2026-09-28T00:00:00.000Z",
+      "modifiedAt": "2026-09-28T00:00:00.000Z",
       "media": [
         {
           "kind": "image",
           "url": "/brand/launchers-day.webp",
-          "alt": "Ilustração AlahPanda Labs para Launchers"
+          "alt": "Original AlahPanda illustration"
+        }
+      ],
+      "sources": [
+        {
+          "label": "Source 1",
+          "url": "https://prismlauncher.org/about/",
+          "checkedAt": "2026-09-28T00:00:00.000Z"
+        },
+        {
+          "label": "Source 2",
+          "url": "https://modrinth.com/app",
+          "checkedAt": "2026-09-28T00:00:00.000Z"
+        },
+        {
+          "label": "Source 3",
+          "url": "https://atlauncher.com/",
+          "checkedAt": "2026-09-28T00:00:00.000Z"
         }
       ],
       "seo": {
@@ -103,18 +281,49 @@
     },
     {
       "slug": "faq-nova-base",
-      "name": "[Demo] Um ponto de partida para perguntas frequentes",
-      "sourceLocale": "pt-PT",
-      "translations": {},
-      "summary": "O FAQ reúne respostas sobre acesso, instalação, compatibilidade e estado dos projetos.",
-      "body": "A secção de perguntas frequentes ajuda a distinguir o que já está publicado do que continua em desenvolvimento. Confirma sempre requisitos e downloads na página de cada projeto. Para dúvidas não cobertas, usa a área de suporte.\n\nNota de demonstração editorial: conteúdo sujeito a revisão antes de produção.",
-      "category": "Ajuda",
-      "publishedAt": "2026-09-28T12:00:00.000Z",
+      "name": "Finding an answer before changing your installation",
+      "sourceLocale": "en",
+      "translations": {
+        "pt-PT": {
+          "state": "partial",
+          "fields": {
+            "name": "Encontrar uma resposta antes de mudar a instalação",
+            "summary": "FAQ, guides, projectos e apoio cumprem funções complementares."
+          }
+        },
+        "pt-BR": {
+          "state": "partial",
+          "fields": {
+            "name": "Encontre uma resposta antes de mudar sua instalação",
+            "summary": "FAQ, guias, projetos e suporte cumprem funções complementares."
+          }
+        },
+        "es": {
+          "state": "partial",
+          "fields": {
+            "name": "Encuentra una respuesta antes de cambiar tu instalación",
+            "summary": "Preguntas frecuentes, guías, proyectos y soporte tienen funciones complementarias."
+          }
+        }
+      },
+      "summary": "The FAQ connects common questions to projects, launchers and support.",
+      "body": "## Start with the project\nThe [FAQ](/faq) covers accounts, project status, compatibility, downloads and support. It should answer what is known and send version-specific questions to the published project or release. Mac Native is a beta; CraftToons is in development without a public release.\n\n## Find the right document\nA guide can describe a sequence in more detail than a short FAQ answer. A launcher page tells you where the developer publishes downloads, while a project page links to the pack’s official source. Keep game versions and loaders in view when moving between them.\n\n## Ask with context\nIf you still need help, include the project, release, operating system, launcher and error log where safe. Never send passwords, access tokens or private account information. The [support page](/support) provides the current contact routes.",
+      "category": "Help",
+      "author": "AlahPanda Labs editorial draft",
+      "publishedAt": "2026-09-28T00:00:00.000Z",
+      "modifiedAt": "2026-09-28T00:00:00.000Z",
       "media": [
         {
           "kind": "image",
           "url": "/brand/faq-day.webp",
-          "alt": "Ilustração AlahPanda Labs para Ajuda"
+          "alt": "Original AlahPanda illustration"
+        }
+      ],
+      "sources": [
+        {
+          "label": "Source 1",
+          "url": "https://github.com/AlahPanda/panda-forge-labs/tree/v2/full-redesign/src/content/v2/faq.json",
+          "checkedAt": "2026-09-28T00:00:00.000Z"
         }
       ],
       "seo": {
@@ -122,39 +331,107 @@
       }
     },
     {
-      "slug": "guias-em-preparacao",
-      "name": "[Demo] Guias: uma secção para aprender",
-      "sourceLocale": "pt-PT",
-      "translations": {},
-      "summary": "A estrutura de guias existe, mas só mostrará guias quando houver conteúdo publicado e revisto.",
-      "body": "Os guias poderão acompanhar cada etapa de instalação e utilização. De momento, a coleção pública de guias não contém artigos aprovados. Consulta a instalação na página de Mac Native e os links oficiais dos launchers enquanto a secção é preparada.\n\nEsta é uma nota de demonstração editorial, não um anúncio de data ou funcionalidade futura.",
-      "category": "Guias",
-      "publishedAt": "2026-09-28T12:00:00.000Z",
+      "slug": "modrinth-factos-publicos",
+      "name": "What Modrinth project numbers can tell you",
+      "sourceLocale": "en",
+      "translations": {
+        "pt-PT": {
+          "state": "partial",
+          "fields": {
+            "name": "O que os números públicos do Modrinth podem dizer",
+            "summary": "Downloads e seguidores são dados da plataforma, não provas de desempenho ou avaliações."
+          }
+        },
+        "pt-BR": {
+          "state": "partial",
+          "fields": {
+            "name": "O que os números públicos do Modrinth podem dizer",
+            "summary": "Downloads e seguidores são dados da plataforma, não provas de desempenho nem avaliações."
+          }
+        },
+        "es": {
+          "state": "partial",
+          "fields": {
+            "name": "Qué dicen las cifras públicas de Modrinth",
+            "summary": "Descargas y seguidores son datos de la plataforma, no pruebas de rendimiento ni valoraciones."
+          }
+        }
+      },
+      "summary": "Downloads and followers are live public counters, not independent quality reviews or benchmarks.",
+      "body": "## Live data and editorial facts\nThe Labs reads download and follower counts from the official public Modrinth project API. The response is cached for a short interval and the numbers disappear if the API is unavailable; a network error never becomes a false zero. A release version and changelog are editorially validated separately.\n\n## Do not overread counts\nA download is an event counted by the platform. It does not prove performance, active users or satisfaction. Followers measure an action on Modrinth, not a review score. Comparisons require a defined method, device and repeatable conditions.\n\n## Check the source\nOpen the [Mac Native publication](https://modrinth.com/modpack/mac-native) for live platform information. On the [project page](/modpacks/mac-native), compatibility and release facts stay usable even when the metrics endpoint fails.",
+      "category": "Technical",
+      "author": "AlahPanda Labs editorial draft",
+      "publishedAt": "2026-09-28T00:00:00.000Z",
+      "modifiedAt": "2026-09-28T00:00:00.000Z",
+      "media": [
+        {
+          "kind": "image",
+          "url": "/brand/mac-day.webp",
+          "alt": "Original AlahPanda illustration"
+        }
+      ],
+      "sources": [
+        {
+          "label": "Source 1",
+          "url": "https://docs.modrinth.com/api/operations/getproject/",
+          "checkedAt": "2026-09-28T00:00:00.000Z"
+        },
+        {
+          "label": "Source 2",
+          "url": "https://modrinth.com/modpack/mac-native",
+          "checkedAt": "2026-09-28T00:00:00.000Z"
+        }
+      ],
+      "seo": {
+        "noindex": true
+      },
+      "projectSlug": "mac-native"
+    },
+    {
+      "slug": "guia-biblioteca-publica",
+      "name": "A guide library built around tasks",
+      "sourceLocale": "en",
+      "translations": {
+        "pt-PT": {
+          "state": "partial",
+          "fields": {
+            "name": "Uma biblioteca de guias orientada por tarefas",
+            "summary": "Os primeiros guias cobrem instalação, instâncias e conceitos básicos com fontes verificáveis."
+          }
+        },
+        "pt-BR": {
+          "state": "partial",
+          "fields": {
+            "name": "Uma biblioteca de guias organizada por tarefas",
+            "summary": "Os primeiros guias cobrem instalação, instâncias e conceitos básicos com fontes verificáveis."
+          }
+        },
+        "es": {
+          "state": "partial",
+          "fields": {
+            "name": "Una biblioteca de guías orientada a tareas",
+            "summary": "Las primeras guías cubren instalación, instancias y conceptos básicos con fuentes verificables."
+          }
+        }
+      },
+      "summary": "Guides connect a question to a safe installation or troubleshooting sequence.",
+      "body": "## Practical paths\nThe first [Guides](/guides) cover Mac Native installation, Prism setup, the distinction between AstralRinth and Modrinth App, and the basic ideas behind launchers and modpacks. Each should provide a starting point, a sequence, and a path when something goes wrong.\n\n## Version-aware advice\nA guide must not pretend to detect hardware or prescribe a single memory setting for every machine. Before following a step, compare the date of the guide with the release and consult the publisher’s current compatibility. Back up worlds before changing instances.\n\n## Keep learning\nUse the linked primary sources to verify changing technical details. If a step does not match what you see, ask through [support](/support) with the application version and a redacted error log. The library can be updated through the owner CMS without replacing the page architecture.",
+      "category": "Guides",
+      "author": "AlahPanda Labs editorial draft",
+      "publishedAt": "2026-09-28T00:00:00.000Z",
+      "modifiedAt": "2026-09-28T00:00:00.000Z",
       "media": [
         {
           "kind": "image",
           "url": "/brand/guides-day.webp",
-          "alt": "Ilustração AlahPanda Labs para Guias"
+          "alt": "Original AlahPanda illustration"
         }
       ],
-      "seo": {
-        "noindex": true
-      }
-    },
-    {
-      "slug": "comunidade-e-suporte",
-      "name": "[Demo] Encontrar ajuda e comunidade",
-      "sourceLocale": "pt-PT",
-      "translations": {},
-      "summary": "A navegação do Labs reúne suporte, FAQ e ligação à comunidade no Discord.",
-      "body": "A página de suporte encaminha para a instalação de Mac Native, os launchers, o FAQ e a ligação do Discord. Escolhe o caminho que melhor corresponde à tua dúvida.\n\nEste texto de demonstração aguarda revisão do proprietário antes da publicação em produção.",
-      "category": "Comunidade",
-      "publishedAt": "2026-09-28T12:00:00.000Z",
-      "media": [
+      "sources": [
         {
-          "kind": "image",
-          "url": "/brand/news-day.webp",
-          "alt": "Ilustração AlahPanda Labs para Comunidade"
+          "label": "Source 1",
+          "url": "https://github.com/AlahPanda/panda-forge-labs/tree/v2/full-redesign/src/content/v2/guides.json",
+          "checkedAt": "2026-09-28T00:00:00.000Z"
         }
       ],
       "seo": {

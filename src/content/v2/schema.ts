@@ -38,6 +38,7 @@ const base = z.object({
 const feature = z.object({ id: slugSchema.optional(), title: shortText, description: text.optional(), icon: shortText.optional() }).strict();
 const faqItem = z.object({ id: slugSchema.optional(), question: shortText, answer: text }).strict();
 const compatibility = z.object({ minecraft: z.array(shortText).optional(), loaders: z.array(shortText).optional(), platforms: z.array(shortText).optional(), environment: z.enum(['client', 'server', 'both']).optional() }).strict();
+const source = z.object({ label: shortText, url, checkedAt: z.string().datetime().optional() }).strict();
 
 export const projectStatusSchema = z.enum(['internal-prototype', 'development', 'alpha', 'beta', 'stable', 'archived']);
 export const distributionSchema = z.object({
@@ -66,15 +67,24 @@ export const launcherSchema = base.extend({
   easeOfUse: z.enum(['beginner', 'intermediate', 'advanced']).optional(),
   installation: text.optional(), compatibility: z.array(shortText).optional(),
   recommendations: z.array(shortText).optional(), officialLinks: z.array(z.object({ label: shortText, url }).strict()).optional(),
+  developer: shortText.optional(), currentVersion: shortText.optional(), lastVerified: z.string().datetime().optional(),
+  license: shortText.optional(), sourceCodeUrl: url.optional(), architectures: z.array(shortText).optional(),
+  supportedLoaders: z.array(shortText).optional(), modpackProviders: z.array(shortText).optional(),
+  instanceManagement: text.optional(), javaManagement: text.optional(), accountSupport: text.optional(),
+  requirements: z.array(shortText).optional(), knownLimitations: z.array(shortText).optional(),
+  downloads: z.array(z.object({ label: shortText, platform: shortText, url }).strict()).optional(),
+  sources: z.array(source).optional(), featured: z.boolean().optional(),
 }).strict();
 export const articleSchema = base.extend({
   body: text, category: shortText.optional(), projectSlug: slugSchema.optional(),
-  author: shortText.optional(), publishedAt: z.string().datetime().optional(), media: z.array(media).optional(),
+  author: shortText.optional(), publishedAt: z.string().datetime().optional(), modifiedAt: z.string().datetime().optional(), media: z.array(media).optional(),
+  sources: z.array(source).optional(), relatedArticleSlugs: z.array(slugSchema).optional(), tags: z.array(shortText).optional(),
 }).strict();
 export const guideSchema = base.extend({
   body: text, projectSlug: slugSchema.optional(), launcherSlug: slugSchema.optional(),
   level: z.enum(['beginner', 'technical']).optional(), updatedAt: z.string().datetime().optional(),
   media: z.array(media).optional(), steps: z.array(z.object({ id: slugSchema.optional(), title: shortText, body: text }).strict()).optional(),
+  sources: z.array(source).optional(), requirements: z.array(shortText).optional(), estimatedMinutes: z.number().int().positive().optional(),
 }).strict();
 export const faqSchema = base.extend({ projectSlug: slugSchema.optional(), items: z.array(faqItem).default([]) }).strict();
 export const homepageSchema = base.extend({
@@ -88,6 +98,7 @@ export const siteSettingsSchema = base.extend({
   navigation: z.array(z.object({ id: slugSchema.optional(), label: shortText, path: z.string().startsWith('/').max(200) }).strict()).optional(),
   footer: z.array(z.object({ id: slugSchema.optional(), label: shortText, url }).strict()).optional(),
   contactEmail: z.string().email().optional(),
+  supportUrl: url.optional(),
   supportIntro: text.optional(), communityIntro: text.optional(),
 }).strict();
 

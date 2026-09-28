@@ -50,7 +50,7 @@ describe('public Content V2 resolution', () => {
   });
 
   it('serves only published, valid guides and a safe empty collection', () => {
-    expect(publicGuides()).toEqual([]);
+    expect(publicGuides().map((guide) => guide.slug)).toEqual(['complete-mac-native', 'prism-launcher-setup', 'astralrinth-modrinth-setup', 'what-is-minecraft-launcher', 'what-are-minecraft-modpacks']);
     expect(publicGuide('missing')).toBeUndefined();
     const entries = validatedPublicItems<{ slug: string }>('guides', { schemaVersion: 2, items: [
       { slug: 'starting-out', name: 'Starting out', sourceLocale: 'pt-PT', body: 'Step one' },
@@ -61,7 +61,7 @@ describe('public Content V2 resolution', () => {
   });
 
   it('keeps legacy routes for launchers and articles pending editorial migration', () => {
-    const migrated = ['prism', 'modrinth-app', 'atlauncher', 'curseforge-app', 'multimc', 'gdlauncher', 'sklauncher'];
+    const migrated = ['astralrinth', 'prism', 'modrinth-app', 'atlauncher', 'curseforge-app', 'multimc', 'gdlauncher', 'sklauncher'];
     for (const slug of migrated) {
       const entry = publicLauncher(slug);
       expect(entry?.source).toBe('v2');
@@ -72,14 +72,15 @@ describe('public Content V2 resolution', () => {
         expect(entry.item.recommendations).toBeUndefined();
       }
     }
-    expect(publicLaunchers().filter((entry) => entry.source === 'legacy').map((entry) => entry.slug).sort()).toEqual(['astralrinth']);
+    expect(publicLaunchers().filter((entry) => entry.source === 'legacy')).toEqual([]);
+    expect(publicLauncher('astralrinth')?.source).toBe('v2');
     expect(publicSettings()?.name).toBe('AlahPanda Labs');
     expect(publicSettings()?.contactEmail).toBeUndefined();
     expect(publicFaq().find((entry) => entry.slug === 'general')?.source).toBe('v2');
-    expect(publicFaq().filter((entry) => entry.source === 'legacy').map((entry) => entry.slug)).toEqual(['performance']);
+    expect(publicFaq().filter((entry) => entry.source === 'legacy').map((entry) => entry.slug)).toEqual(['performance', 'support']);
     expect(publicArticles().filter((entry) => entry.source === 'legacy')).toHaveLength(5);
     expect(publicArticle('missing')).toBeUndefined();
-    expect(publicGuides()).toEqual([]);
+    expect(publicGuides()).toHaveLength(5);
     expect(publicHomepage()?.sections).toEqual([{ id: 'metrics', visible: false }]);
   });
 });
