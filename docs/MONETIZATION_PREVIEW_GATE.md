@@ -1,0 +1,7 @@
+# Preview gate: analytics, CMP, AdSense and ads.txt
+
+As of 2026-09-28, the inherited `index.html` loaded GA4 and AdSense before any choice. The scripts were removed from the Preview branch. The existing `CookieConsent` is a privacy notice only; it does not implement the IAB Transparency and Consent Framework.
+
+Google requires a Google-certified CMP integrated with IAB TCF for personalized ads in the EEA, UK and Switzerland. TCF v2.3 is current. The owner must choose and configure a certified CMP in AdSense **Privacy & messaging** (Google's own solution is available there) for the verified domain. Set up Accept, Reject and Manage choices, test consent signals and ensure non-essential scripts do not load before the applicable choice. Only after verification should an ad loader and analytics be reintroduced with the correct consent behaviour. See https://support.google.com/adsense/answer/13554116 and https://support.google.com/adsense/answer/9804260 .
+
+`public/ads.txt` intentionally has no reseller line. The old `index.html` contained an account meta tag and a separate Google site-verification token; both were removed from this Preview branch. Ownership and current account state are not verified in this environment. The owner must confirm the exact publisher ID and authorized account in AdSense, then add its prescribed `google.com, pub-..., DIRECT, f08c47fec0942fa0` line. No AdSense approval, CMP compliance or Production activation is claimed here. The Preview branch is not merged or deployed to Production.
