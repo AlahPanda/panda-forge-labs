@@ -57,12 +57,12 @@ export function ProjectCard({ entry }: { entry: PublicEntry<ProjectV2, Modpack> 
   const image = project.media?.find((media) => media.kind === 'image');
   const releases = teaser ? [] : publicReleasesFor(project);
   return <Link className="experience-card experience-project-card" to={'/modpacks/' + entry.slug}>
-    <div className={'experience-card-visual experience-card-visual-project ' + (teaser ? 'experience-visual-prototype' : 'experience-visual-native')}>
-      {image ? <img src={image.url} alt={image.alt || ''} loading="lazy" width="640" height="360" /> : <div className="experience-visual-monogram" aria-hidden="true">{teaser ? <Compass size={52} /> : <Rocket size={52} />}</div>}
+    <div className={'experience-card-visual experience-card-visual-project ' + (teaser ? 'experience-visual-prototype' : project.slug === 'mac-native' ? 'experience-visual-native' : '')}>
+      {image ? <img src={image.url} alt={image.alt || ''} loading="lazy" width="640" height="360" /> : teaser ? <div className="experience-visual-monogram" aria-hidden="true"><Compass size={52} /></div> : project.slug !== 'mac-native' ? <div className="experience-visual-monogram" aria-hidden="true"><Rocket size={52} /></div> : null}
     </div>
     <div className="experience-card-body"><ProjectStatusBadge status={project.status}/><h3>{project.name}</h3>
       {project.summary && <p>{project.summary}</p>}
-      {!teaser && releases[0] && <span className="experience-meta">v{releases[0].version} · {releases[0].channel}</span>}
+      {!teaser && <div className="experience-project-meta">{releases[0] && <span className="experience-meta">v{releases[0].version} · {t('status.' + releases[0].channel)}</span>}{project.compatibility?.minecraft?.map((version) => <span className="experience-meta" key={version}>Minecraft {version}</span>)}{project.compatibility?.platforms?.map((platform) => <span className="experience-meta" key={platform}>{platform}</span>)}</div>}
       <span className="experience-text-link">{t('ui.explore')} <ArrowRight size={16} aria-hidden="true" /></span>
     </div>
   </Link>;
@@ -72,9 +72,10 @@ export function LauncherCard({ entry }: { entry: PublicEntry<LauncherV2, Launche
   const { t, locale } = useI18n();
   if (entry.source === 'legacy') return <article className="experience-card experience-launcher-card"><div className="experience-launcher-icon"><Box size={30} aria-hidden="true"/></div><div className="experience-card-body"><h2>{entry.item.name}</h2><p>{t('ui.pendingLauncher')}</p><span className="experience-meta">{t('ui.review')}</span><div className="experience-card-actions"><Link to={'/launchers/' + entry.slug} className="experience-button experience-button-soft">{t('ui.viewStatus')} <ArrowRight size={16}/></Link></div></div></article>;
   const item = localizeItem(entry.item, locale);
-  return <article className="experience-card experience-launcher-card"><div className="experience-launcher-icon"><Box size={30} aria-hidden="true"/></div><div className="experience-card-body">
+  return <article className="experience-card experience-launcher-card"><div className="experience-launcher-icon" aria-hidden="true">{item.name.slice(0, 1).toUpperCase()}</div><div className="experience-card-body">
     <h2>{item.name}</h2>{item.summary && <p>{item.summary}</p>}
     {item.platforms.length > 0 && <p className="experience-meta">{item.platforms.join(' · ')}</p>}
+    {item.officialLinks?.length > 0 && <span className="experience-launcher-verified">{t('ui.officialLinks')}</span>}
     <div className="experience-card-actions"><Link to={'/launchers/' + item.slug} className="experience-button experience-button-soft">{t('ui.details')} <ArrowRight size={16} /></Link>
       {item.officialLinks?.[0] && <a className="experience-button experience-button-primary" href={item.officialLinks[0].url} target="_blank" rel="noopener noreferrer">{t('ui.official')} <ArrowRight size={16}/></a>}</div>
   </div></article>;

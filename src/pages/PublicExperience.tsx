@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
-import { ArrowLeft, ArrowRight, BookOpen, Box, Compass, ExternalLink, Heart, Leaf, MessageCircle, Newspaper } from 'lucide-react';
+import { ArrowLeft, ArrowRight, BookOpen, Box, Compass, ExternalLink, Heart, Leaf, MessageCircle, Newspaper, Download, Users, Map, Laptop } from 'lucide-react';
 import SiteLayout from '@/components/layout/SiteLayout';
 import Seo from '@/components/Seo';
 import RichMarkdown from '@/components/RichMarkdown';
@@ -13,6 +13,7 @@ import { HeroLandscape } from '@/components/design-system/HeroLandscape';
 import { PageHero, SectionTitle, SearchField, EmptyCollection, ProjectCard, LauncherCard, ArticleCard, GuideCard, destinations } from '@/components/experience/Shared';
 import { MacNativeProduct } from '@/components/experience/MacNativeProduct';
 import { localizeItem } from '@/content/v2/localize';
+import { useModrinthStats } from '@/lib/modrinthStats';
 
 const cardGrid = 'experience-grid experience-grid-projects';
 const approvedArticles = (): ArticleV2[] => publicArticles().flatMap((entry) => entry.source === 'v2' ? [entry.item] : []);
@@ -32,6 +33,9 @@ export function HomeExperience() {
   const others = featured.filter((entry) => entry.slug !== lead?.slug);
   const articles = approvedArticles().slice(0, 3);
   const guides = publicGuides().slice(0, 2);
+  const mac = publicProject('mac-native');
+  const macUrl = mac?.source === 'v2' ? mac.item.distribution?.find((provider) => provider.provider === 'modrinth' && provider.state === 'active')?.url : undefined;
+  const { data: stats } = useModrinthStats(macUrl);
   return <SiteLayout>
     <Seo title="AlahPanda Labs" description={(settings && localizeItem(settings, locale).description) || config?.hero?.subtitle || t('home.heroSub')}/>
     {/* Candidate brand line only; CMS hero copy always takes precedence. */}
@@ -49,14 +53,15 @@ export function HomeExperience() {
         {lead && <div className="experience-home-feature"><div className="experience-home-feature-copy"><span className="experience-kicker">{t('home.featuredMac')}</span><p>{localizeItem(lead.item, locale).summary}</p><div className="experience-card-actions"><Link to={'/modpacks/' + lead.slug} className="experience-button experience-button-primary">{t('ui.explore')} <ArrowRight size={17}/></Link>{publicReleasesFor(lead.item)[0]?.distribution?.filter((provider) => provider.state === 'active' && provider.url).slice(0,1).map((provider) => <a key={provider.provider} href={provider.url} className="experience-button experience-button-soft" target="_blank" rel="noopener noreferrer">{t('modpack.download')} · {provider.provider} <ExternalLink size={16}/></a>)}</div></div><ProjectCard entry={lead}/></div>}
         {others.length > 0 && <div className="experience-home-other"><h2>{t('home.more')}</h2><div className={cardGrid}>{others.map((entry) => <ProjectCard key={entry.slug} entry={entry}/>)}</div></div>}
       </section>}
-      <section className="experience-section"><SectionTitle title={t('home.paths')} icon={Compass}/><div className="experience-grid experience-grid-resources">
+      <section className="experience-section experience-paths"><SectionTitle title={t('home.paths')} icon={Compass}/><div className="experience-grid experience-grid-resources">
         <Link className="experience-card experience-resource" to="/modpacks"><Compass size={30}/><h3>{t('nav.modpacks')}</h3><p>{t('home.heroSub')}</p><span className="experience-text-link">{t('home.cta.explore')} <ArrowRight size={16}/></span></Link>
         <Link className="experience-card experience-resource" to="/launchers"><Box size={30}/><h3>{t('nav.launchers')}</h3><p>{t('home.launchersExplain')}</p><span className="experience-text-link">{t('mac.launchers')} <ArrowRight size={16}/></span></Link>
         <Link className="experience-card experience-resource" to="/guides"><BookOpen size={30}/><h3>{t('nav.guides')}</h3><p>{t('home.guidesEmpty')}</p><span className="experience-text-link">{t('nav.guides')} <ArrowRight size={16}/></span></Link>
         <Link className="experience-card experience-resource" to="/news"><Newspaper size={30}/><h3>{t('nav.news')}</h3><p>{t('home.newsExplain')}</p><span className="experience-text-link">{t('nav.news')} <ArrowRight size={16}/></span></Link>
       </div></section>
-      {config?.sections?.find((section) => section.id === 'latest-news')?.visible !== false && <section className="experience-section"><SectionTitle title={t('home.latest')} to="/news" icon={Newspaper}/>{articles.length ? <div className="experience-grid experience-grid-news">{articles.map((item) => <ArticleCard key={item.slug} item={item}/>)}</div> : <EmptyCollection title={t('home.articlesEmpty')} description={t('home.articlesExplain')} to="/news" link={t('nav.news')}/>}</section>}
+      {config?.sections?.find((section) => section.id === 'latest-news')?.visible !== false && <section className="experience-section"><SectionTitle title={t('home.latest')} to="/news" icon={Newspaper}/><div className="experience-editorial-row">{articles.length ? <div className="experience-grid experience-grid-news">{articles.map((item) => <ArticleCard key={item.slug} item={item}/>)}</div> : <div className="experience-card experience-editorial-wait"><Newspaper size={30}/><div><h3>{t('home.articlesEmpty')}</h3><p>{t('home.articlesExplain')}</p></div><Link className="experience-text-link" to="/news">{t('nav.news')} <ArrowRight size={16}/></Link></div>}<aside className="experience-editorial-aside"><h3>{t('ui.exploreSection')}</h3><Link to="/modpacks/mac-native">Mac Native <ArrowRight size={16}/></Link><Link to="/launchers">{t('nav.launchers')} <ArrowRight size={16}/></Link><Link to="/guides">{t('nav.guides')} <ArrowRight size={16}/></Link></aside></div></section>}
       {guides.length > 0 && <section className="experience-section"><SectionTitle title={t('home.resources')} to="/guides" icon={BookOpen}/><div className="experience-grid experience-grid-resources">{guides.map((guide) => <GuideCard key={guide.slug} guide={guide}/>)}</div></section>}
+      <section className="experience-home-closer" aria-label={t('ui.exploreSection')}><Link to="/guides"><BookOpen size={26}/><strong>{t('nav.guides')}</strong><span>{t('home.guidesEmpty')}</span></Link><Link to="/about"><Compass size={26}/><strong>{t('nav.about')}</strong><span>{t('footer.tagline')}</span></Link><Link to="/faq"><MessageCircle size={26}/><strong>FAQ</strong><span>{t('home.faqExplain')}</span></Link>{stats && <a href={macUrl} target="_blank" rel="noopener noreferrer"><Download size={26}/><strong>{new Intl.NumberFormat(locale).format(stats.downloads)}</strong><span>{t('mac.totalDownloads')} · Modrinth</span></a>}</section>
       <section className="experience-section experience-community"><div><span className="experience-kicker"><Leaf size={17}/> AlahPanda Labs</span><h2>{t('footer.tagline')}</h2><div className="experience-card-actions"><Link className="experience-button experience-button-soft" to="/support">{t('nav.support')} <ArrowRight size={17}/></Link><a className="experience-button experience-button-primary" href={site.discordUrl} target="_blank" rel="noopener noreferrer">{t('nav.discord')} <ExternalLink size={17}/></a></div></div><Compass size={118} aria-hidden="true"/></section>
     </div>
   </SiteLayout>;
@@ -65,12 +70,19 @@ export function HomeExperience() {
 export function ProjectsExperience() {
   const { t } = useI18n();
   const entries = publicProjects().filter((entry) => entry.source === 'v2');
+  const [filter, setFilter] = useState<'all' | 'available' | 'development'>('all');
+  const shown = entries.filter((entry) => filter === 'all' || (filter === 'development' ? entry.item.status === 'internal-prototype' || entry.item.status === 'development' : entry.item.status !== 'internal-prototype' && entry.item.status !== 'development'));
+  const mac = entries.find((entry) => entry.slug === 'mac-native');
+  const macUrl = mac?.item.distribution?.find((provider) => provider.provider === 'modrinth' && provider.state === 'active')?.url;
+  const { data: stats } = useModrinthStats(macUrl);
   const title = t('nav.modpacks');
   return <SiteLayout><Seo title={title + ' — AlahPanda Labs'} description={t('ui.modpacksIntro')}/>
-    <PageHero landscape scene="projects" title={title} eyebrow={t('ui.exploreSection')} description={t('ui.modpacksIntro')}/>
+    <PageHero landscape scene="projects" title={title} eyebrow={t('ui.exploreSection')} description={t('ui.modpacksIntro')}><Link className="experience-button experience-button-primary" to="/modpacks/mac-native">Mac Native <ArrowRight size={16}/></Link></PageHero>
     <section className="container experience-section experience-catalog"><SectionTitle title={t('home.journey')} icon={Compass}/>
-      {entries.length ? <div className={cardGrid}>{entries.map((entry) => <ProjectCard key={entry.slug} entry={entry}/>)}</div> : <EmptyCollection title={t('project.noMatch')} description={t('ui.noModpacks')}/>}
-      <div className="experience-card-actions experience-next-links"><Link to="/launchers" className="experience-button experience-button-soft">{t('nav.launchers')} <ArrowRight size={16}/></Link><Link to="/support" className="experience-button experience-button-soft">{t('nav.support')} <ArrowRight size={16}/></Link></div>
+      <div className="experience-filter-row" role="group" aria-label={t('ui.filterProjects')}>{(['all','available','development'] as const).map((value) => <button type="button" key={value} aria-pressed={filter === value} onClick={() => setFilter(value)}>{t('ui.filter.' + value)}</button>)}</div>
+      <div className="experience-catalog-columns"><div>{shown.length ? <div className={cardGrid}>{shown.map((entry) => <ProjectCard key={entry.slug} entry={entry}/>)}</div> : <EmptyCollection title={t('project.noMatch')} description={t('ui.noModpacks')}/>}</div>
+        <aside className="experience-catalog-aside"><h2>{t('ui.onYourWay')}</h2><p>{t('home.launchersExplain')}</p><Link to="/launchers"><Box size={19}/>{t('nav.launchers')} <ArrowRight size={16}/></Link><Link to="/modpacks/mac-native#installation"><BookOpen size={19}/>{t('project.installation')} <ArrowRight size={16}/></Link><Link to="/support"><MessageCircle size={19}/>{t('nav.support')} <ArrowRight size={16}/></Link>{stats && <div className="experience-source-stat"><strong>{new Intl.NumberFormat().format(stats.downloads)}</strong><span>{t('mac.totalDownloads')} · Modrinth</span></div>}</aside>
+      </div>
     </section>
   </SiteLayout>;
 }
@@ -106,13 +118,15 @@ export function ProjectDetailExperience() {
 export function LaunchersExperience() {
   const { t, locale } = useI18n();
   const [query, setQuery] = useState('');
+  const [filter, setFilter] = useState<'all' | 'official' | 'review'>('all');
   const launchers = publicLaunchers();
-  const filtered = launchers.filter((entry) => { const item = entry.source === 'v2' ? localizeItem(entry.item, locale) : entry.item; return (item.name + ' ' + (entry.source === 'v2' ? item.summary || '' : '')).toLowerCase().includes(query.trim().toLowerCase()); });
+  const filtered = launchers.filter((entry) => { const item = entry.source === 'v2' ? localizeItem(entry.item, locale) : entry.item; return (filter === 'all' || (filter === 'official' ? entry.source === 'v2' && !!entry.item.officialLinks?.length : entry.source === 'legacy' || !entry.item.officialLinks?.length)) && (item.name + ' ' + (entry.source === 'v2' ? item.summary || '' : '')).toLowerCase().includes(query.trim().toLowerCase()); });
   return <SiteLayout><Seo title={t('nav.launchers') + ' — AlahPanda Labs'} description={t('ui.launcherDescription')}/>
-    <PageHero title={t('nav.launchers')} tone="launchers" icon={Compass} eyebrow={t('ui.startingPoints')} description={t('ui.launcherIntro')}/>
+    <PageHero title={t('nav.launchers')} tone="launchers" icon={Compass} eyebrow={t('ui.startingPoints')} description={t('ui.launcherIntro')}><Link className="experience-button experience-button-primary" to="/modpacks/mac-native#installation">{t('project.installation')} <ArrowRight size={16}/></Link><div className="experience-hero-equipment" aria-hidden="true"><Laptop size={94}/><Map size={72}/><Box size={48}/></div></PageHero>
     <section className="container experience-section experience-catalog"><div className="experience-catalog-toolbar"><SectionTitle title={t('ui.browseLaunchers')} icon={Box}/><SearchField id="launcher-search" value={query} onChange={setQuery} placeholder={t('ui.searchLaunchers')}/></div>
-      {filtered.length ? <div className="experience-grid experience-grid-launchers">{filtered.map((entry) => <LauncherCard key={entry.slug} entry={entry}/>)}</div> : <EmptyCollection title={t('ui.noLaunchers')} description={t('ui.tryAgain')}/>}
-    </section><div className="container experience-card-actions experience-next-links"><Link to="/modpacks/mac-native#installation" className="experience-button experience-button-soft">Mac Native · {t('project.installation')} <ArrowRight size={16}/></Link><Link to="/support" className="experience-button experience-button-soft">{t('nav.support')} <ArrowRight size={16}/></Link></div></SiteLayout>;
+      <div className="experience-filter-row" role="group" aria-label={t('ui.filterLaunchers')}>{(['all','official','review'] as const).map((value) => <button type="button" key={value} aria-pressed={filter === value} onClick={() => setFilter(value)}>{t('ui.filter.' + value)}</button>)}</div>
+      <div className="experience-catalog-columns"><div>{filtered.length ? <div className="experience-grid experience-grid-launchers">{filtered.map((entry) => <LauncherCard key={entry.slug} entry={entry}/>)}</div> : <EmptyCollection title={t('ui.noLaunchers')} description={t('ui.tryAgain')}/>}</div><aside className="experience-catalog-aside"><h2>{t('ui.onYourWay')}</h2><p>{t('ui.launcherIntro')}</p><Link to="/modpacks/mac-native#installation"><BookOpen size={19}/>{t('project.installation')} <ArrowRight size={16}/></Link><Link to="/modpacks"><Compass size={19}/>{t('nav.modpacks')} <ArrowRight size={16}/></Link><Link to="/support"><MessageCircle size={19}/>{t('nav.support')} <ArrowRight size={16}/></Link></aside></div>
+    </section></SiteLayout>;
 }
 
 export function LauncherDetailExperience() {
@@ -136,12 +150,15 @@ export function LauncherDetailExperience() {
 export function NewsExperience() {
   const { t, locale } = useI18n();
   const [query, setQuery] = useState('');
+  const [category, setCategory] = useState('all');
   const articles = approvedArticles();
-  const filtered = articles.filter((source) => { const item = localizeItem(source, locale); return (item.name + ' ' + (item.summary || '') + ' ' + (item.category || '')).toLowerCase().includes(query.trim().toLowerCase()); });
+  const categories = [...new Set(articles.map((article) => article.category).filter((value): value is string => !!value))];
+  const filtered = articles.filter((source) => { const item = localizeItem(source, locale); return (category === 'all' || source.category === category) && (item.name + ' ' + (item.summary || '') + ' ' + (item.category || '')).toLowerCase().includes(query.trim().toLowerCase()); });
   return <SiteLayout><Seo title={t('nav.news') + ' — AlahPanda Labs'} description={t('ui.newsDescription')}/>
-    <PageHero landscape scene="news" title={t('nav.news')} eyebrow={t('ui.stories')} description={t('ui.newsIntro')}/>
+    <PageHero landscape scene="news" title={t('nav.news')} eyebrow={t('ui.stories')} description={t('ui.newsIntro')}><Link className="experience-button experience-button-soft" to="/modpacks">{t('nav.modpacks')} <ArrowRight size={16}/></Link></PageHero>
     <section className="container experience-section experience-catalog"><div className="experience-catalog-toolbar"><SectionTitle title={t('ui.latestArticles')} icon={Newspaper}/><SearchField id="news-search" value={query} onChange={setQuery} placeholder={t('ui.searchArticles')}/></div>
-      {filtered.length ? <div className="experience-grid experience-grid-news">{filtered.map((item) => <ArticleCard key={item.slug} item={item}/>)}</div> : <EmptyCollection title={query ? t('ui.noArticles') : t('ui.noArticle')} description={query ? t('ui.tryAgain') : t('ui.newsEmpty')}/>}
+      {categories.length > 0 && <div className="experience-filter-row" role="group" aria-label={t('ui.filterArticles')}><button type="button" aria-pressed={category === 'all'} onClick={() => setCategory('all')}>{t('ui.filter.all')}</button>{categories.map((name) => <button type="button" key={name} aria-pressed={category === name} onClick={() => setCategory(name)}>{name}</button>)}</div>}
+      <div className="experience-catalog-columns"><div>{filtered.length ? <div className="experience-grid experience-grid-news">{filtered.map((item) => <ArticleCard key={item.slug} item={item}/>)}</div> : <div className="experience-card experience-editorial-wait"><Newspaper size={32}/><div><h2>{query || category !== 'all' ? t('ui.noArticles') : t('ui.noArticle')}</h2><p>{query || category !== 'all' ? t('ui.tryAgain') : t('ui.newsEmpty')}</p></div></div>}</div><aside className="experience-catalog-aside"><h2>{t('ui.exploreSection')}</h2>{categories.map((name) => <button type="button" key={name} onClick={() => setCategory(name)}>{name} <ArrowRight size={16}/></button>)}<Link to="/modpacks/mac-native"><Compass size={19}/>Mac Native <ArrowRight size={16}/></Link><Link to="/guides"><BookOpen size={19}/>{t('nav.guides')} <ArrowRight size={16}/></Link><a href={site.discordUrl} target="_blank" rel="noopener noreferrer"><MessageCircle size={19}/>{t('ui.community')} <ExternalLink size={16}/></a></aside></div>
     </section></SiteLayout>;
 }
 

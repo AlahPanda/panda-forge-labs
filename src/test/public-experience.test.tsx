@@ -34,6 +34,27 @@ describe('public redesign and editorial boundaries', () => {
     expect(screen.queryByText(/download count|community rating|benchmark/i)).not.toBeInTheDocument();
   });
 
+  it('filters the published destinations without turning CraftToons into a release', () => {
+    publicRoute('/modpacks', '/modpacks', <ProjectsExperience/>);
+    fireEvent.click(screen.getByRole('button', { name: 'Available' }));
+    expect(screen.getByRole('heading', { name: 'Mac Native' })).toBeInTheDocument();
+    expect(screen.queryByRole('heading', { name: 'CraftToons' })).not.toBeInTheDocument();
+    fireEvent.click(screen.getByRole('button', { name: 'In development' }));
+    expect(screen.getByRole('heading', { name: 'CraftToons' })).toBeInTheDocument();
+    expect(screen.queryByRole('heading', { name: 'Mac Native' })).not.toBeInTheDocument();
+    expect(screen.queryByText('Soon')).not.toBeInTheDocument();
+  });
+
+  it('separates official launcher links from a legacy entry under review', () => {
+    publicRoute('/launchers', '/launchers', <LaunchersExperience/>);
+    fireEvent.click(screen.getByRole('button', { name: 'Official links' }));
+    expect(screen.getByRole('heading', { name: 'Prism Launcher' })).toBeInTheDocument();
+    expect(screen.queryByRole('heading', { name: 'AstralRinth' })).not.toBeInTheDocument();
+    fireEvent.click(screen.getByRole('button', { name: 'Under review' }));
+    expect(screen.getByRole('heading', { name: 'AstralRinth' })).toBeInTheDocument();
+    expect(screen.queryByRole('heading', { name: 'Prism Launcher' })).not.toBeInTheDocument();
+  });
+
   it('keeps the CraftToons URL a versionless teaser', () => {
     publicRoute('/modpacks/crafttoons', '/modpacks/:slug', <ProjectDetailExperience/>);
     expect(screen.getByRole('heading', { name: 'CraftToons' })).toBeInTheDocument();

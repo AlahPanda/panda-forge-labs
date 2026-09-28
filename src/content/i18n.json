@@ -208,7 +208,16 @@
     "ui.noModpacks": "No modpacks have been published yet.",
     "ui.level.beginner": "Beginner",
     "ui.level.technical": "Technical",
-    "ui.unavailable": "Content unavailable"
+    "ui.unavailable": "Content unavailable",
+    "ui.filterProjects": "Filter modpacks",
+    "ui.filterLaunchers": "Filter launchers",
+    "ui.filterArticles": "Filter articles",
+    "ui.filter.all": "All",
+    "ui.filter.available": "Available",
+    "ui.filter.development": "In development",
+    "ui.filter.official": "Official links",
+    "ui.filter.review": "Under review",
+    "ui.onYourWay": "Plan your journey"
   },
   "pt-PT": {
     "nav.home": "Início",
@@ -419,7 +428,16 @@
     "ui.noModpacks": "Ainda não há modpacks publicados.",
     "ui.level.beginner": "Iniciante",
     "ui.level.technical": "Técnico",
-    "ui.unavailable": "Conteúdo indisponível"
+    "ui.unavailable": "Conteúdo indisponível",
+    "ui.filterProjects": "Filtrar modpacks",
+    "ui.filterLaunchers": "Filtrar launchers",
+    "ui.filterArticles": "Filtrar artigos",
+    "ui.filter.all": "Todos",
+    "ui.filter.available": "Disponíveis",
+    "ui.filter.development": "Em desenvolvimento",
+    "ui.filter.official": "Links oficiais",
+    "ui.filter.review": "Em revisão",
+    "ui.onYourWay": "Prepara a tua jornada"
   },
   "pt-BR": {
     "nav.home": "Início",
@@ -630,7 +648,16 @@
     "ui.noModpacks": "Ainda não há modpacks publicados.",
     "ui.level.beginner": "Iniciante",
     "ui.level.technical": "Técnico",
-    "ui.unavailable": "Conteúdo indisponível"
+    "ui.unavailable": "Conteúdo indisponível",
+    "ui.filterProjects": "Filtrar modpacks",
+    "ui.filterLaunchers": "Filtrar launchers",
+    "ui.filterArticles": "Filtrar artigos",
+    "ui.filter.all": "Todos",
+    "ui.filter.available": "Disponíveis",
+    "ui.filter.development": "Em desenvolvimento",
+    "ui.filter.official": "Links oficiais",
+    "ui.filter.review": "Em revisão",
+    "ui.onYourWay": "Prepare sua jornada"
   },
   "es": {
     "nav.home": "Inicio",
@@ -841,6 +868,15 @@
     "ui.noModpacks": "Todavía no hay modpacks publicados.",
     "ui.level.beginner": "Principiante",
     "ui.level.technical": "Técnico",
-    "ui.unavailable": "Contenido no disponible"
+    "ui.unavailable": "Contenido no disponible",
+    "ui.filterProjects": "Filtrar modpacks",
+    "ui.filterLaunchers": "Filtrar launchers",
+    "ui.filterArticles": "Filtrar artículos",
+    "ui.filter.all": "Todos",
+    "ui.filter.available": "Disponibles",
+    "ui.filter.development": "En desarrollo",
+    "ui.filter.official": "Enlaces oficiales",
+    "ui.filter.review": "En revisión",
+    "ui.onYourWay": "Prepara tu viaje"
   }
 }
