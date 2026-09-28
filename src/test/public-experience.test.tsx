@@ -73,27 +73,39 @@ describe('public redesign and editorial boundaries', () => {
   it('keeps the verified Mac Native release and official destination', () => {
     publicRoute('/modpacks/mac-native', '/modpacks/:slug', <ProjectDetailExperience/>);
     expect(screen.getByRole('heading', { name: 'Mac Native' })).toBeInTheDocument();
-    expect(screen.getByText(/v0\.3\.1/)).toBeInTheDocument();
+    expect(screen.getByText('0.3.1', { selector: '.mac-release-version strong' })).toBeInTheDocument();
     expect(screen.getByRole('link', { name: /Official release.*modrinth/i })).toHaveAttribute('href', 'https://modrinth.com/modpack/mac-native/version/0.3.1');
     expect(screen.getByRole('link', { name: /Download 0\.3\.1 on Modrinth/i })).toHaveAttribute('href', 'https://modrinth.com/modpack/mac-native/version/0.3.1');
-    for (const heading of ['Mac Native on Mac', 'What Mac Native focuses on', 'Before you install', 'Installation', 'Published releases', 'Mac Native FAQ', 'Help and other projects']) {
-      expect(screen.getByRole('heading', { name: heading })).toBeInTheDocument();
-    }
+    for (const heading of ['Mac Native on Mac', 'Latest release', 'How it works', 'Need help or want to learn more?']) expect(screen.getByRole('heading', { name: heading })).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: /What’s inside/ })).toHaveAttribute('href', '#inside');
+    expect(screen.getByText(/Mac Native illustration/)).toBeInTheDocument();
+    expect(document.querySelectorAll('.mac-benefit')).toHaveLength(3);
+    expect(screen.getByText('Installation', { selector: 'summary' })).toBeInTheDocument();
     expect(screen.queryByText(/412 MB|8 GB|1\.4\.2|community rating|592 FPS/i)).not.toBeInTheDocument();
     expect(screen.queryByRole('heading', { name: 'Screenshots' })).not.toBeInTheDocument();
     expect(screen.queryByRole('heading', { name: 'Known issues' })).not.toBeInTheDocument();
-    expect(screen.queryByText('Downloads on Modrinth')).not.toBeInTheDocument();
+    expect(screen.queryByText(/Downloads on Modrinth/)).not.toBeInTheDocument();
     expect(screen.queryByText('0 downloads')).not.toBeInTheDocument();
   });
 
   it('shows only API supplied Modrinth downloads and followers without replacing the V2 release', async () => {
     vi.stubGlobal('fetch', vi.fn(async () => new Response(JSON.stringify({ downloads: 129, followers: 31 }), { status: 200 })));
     publicRoute('/modpacks/mac-native', '/modpacks/:slug', <ProjectDetailExperience/>);
-    await waitFor(() => expect(screen.getByText('129')).toBeInTheDocument());
-    expect(screen.getByText('31')).toBeInTheDocument();
-    expect(screen.getByText('Downloads on Modrinth')).toBeInTheDocument();
-    expect(screen.getByText(/v0\.3\.1/)).toBeInTheDocument();
+    await waitFor(() => expect(screen.getByText(/129 Downloads on Modrinth/)).toBeInTheDocument());
+    expect(screen.getByText(/31 Followers on Modrinth/)).toBeInTheDocument();
+    expect(screen.getByText('0.3.1', { selector: '.mac-release-version strong' })).toBeInTheDocument();
     expect(screen.getByRole('link', { name: /Download 0\.3\.1 on Modrinth/ })).toHaveAttribute('href', 'https://modrinth.com/modpack/mac-native/version/0.3.1');
+  });
+
+  it('uses the official gallery as a navigable carousel only when Modrinth supplies images', async () => {
+    vi.stubGlobal('fetch', vi.fn(async () => new Response(JSON.stringify({ downloads: 3, followers: 1, gallery: [
+      { url: 'https://cdn.modrinth.com/data/mac/one.webp', title: 'First world' },
+      { url: 'https://cdn.modrinth.com/data/mac/two.webp', title: 'Second world' },
+    ] }), { status: 200 })));
+    publicRoute('/modpacks/mac-native', '/modpacks/:slug', <ProjectDetailExperience/>);
+    expect(await screen.findByRole('img', { name: 'First world' })).toBeInTheDocument();
+    fireEvent.click(screen.getByRole('button', { name: 'Next image' }));
+    expect(screen.getByRole('img', { name: 'Second world' })).toBeInTheDocument();
   });
 
   it('lists historical launchers safely and migrates verified SKLauncher fields', () => {
@@ -170,13 +182,14 @@ describe('public redesign and editorial boundaries', () => {
     publicRoute('/modpacks/mac-native', '/modpacks/:slug', <MacNativeProduct project={{...mac.item, knownIssues:['Issue described by the publisher'], requirements:[{title:'Publisher requirement'}]}} releases={[next]}/>);
     expect(screen.getByRole('link', { name: /Download 0\.6\.0 on Modrinth/ })).toHaveAttribute('href', next.distribution[0].url);
     expect(screen.getAllByText('1.22').length).toBeGreaterThan(0);
-    expect(screen.getByRole('heading', { name: 'Known issues' })).toBeInTheDocument();
+    expect(screen.getByText('Known issues', { selector: 'summary' })).toBeInTheDocument();
+    fireEvent.click(screen.getByText('Compatibility', { selector: 'summary' }));
     expect(screen.getByRole('heading', { name: 'Publisher requirement' })).toBeInTheDocument();
-    expect(screen.getByRole('link', { name: /Installation/ })).toHaveAttribute('href', '#installation');
+    expect(screen.getAllByRole('link', { name: /Detailed instructions/ }).some((link) => link.getAttribute('href') === '#mac-install-detail')).toBe(true);
     cleanup();
     publicRoute('/modpacks/mac-native', '/modpacks/:slug', <MacNativeProduct project={{...mac.item, installation:undefined, faq:undefined, media:undefined}} releases={[]}/>);
-    expect(screen.queryByRole('heading', { name: 'Installation' })).not.toBeInTheDocument();
-    expect(screen.queryByRole('heading', { name: 'Published releases' })).not.toBeInTheDocument();
+    expect(screen.queryByText('Installation', { selector: 'summary' })).not.toBeInTheDocument();
+    expect(screen.queryByRole('heading', { name: 'Latest release' })).not.toBeInTheDocument();
   });
 
   it('keeps published article and guide cards navigable, with no invented entries', () => {

@@ -16,6 +16,11 @@ describe('official Modrinth metrics boundary', () => {
     expect(fetcher).toHaveBeenCalledWith('https://api.modrinth.com/v2/project/mac-native', expect.objectContaining({ headers: { Accept: 'application/json' } }));
   });
 
+  it('accepts official gallery and icon media while rejecting external image hosts', async () => {
+    const fetcher = vi.fn(async () => new Response(JSON.stringify({ downloads: 8, followers: 2, icon_url: 'https://cdn.modrinth.com/data/mac/icon.png', gallery: [{url:'https://cdn.modrinth.com/data/mac/one.webp',title:'First view'},{url:'https://evil.example/tracking.png',title:'Not official'}] }), { status: 200 }));
+    expect(await fetchModrinthStats('mac-native', fetcher)).toEqual({ downloads: 8, followers: 2, iconUrl: 'https://cdn.modrinth.com/data/mac/icon.png', gallery: [{url:'https://cdn.modrinth.com/data/mac/one.webp',alt:'First view'}] });
+  });
+
   it('rejects unavailable, malformed and untrusted data without manufacturing zero', async () => {
     const failed = vi.fn(async () => new Response('', { status: 503 }));
     await expect(fetchModrinthStats('mac-native', failed)).rejects.toThrow('unavailable');

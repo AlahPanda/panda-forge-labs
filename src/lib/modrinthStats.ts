@@ -15,6 +15,8 @@ export function modrinthProjectSlug(url?: string): string | undefined {
 const responseSchema = z.object({
   downloads: z.number().int().nonnegative().safe(),
   followers: z.number().int().nonnegative().safe(),
+  iconUrl: z.string().url().optional(),
+  gallery: z.array(z.object({ url: z.string().url(), alt: z.string(), caption: z.string().optional() })).optional(),
 });
 
 export type ModrinthStats = z.infer<typeof responseSchema>;
@@ -30,7 +32,15 @@ export async function fetchModrinthStats(slug: string, fetcher: typeof fetch = f
       signal: controller.signal,
     });
     if (!response.ok) throw new Error('Modrinth stats unavailable');
-    return responseSchema.parse(await response.json());
+    const raw = await response.json();
+    // Gallery and icon are optional; only media hosted by the official CDN is displayed.
+    const officialMedia = (url: unknown) => { try { const parsed = new URL(String(url)); return parsed.protocol === 'https:' && parsed.hostname === 'cdn.modrinth.com'; } catch { return false; } };
+    return responseSchema.parse({
+      downloads: raw.downloads,
+      followers: raw.followers,
+      iconUrl: officialMedia(raw.icon_url) ? raw.icon_url : undefined,
+      gallery: Array.isArray(raw.gallery) ? raw.gallery.filter((item: { url?: unknown }) => officialMedia(item.url)).slice(0, 8).map((item: { url: string; title?: string | null; description?: string | null }) => ({ url: item.url, alt: item.title || 'Mac Native', caption: item.description || undefined })) : undefined,
+    });
   } finally { clearTimeout(timeout); }
 }
 
