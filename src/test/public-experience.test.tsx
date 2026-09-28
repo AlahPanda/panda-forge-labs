@@ -108,7 +108,10 @@ describe('public redesign and editorial boundaries', () => {
     rendered.unmount();
     publicRoute('/launchers/astralrinth', '/launchers/:slug', <LauncherDetailExperience/>);
     expect(screen.getByRole('heading', { name: 'AstralRinth' })).toBeInTheDocument();
-    expect(screen.queryByRole('link', { name: /download/i })).not.toBeInTheDocument();
+    for (const label of ['Windows (.exe)', 'macOS (ARM/M1/M2)', 'Linux (.deb)', 'Linux (.rpm)', 'Linux (.AppImage)']) {
+      expect(screen.getByRole('link', { name: new RegExp(label.replace(/[().]/g, '\\$&')) })).toHaveAttribute('href', expect.stringMatching(/^https:\/\/ouo\.io\//));
+    }
+    expect(screen.getByText(/não foram verificados de forma independente|have not been independently verified/i)).toBeInTheDocument();
     cleanup();
     publicRoute('/launchers/sklauncher', '/launchers/:slug', <LauncherDetailExperience/>);
     expect(screen.getByRole('link', { name: 'Official SKLauncher website' })).toHaveAttribute('href', 'https://skmedix.pl/');
@@ -123,22 +126,21 @@ describe('public redesign and editorial boundaries', () => {
     expect(screen.queryByText(old.item.title)).not.toBeInTheDocument();
   });
 
-  it('provides useful empty states for News and Guides', () => {
-    const cases = [
-      ['/news', <NewsExperience/>, 'No articles published yet'],
-      ['/guides', <GuidesExperience/>, 'No guides published yet'],
-    ] as const;
-    for (const [path, page, title] of cases) {
-      const { unmount } = publicRoute(path, path, page);
-      expect(screen.getByRole('heading', { name: title })).toBeInTheDocument();
-      unmount();
-    }
+  it('shows eight labelled editorial demos with thumbnails and keeps Guides empty', () => {
+    publicRoute('/news', '/news', <NewsExperience/>);
+    expect(screen.getAllByRole('link', { name: /\[Demo\]/i })).toHaveLength(8);
+    expect(document.querySelectorAll('.experience-article-card img')).toHaveLength(8);
+    cleanup();
+    publicRoute('/guides', '/guides', <GuidesExperience/>);
+    expect(screen.getByRole('heading', { name: 'No guides published yet' })).toBeInTheDocument();
   });
 
   it('shows the verified, published V2 FAQ and keeps the unreviewed legacy answers private from the V2 page', () => {
     publicRoute('/faq', '/faq', <FaqExperience/>);
     expect(screen.getByText('Do I need a Minecraft account?')).toBeInTheDocument();
     expect(screen.getByText(/use a Microsoft account with access to the game/)).toBeInTheDocument();
+    expect(document.querySelectorAll('.experience-faq-item')).toHaveLength(21);
+    expect(document.querySelector('.experience-faq-category[href="#faq-group-launchers"]')).toBeInTheDocument();
   });
 
   it('shows the two projects without a marketplace filter or Soon', () => {
@@ -156,7 +158,7 @@ describe('public redesign and editorial boundaries', () => {
     const release = publicReleasesFor(mac.item)[0];
     expect(screen.getByRole('link', { name: /download.*modrinth/i })).toHaveAttribute('href', release.distribution?.[0]?.url);
     expect(screen.getAllByRole('link', { name: /support/i }).some((link) => link.getAttribute('href') === '/support')).toBe(true);
-    expect(screen.getByRole('heading', { name: 'No articles published yet' })).toBeInTheDocument();
+    expect(screen.getAllByRole('link', { name: /\[Demo\]/i }).length).toBeGreaterThan(0);
   });
 
   it('renders a different published release, compatibility and optional content from props', () => {

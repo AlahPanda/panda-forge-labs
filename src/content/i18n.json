@@ -217,7 +217,11 @@
     "ui.filter.development": "In development",
     "ui.filter.official": "Official links",
     "ui.filter.review": "Under review",
-    "ui.onYourWay": "Plan your journey"
+    "ui.onYourWay": "Plan your journey",
+    "ui.historicalDownloads": "Historical download links",
+    "ui.historicalWarning": "These links were kept from the earlier AstralRinth listing and pass through ouo.io. The files and destination have not been independently verified. Check the final destination before downloading or running an installer.",
+    "ui.astralSummary": "Historical AstralRinth listing with desktop links for Windows, macOS and Linux. Download destinations are under review.",
+    "ui.faqCategories": "FAQ categories"
   },
   "pt-PT": {
     "nav.home": "Início",
@@ -437,7 +441,11 @@
     "ui.filter.development": "Em desenvolvimento",
     "ui.filter.official": "Links oficiais",
     "ui.filter.review": "Em revisão",
-    "ui.onYourWay": "Prepara a tua jornada"
+    "ui.onYourWay": "Prepara a tua jornada",
+    "ui.historicalDownloads": "Ligações de download históricas",
+    "ui.historicalWarning": "Estas ligações vêm da listagem antiga de AstralRinth e passam por ouo.io. Os ficheiros e o destino não foram verificados de forma independente. Confirma o destino final antes de descarregar ou executar um instalador.",
+    "ui.astralSummary": "Listagem histórica de AstralRinth com ligações para Windows, macOS e Linux. Os destinos de download estão em revisão.",
+    "ui.faqCategories": "Categorias de perguntas"
   },
   "pt-BR": {
     "nav.home": "Início",
@@ -657,7 +665,11 @@
     "ui.filter.development": "Em desenvolvimento",
     "ui.filter.official": "Links oficiais",
     "ui.filter.review": "Em revisão",
-    "ui.onYourWay": "Prepare sua jornada"
+    "ui.onYourWay": "Prepare sua jornada",
+    "ui.historicalDownloads": "Links de download históricos",
+    "ui.historicalWarning": "Estes links vêm da listagem antiga do AstralRinth e passam por ouo.io. Os arquivos e o destino não foram verificados de forma independente. Confira o destino final antes de baixar ou executar um instalador.",
+    "ui.astralSummary": "Listagem histórica do AstralRinth com links para Windows, macOS e Linux. Os destinos de download estão em revisão.",
+    "ui.faqCategories": "Categorias de perguntas"
   },
   "es": {
     "nav.home": "Inicio",
@@ -877,6 +889,10 @@
     "ui.filter.development": "En desarrollo",
     "ui.filter.official": "Enlaces oficiales",
     "ui.filter.review": "En revisión",
-    "ui.onYourWay": "Prepara tu viaje"
+    "ui.onYourWay": "Prepara tu viaje",
+    "ui.historicalDownloads": "Enlaces de descarga históricos",
+    "ui.historicalWarning": "Estos enlaces proceden de la lista anterior de AstralRinth y pasan por ouo.io. Los archivos y el destino no se han verificado de manera independiente. Comprueba el destino final antes de descargar o ejecutar un instalador.",
+    "ui.astralSummary": "Lista histórica de AstralRinth con enlaces para Windows, macOS y Linux. Los destinos de descarga están en revisión.",
+    "ui.faqCategories": "Categorías de preguntas"
   }
 }

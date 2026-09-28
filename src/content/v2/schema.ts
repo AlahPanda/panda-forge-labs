@@ -5,7 +5,10 @@ export const slugSchema = z.string().regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, 'Use lo
 const text = z.string().max(30_000);
 const shortText = z.string().max(400);
 const url = z.string().url().refine((value) => /^https?:\/\//.test(value), 'Use an HTTP(S) URL');
-const media = z.object({ url, alt: shortText.optional(), caption: shortText.optional(), kind: z.enum(['image', 'video']).default('image') }).strict();
+// Public, checked-in artwork can be served from this site's own brand directory.
+// Other media still require an absolute HTTP(S) URL; no arbitrary local paths.
+const mediaUrl = z.union([url, z.string().regex(/^\/brand\/[a-z0-9-]+\.webp$/)]);
+const media = z.object({ url: mediaUrl, alt: shortText.optional(), caption: shortText.optional(), kind: z.enum(['image', 'video']).default('image') }).strict();
 const seo = z.object({ title: shortText.optional(), description: shortText.optional(), image: url.optional(), noindex: z.boolean().optional() }).strict();
 const localizedText = z.object({
   name: shortText.optional(), summary: shortText.optional(), description: text.optional(), body: text.optional(),

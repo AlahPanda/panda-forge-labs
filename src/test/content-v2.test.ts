@@ -46,4 +46,10 @@ describe('Content Model V2', () => {
     expect(() => parseCollection('projects', { schemaVersion: 2, items: [{ ...base, status: 'beta' }, { ...base, status: 'stable' }] })).toThrow('Duplicate');
     expect(projectSchema.safeParse({ ...base, status: 'beta', css: 'body{display:none}' }).success).toBe(false);
   });
+  it('accepts checked-in brand WebP media without allowing arbitrary local paths', () => {
+    const article = { ...base, body: 'Editorial demo', media: [{ url: '/brand/news-day.webp', kind: 'image' }] };
+    expect(parseItem('articles', article).media).toHaveLength(1);
+    expect(() => parseItem('articles', { ...article, media: [{ url: '/admin/editor', kind: 'image' }] })).toThrow();
+    expect(() => parseItem('articles', { ...article, media: [{ url: 'javascript:alert(1)', kind: 'image' }] })).toThrow();
+  });
 });

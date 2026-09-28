@@ -35,9 +35,9 @@ describe('V2 owner control', () => {
     expect(localizationStatus(empty,'settings','es')).toMatchObject({percent:null,status:'unavailable'});
   });
 
-  it('serves only the reviewed V2 FAQ group from the Git collection', () => {
+  it('serves the published V2 FAQ groups from the Git collection', () => {
     const groups = faqPublished.items.map((item) => parseItem('faq', item));
-    expect(groups).toHaveLength(1);
+    expect(groups).toHaveLength(4);
     expect(groups[0].slug).toBe('general');
     expect((groups[0].items as Array<{id:string}>)[0].id).toBe('minecraft-account');
   });

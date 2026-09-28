@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useTheme } from '@/lib/theme';
 
-type Scene = 'home' | 'mac' | 'news' | 'projects';
+type Scene = 'home' | 'mac' | 'news' | 'projects' | 'launchers' | 'faq' | 'about' | 'guides';
 type Frame = { name: string; moment: 'day' | 'night' };
 const path = (frame: Frame, mobile: boolean) => `/brand/${frame.name}-${frame.moment}${mobile ? '-mobile' : ''}.webp`;
 

@@ -6,7 +6,8 @@ export function useReveal() {
 
   useEffect(() => {
     const root = containerRef.current ?? document;
-    const els = (root === document ? document : root).querySelectorAll('.reveal');
+    const container = root === document ? document : root;
+    const els = container.querySelectorAll('.reveal');
     if (!('IntersectionObserver' in window)) {
       els.forEach((el) => el.classList.add('in'));
       return;
@@ -23,7 +24,14 @@ export function useReveal() {
       { threshold: 0.15, rootMargin: '0px 0px -8% 0px' }
     );
     els.forEach((el) => io.observe(el));
-    return () => io.disconnect();
+    // Filtered cards may enter after the route has mounted.
+    const mutations = new MutationObserver((changes) => changes.forEach((change) => change.addedNodes.forEach((node) => {
+      if (!(node instanceof Element)) return;
+      if (node.matches('.reveal')) io.observe(node);
+      node.querySelectorAll('.reveal').forEach((child) => io.observe(child));
+    })));
+    mutations.observe(container, { childList: true, subtree: true });
+    return () => { mutations.disconnect(); io.disconnect(); };
   }, []);
 
   return containerRef;

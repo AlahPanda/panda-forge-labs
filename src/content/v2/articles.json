@@ -1,1 +1,165 @@
-{"schemaVersion":2,"items":[]}
+{
+  "schemaVersion": 2,
+  "items": [
+    {
+      "slug": "mac-native-031-beta",
+      "name": "[Demo] Mac Native 0.3.1 Beta: publicação oficial",
+      "sourceLocale": "pt-PT",
+      "translations": {},
+      "summary": "A release 0.3.1 Beta está publicada no Modrinth. Consulta a versão, compatibilidade e alterações na fonte oficial.",
+      "body": "Mac Native é um modpack Minecraft para macOS. A publicação oficial no Modrinth contém a release 0.3.1 Beta e é a referência para download, lista de mods e notas da versão.\n\nEsta entrada demonstra o formato editorial do novo hub; revê o texto antes de o levar para produção.",
+      "category": "Projetos",
+      "publishedAt": "2026-09-28T12:00:00.000Z",
+      "media": [
+        {
+          "kind": "image",
+          "url": "/brand/mac-day.webp",
+          "alt": "Ilustração AlahPanda Labs para Projetos"
+        }
+      ],
+      "seo": {
+        "noindex": true
+      }
+    },
+    {
+      "slug": "mac-native-onde-instalar",
+      "name": "[Demo] Onde começar com Mac Native",
+      "sourceLocale": "pt-PT",
+      "translations": {},
+      "summary": "A página de Mac Native reúne instalação, requisitos conhecidos e ligações oficiais.",
+      "body": "Para começar, abre a página de Mac Native e consulta a secção de instalação. Confirma a versão de Minecraft e o loader indicados na release antes de escolher a instância. O download oficial está ligado ao Modrinth.\n\nNota de demonstração editorial: este texto precisa de aprovação antes de produção.",
+      "category": "Guias e ajuda",
+      "publishedAt": "2026-09-28T12:00:00.000Z",
+      "media": [
+        {
+          "kind": "image",
+          "url": "/brand/projects-day.webp",
+          "alt": "Ilustração AlahPanda Labs para Guias e ajuda"
+        }
+      ],
+      "seo": {
+        "noindex": true
+      }
+    },
+    {
+      "slug": "crafttoons-em-desenvolvimento",
+      "name": "[Demo] CraftToons está em desenvolvimento",
+      "sourceLocale": "pt-PT",
+      "translations": {},
+      "summary": "CraftToons é um protótipo interno. A página pública é apenas um teaser.",
+      "body": "CraftToons é um projeto em desenvolvimento. Ainda não existe uma release pública para instalar, nem foi anunciada uma data de lançamento. A página do projeto apresenta apenas a informação aprovada até ao momento.\n\nNota de demonstração editorial: revê antes de produção.",
+      "category": "Projetos",
+      "publishedAt": "2026-09-28T12:00:00.000Z",
+      "media": [
+        {
+          "kind": "image",
+          "url": "/brand/projects-day.webp",
+          "alt": "Ilustração AlahPanda Labs para Projetos"
+        }
+      ],
+      "seo": {
+        "noindex": true
+      }
+    },
+    {
+      "slug": "content-v2-como-funciona",
+      "name": "[Demo] Como o conteúdo do Labs chega ao site",
+      "sourceLocale": "pt-PT",
+      "translations": {},
+      "summary": "O Content V2 separa rascunhos privados de conteúdo publicado e permite rever alterações antes da publicação.",
+      "body": "O conteúdo editorial do Labs é versionado no Git. O painel permite preparar um rascunho privado, pré-visualizar e publicar na branch de Preview após validação. Os conteúdos só entram nas rotas públicas quando publicados.\n\nEste é um texto de demonstração editorial para revisão do proprietário.",
+      "category": "Bastidores",
+      "publishedAt": "2026-09-28T12:00:00.000Z",
+      "media": [
+        {
+          "kind": "image",
+          "url": "/brand/about-day.webp",
+          "alt": "Ilustração AlahPanda Labs para Bastidores"
+        }
+      ],
+      "seo": {
+        "noindex": true
+      }
+    },
+    {
+      "slug": "launchers-destinos-oficiais",
+      "name": "[Demo] Encontrar o site oficial de um launcher",
+      "sourceLocale": "pt-PT",
+      "translations": {},
+      "summary": "O catálogo de launchers apresenta links oficiais quando a entrada tem origem confirmada.",
+      "body": "A área de Launchers reúne páginas para diferentes aplicações Minecraft. Quando existe uma ligação oficial revista, podes abrir o destino a partir do respetivo cartão. Campos ainda não revistos ficam identificados como tal.\n\nEste texto é uma demonstração editorial e não é uma recomendação técnica de um launcher específico.",
+      "category": "Launchers",
+      "publishedAt": "2026-09-28T12:00:00.000Z",
+      "media": [
+        {
+          "kind": "image",
+          "url": "/brand/launchers-day.webp",
+          "alt": "Ilustração AlahPanda Labs para Launchers"
+        }
+      ],
+      "seo": {
+        "noindex": true
+      }
+    },
+    {
+      "slug": "faq-nova-base",
+      "name": "[Demo] Um ponto de partida para perguntas frequentes",
+      "sourceLocale": "pt-PT",
+      "translations": {},
+      "summary": "O FAQ reúne respostas sobre acesso, instalação, compatibilidade e estado dos projetos.",
+      "body": "A secção de perguntas frequentes ajuda a distinguir o que já está publicado do que continua em desenvolvimento. Confirma sempre requisitos e downloads na página de cada projeto. Para dúvidas não cobertas, usa a área de suporte.\n\nNota de demonstração editorial: conteúdo sujeito a revisão antes de produção.",
+      "category": "Ajuda",
+      "publishedAt": "2026-09-28T12:00:00.000Z",
+      "media": [
+        {
+          "kind": "image",
+          "url": "/brand/faq-day.webp",
+          "alt": "Ilustração AlahPanda Labs para Ajuda"
+        }
+      ],
+      "seo": {
+        "noindex": true
+      }
+    },
+    {
+      "slug": "guias-em-preparacao",
+      "name": "[Demo] Guias: uma secção para aprender",
+      "sourceLocale": "pt-PT",
+      "translations": {},
+      "summary": "A estrutura de guias existe, mas só mostrará guias quando houver conteúdo publicado e revisto.",
+      "body": "Os guias poderão acompanhar cada etapa de instalação e utilização. De momento, a coleção pública de guias não contém artigos aprovados. Consulta a instalação na página de Mac Native e os links oficiais dos launchers enquanto a secção é preparada.\n\nEsta é uma nota de demonstração editorial, não um anúncio de data ou funcionalidade futura.",
+      "category": "Guias",
+      "publishedAt": "2026-09-28T12:00:00.000Z",
+      "media": [
+        {
+          "kind": "image",
+          "url": "/brand/guides-day.webp",
+          "alt": "Ilustração AlahPanda Labs para Guias"
+        }
+      ],
+      "seo": {
+        "noindex": true
+      }
+    },
+    {
+      "slug": "comunidade-e-suporte",
+      "name": "[Demo] Encontrar ajuda e comunidade",
+      "sourceLocale": "pt-PT",
+      "translations": {},
+      "summary": "A navegação do Labs reúne suporte, FAQ e ligação à comunidade no Discord.",
+      "body": "A página de suporte encaminha para a instalação de Mac Native, os launchers, o FAQ e a ligação do Discord. Escolhe o caminho que melhor corresponde à tua dúvida.\n\nEste texto de demonstração aguarda revisão do proprietário antes da publicação em produção.",
+      "category": "Comunidade",
+      "publishedAt": "2026-09-28T12:00:00.000Z",
+      "media": [
+        {
+          "kind": "image",
+          "url": "/brand/news-day.webp",
+          "alt": "Ilustração AlahPanda Labs para Comunidade"
+        }
+      ],
+      "seo": {
+        "noindex": true
+      }
+    }
+  ]
+}

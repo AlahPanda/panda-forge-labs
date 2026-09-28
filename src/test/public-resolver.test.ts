@@ -76,7 +76,7 @@ describe('public Content V2 resolution', () => {
     expect(publicSettings()?.name).toBe('AlahPanda Labs');
     expect(publicSettings()?.contactEmail).toBeUndefined();
     expect(publicFaq().find((entry) => entry.slug === 'general')?.source).toBe('v2');
-    expect(publicFaq().filter((entry) => entry.source === 'legacy').map((entry) => entry.slug)).toEqual(['performance', 'support']);
+    expect(publicFaq().filter((entry) => entry.source === 'legacy').map((entry) => entry.slug)).toEqual(['performance']);
     expect(publicArticles().filter((entry) => entry.source === 'legacy')).toHaveLength(5);
     expect(publicArticle('missing')).toBeUndefined();
     expect(publicGuides()).toEqual([]);

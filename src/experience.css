@@ -391,3 +391,54 @@ a:hover .experience-text-link svg,.experience-text-link:hover svg { transform: t
   .experience-hero-plain .experience-hero-inner { min-height:300px; }
 }
 @media (max-width:390px) { .experience-paths .experience-grid-resources { grid-template-columns:1fr; } }
+
+/* Motion is shared by all public destinations and runs only on transform/opacity. */
+@keyframes apl-page-enter { from { opacity:.65;transform:translateY(7px); } to { opacity:1;transform:none; } }
+@keyframes apl-reveal { from { opacity:.45;transform:translateY(14px); } to { opacity:1;transform:none; } }
+@keyframes apl-image-enter { from { opacity:.4;filter:blur(5px);transform:scale(1.025); } to { opacity:1;filter:blur(0);transform:scale(1); } }
+@keyframes apl-answer-enter { from { opacity:0;transform:translateY(-6px); } to { opacity:1;transform:none; } }
+.experience-page-enter { animation:apl-page-enter 280ms var(--motion-ease) both; }
+.experience-site .reveal.in { animation:apl-reveal 430ms var(--motion-ease) both; }
+.experience-grid > .reveal:nth-child(3n + 2).in { animation-delay:65ms; }
+.experience-grid > .reveal:nth-child(3n + 3).in { animation-delay:130ms; }
+.experience-hero-reveal { animation:apl-reveal 470ms var(--motion-ease) both; }
+.experience-hero-copy > .experience-hero-reveal:nth-child(2) { animation-delay:70ms; }
+.experience-hero-copy > .experience-hero-reveal:nth-child(3) { animation-delay:145ms; }
+.experience-hero-copy > .experience-hero-reveal:nth-child(4) { animation-delay:215ms; }
+.experience-hero-art .hero-landscape img { animation:apl-image-enter 600ms var(--motion-ease) both; }
+.experience-card-visual img,.experience-article-card img { transition:transform 340ms var(--motion-ease),opacity 340ms var(--motion-ease),filter 340ms var(--motion-ease); }
+.experience-card:hover .experience-card-visual img,.experience-card:hover .experience-article-image { transform:scale(1.035); }
+.experience-card:hover .experience-text-link svg,.experience-button:hover svg { transform:translateX(3px); }
+.experience-button svg { transition:transform var(--motion-quick); }
+.experience-filter-row button { transition:background-color var(--motion-quick),color var(--motion-quick),border-color var(--motion-quick),transform var(--motion-quick); }
+.experience-filter-row button:hover { transform:translateY(-2px); }
+.experience-preferences label:hover { border-color:hsl(var(--primary) / .55);box-shadow:var(--shadow-card); }
+.experience-preferences svg { transition:transform var(--motion-normal); }
+.experience-preferences label:hover svg { transform:rotate(-10deg); }
+.experience-faq-item[open] .experience-faq-answer { animation:apl-answer-enter 240ms var(--motion-ease) both; }
+.experience-faq-item summary { transition:color var(--motion-quick),background-color var(--motion-quick); }
+.experience-faq-item summary:hover,.experience-faq-item[open] summary { color:hsl(var(--primary));background:hsl(var(--accent) / .25); }
+.experience-faq-item summary::marker { color:hsl(var(--primary)); }
+.experience-download-grid { display:flex;gap:10px;flex-wrap:wrap;margin-top:20px; }
+.experience-historical-links { max-width:900px; }
+.experience-historical-links h2 { font-size:1.4rem;font-weight:750; }
+.experience-historical-links p { margin-top:12px;max-width:70ch;color:hsl(var(--muted-foreground));line-height:1.6; }
+.experience-catalog-columns .experience-grid-news > :first-child { grid-column:1/-1;display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr); }
+.experience-catalog-columns .experience-grid-news > :first-child .experience-article-image { height:100%;min-height:245px; }
+.experience-faq-category { display:inline-flex;align-items:center;min-height:39px;padding:7px 16px;border:1px solid hsl(var(--border));border-radius:999px;background:hsl(var(--card));font-size:.83rem;font-weight:630; }
+.experience-faq-category:hover { border-color:hsl(var(--primary));color:hsl(var(--primary)); }
+.experience-faq-group[id] { scroll-margin-top:100px; }
+.experience-scene-news .experience-hero-inner,.experience-scene-launchers .experience-hero-inner,.experience-scene-faq .experience-hero-inner,.experience-scene-guides .experience-hero-inner,.experience-scene-about .experience-hero-inner { justify-content:flex-end; }
+.experience-scene-news::before,.experience-scene-launchers::before,.experience-scene-faq::before,.experience-scene-guides::before,.experience-scene-about::before { background:linear-gradient(270deg,hsl(var(--background) / .96),hsl(var(--background) / .76) 24%,hsl(var(--background) / .28) 48%,transparent 73%); }
+.experience-scene-news .hero-landscape img,.experience-scene-launchers .hero-landscape img,.experience-scene-faq .hero-landscape img,.experience-scene-guides .hero-landscape img { object-position:42% center; }
+.experience-scene-about .hero-landscape img { object-position:center center; }
+@media (max-width:760px) {
+  .experience-catalog-columns .experience-grid-news > :first-child { grid-template-columns:1fr; }
+  .experience-scene-news .experience-hero-inner,.experience-scene-launchers .experience-hero-inner,.experience-scene-faq .experience-hero-inner,.experience-scene-guides .experience-hero-inner,.experience-scene-about .experience-hero-inner { justify-content:flex-start; }
+  .experience-scene-news::before,.experience-scene-launchers::before,.experience-scene-faq::before,.experience-scene-guides::before,.experience-scene-about::before { background:linear-gradient(180deg,transparent 0%,transparent 26%,hsl(var(--background) / .64) 48%,hsl(var(--background)) 70%); }
+  .experience-scene-news .hero-landscape img,.experience-scene-launchers .hero-landscape img,.experience-scene-faq .hero-landscape img,.experience-scene-guides .hero-landscape img { object-position:40% center; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .experience-page-enter,.experience-hero-reveal,.experience-site .reveal.in,.experience-hero-art .hero-landscape img,.experience-faq-item[open] .experience-faq-answer { animation:none !important; }
+  .experience-filter-row button:hover,.experience-button:hover svg,.experience-card:hover .experience-card-visual img,.experience-card:hover .experience-article-image { transform:none; }
+}
