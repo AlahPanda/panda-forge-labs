@@ -63,6 +63,7 @@ async function call<T>(action: string, body: unknown = {}, auth = true): Promise
 export const adminApi = {
   login: (password: string) => call<{ token: string }>('login', { password }, false),
   me: () => call<{ ok: true }>('me'),
+  modrinthLookup: (reference: string) => call<{ project: import('./modrinthProject').UpstreamProject }>('modrinth-lookup', { reference }),
   read: (path: string) => call<{ content: string; sha: string }>('read', { path }),
   save: (path: string, content: string, sha: string, commitMessage?: string) =>
     call<{ ok: true; sha: string; url: string }>('save', { path, content, sha, commitMessage }),

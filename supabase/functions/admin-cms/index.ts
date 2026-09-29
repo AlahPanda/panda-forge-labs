@@ -1,5 +1,7 @@
 import { ALLOWED_PATHS, validateContent, validateClaims, canSave, isContentKind, parseItem, parseCollection, collectionPath, type ContentKind } from "./policy.ts";
 import { allowedAdminOrigins, isAllowedAdminOrigin } from './origins.ts';
+import { fetchModrinthPublication } from '../../../src/lib/modrinthProject.ts';
+import { duplicateModrinthConnection } from '../../../src/lib/projectConnections.ts';
 // Admin CMS edge function
 // - POST /login         { password } -> { token }
 // - POST /read          { path } (Bearer token) -> current JSON and blob SHA
@@ -252,6 +254,13 @@ Deno.serve(async (req) => {
     const claims = token ? await verifyJwt(token) : null;
     if (!claims) return json({ error: 'Unauthorized' }, 401);
 
+    if (action === 'modrinth-lookup') {
+      const { reference } = await req.json().catch(() => ({}));
+      if (typeof reference !== 'string' || reference.length > 200) return json({ error: 'Invalid Modrinth reference' }, 400);
+      try { return json({ project: await fetchModrinthPublication(reference) }); }
+      catch { return json({ error: 'Official Modrinth publication unavailable or invalid' }, 502); }
+    }
+
     if (action === 'read') {
       const { path } = await req.json().catch(() => ({}));
       if (typeof path !== 'string' || !ALLOWED_PATHS.has(path)) return json({ error: 'Invalid path' }, 400);
@@ -301,6 +310,20 @@ Deno.serve(async (req) => {
       const collection = parseCollection(kind, JSON.parse(file.content));
       const item = parseItem(kind, current.content);
       const items = collection.items.filter((entry) => entry.slug !== slug);
+      if (kind === 'projects') {
+        const upstream = (item as Record<string, unknown>).upstream as { provider?: string; projectId?: string; projectSlug?: string } | undefined;
+        if (upstream) {
+          if (!upstream.projectSlug || duplicateModrinthConnection(upstream, items as { upstream?: typeof upstream }[])) return json({ error: 'Duplicate Modrinth connection' }, 409);
+          const prior = collection.items.find((entry) => entry.slug === slug) as Record<string, unknown> | undefined;
+          const oldConnection = prior?.upstream as typeof upstream;
+          if (!oldConnection || oldConnection.projectSlug !== upstream.projectSlug || oldConnection.projectId !== upstream.projectId) {
+            let published;
+            try { published = await fetchModrinthPublication(upstream.projectSlug); }
+            catch { return json({ error: 'Verify the current release on Modrinth before publishing this connection' }, 502); }
+            if (published.slug !== upstream.projectSlug || upstream.projectId && published.id !== upstream.projectId) return json({ error: 'Modrinth project identity mismatch' }, 400);
+          }
+        }
+      }
       items.push(item);
       const content = JSON.stringify({ schemaVersion: 2, items }, null, 2) + '\n';
       if (validateContent(path, content)) return json({ error: 'Invalid collection' }, 400);

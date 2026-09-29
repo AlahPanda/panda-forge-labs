@@ -5,6 +5,7 @@ export const slugSchema = z.string().regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, 'Use lo
 const text = z.string().max(30_000);
 const shortText = z.string().max(400);
 const url = z.string().url().refine((value) => /^https?:\/\//.test(value), 'Use an HTTP(S) URL');
+const supporterUrl = z.string().url().refine((value) => { const parsed = new URL(value); return parsed.protocol === 'https:' && !parsed.username && !parsed.password; }, 'Use an HTTPS URL without credentials');
 // Public, checked-in artwork can be served from this site's own brand directory.
 // Other media still require an absolute HTTP(S) URL; no arbitrary local paths.
 const mediaUrl = z.union([url, z.string().regex(/^\/brand\/[a-z0-9-]+\.webp$/)]);
@@ -47,6 +48,11 @@ export const distributionSchema = z.object({
 }).strict();
 export const projectSchema = base.extend({
   status: projectStatusSchema, releaseSlugs: z.array(slugSchema).default([]),
+  pageTemplate: z.enum(['premium', 'basic']).optional(),
+  premiumCopy: z.enum(['mac', 'generic']).optional(),
+  heroArtwork: z.object({ day: mediaUrl, night: mediaUrl, dayMobile: mediaUrl.optional(), nightMobile: mediaUrl.optional() }).strict().optional(),
+  upstream: z.object({ provider: z.literal('modrinth'), projectId: z.string().regex(/^[a-zA-Z0-9_-]{3,64}$/).optional(), projectSlug: z.string().regex(/^[a-zA-Z0-9_-]{3,64}$/) }).strict().optional(),
+  supporterDownload: z.object({ enabled: z.boolean(), url: supporterUrl.optional(), label: shortText.optional(), message: shortText.optional() }).strict().optional(),
   media: z.array(media).optional(), features: z.array(feature).optional(),
   compatibility: compatibility.optional(),
   requirements: z.array(feature).optional(), installation: text.optional(), recommendations: z.array(shortText).optional(),
@@ -95,6 +101,7 @@ export const homepageSchema = base.extend({
   quickLinks: z.array(z.object({ id: slugSchema, label: shortText, path: z.string().startsWith('/').max(200) }).strict()).optional(),
 }).strict();
 export const siteSettingsSchema = base.extend({
+  defaultSupporterDownload: z.object({ enabled: z.boolean(), url: supporterUrl.optional(), label: shortText.optional(), message: shortText.optional() }).strict().optional(),
   navigation: z.array(z.object({ id: slugSchema.optional(), label: shortText, path: z.string().startsWith('/').max(200) }).strict()).optional(),
   footer: z.array(z.object({ id: slugSchema.optional(), label: shortText, url }).strict()).optional(),
   contactEmail: z.string().email().optional(),

@@ -31,6 +31,20 @@ function stubContent() {
 }
 
 describe('owner CMS routes', () => {
+  it('validates a new Modrinth project, previews facts and saves through the existing private draft API', async () => {
+    vi.spyOn(adminApi,'read').mockResolvedValue({sha:'verified-sha',content:JSON.stringify({schemaVersion:2,items:[]})});
+    vi.spyOn(adminApi,'draftList').mockResolvedValue({drafts:[]});
+    vi.spyOn(adminApi,'modrinthLookup').mockResolvedValue({project:{id:'new-id',slug:'new-pack',name:'New Pack',summary:'Publisher summary',downloads:4,followers:2,gallery:[],projectUrl:'https://modrinth.com/modpack/new-pack',release:{id:'release-id',version:'1.0.0',channel:'stable',publishedAt:'2026-09-29T00:00:00Z',minecraft:['1.21.11'],loaders:['fabric'],changelog:'Published',url:'https://modrinth.com/modpack/new-pack/version/release-id',files:[]}}});
+    const save=vi.spyOn(adminApi,'draftSave').mockImplementation(async (_kind,_slug,content)=>({draft:{content,base_sha:'verified-sha',revision:1}}));
+    render(<I18nProvider><MemoryRouter><V2Workspace kind="projects" publishAllowed/></MemoryRouter></I18nProvider>);
+    fireEvent.change(await screen.findByLabelText('Official URL or slug'),{target:{value:'https://modrinth.com/modpack/new-pack'}});
+    fireEvent.click(screen.getByRole('button',{name:'Check official publication'}));
+    expect(await screen.findByText(/new-pack · 1.0.0/)).toBeInTheDocument();
+    fireEvent.click(screen.getByRole('button',{name:'Review as private draft'}));
+    expect(screen.getByLabelText('Project page template')).toHaveValue('premium');
+    fireEvent.click(screen.getByRole('button',{name:'Save private draft'}));
+    await waitFor(()=>expect(save).toHaveBeenCalledWith('projects','new-pack',expect.objectContaining({upstream:{provider:'modrinth',projectId:'new-id',projectSlug:'new-pack'},pageTemplate:'premium'}),'verified-sha',null));
+  });
   it('creates a new article through the V2 private draft workflow', async () => {
     vi.spyOn(adminApi, 'read').mockResolvedValue({ sha: 'verified-sha', content: JSON.stringify({schemaVersion:2,items:[]}) });
     vi.spyOn(adminApi, 'draftList').mockResolvedValue({drafts:[]});

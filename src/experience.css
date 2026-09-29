@@ -475,10 +475,16 @@ a:hover .experience-text-link svg,.experience-text-link:hover svg { transform: t
 .mac-benefit p { margin-top:5px;font-size:.74rem;line-height:1.4;color:hsl(var(--muted-foreground)); }
 .mac-product-main { display:grid;grid-template-columns:minmax(0,1.13fr) minmax(0,.89fr);gap:16px;align-items:stretch; }
 .mac-gallery { position:relative;min-height:326px;overflow:hidden;border-radius:var(--radius-card);background:hsl(var(--surface));box-shadow:var(--shadow-raised);isolation:isolate; }
+.supporter-overlay { position:fixed;inset:0;z-index:110;background:hsl(218 35% 9% / .65); }
+.supporter-dialog { position:fixed;z-index:111;top:50%;left:50%;width:min(92vw,32rem);transform:translate(-50%,-50%);padding:2rem;border-radius:var(--radius-card);background:hsl(var(--surface));color:hsl(var(--foreground));box-shadow:var(--shadow-raised);display:grid;gap:1rem; }
+.supporter-dialog h2,.supporter-dialog [data-radix-dialog-title] { font-size:1.35rem;font-weight:750; }
+.supporter-dialog .experience-card-actions { display:flex;gap:.6rem;flex-wrap:wrap; }
 .mac-gallery > img { position:absolute;inset:0;width:100%;height:100%;object-fit:cover;animation:apl-image-enter 360ms var(--motion-ease) both; }
 .mac-gallery::after { content:'';position:absolute;inset:40% 0 0;background:linear-gradient(transparent,hsl(210 20% 8% / .78));pointer-events:none;z-index:0; }
 .mac-gallery-illustration { background:url('/brand/mac-day.webp') center / cover no-repeat; }
 .dark .mac-gallery-illustration { background-image:url('/brand/mac-night.webp'); }
+.mac-gallery-illustration.project-gallery-illustration { background-image:url('/brand/projects-day.webp'); }
+.dark .mac-gallery-illustration.project-gallery-illustration { background-image:url('/brand/projects-night.webp'); }
 .mac-gallery-caption { position:absolute;bottom:36px;left:24px;right:24px;z-index:1;color:white;text-shadow:0 2px 8px hsl(210 20% 8% / .6);display:grid;gap:5px; }
 .mac-gallery-caption span { font-size:.76rem;font-weight:700;text-transform:uppercase;letter-spacing:.09em; }
 .mac-gallery-caption strong { font-size:clamp(1.12rem,1.6vw,1.6rem);font-weight:760;line-height:1.15; }

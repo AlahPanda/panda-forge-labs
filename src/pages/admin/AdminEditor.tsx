@@ -4,9 +4,12 @@ import { Activity, BookOpen, Box, ExternalLink, FileText, Globe, HelpCircle, Hom
 import Seo from '@/components/Seo';
 import { adminApi, adminAuth } from '@/lib/adminApi';
 import { isPreviewReady, pendingPreviewCommit } from '@/lib/previewDeployment';
-import { useModrinthStats } from '@/lib/modrinthStats';
+import { useProjectPublication } from '@/lib/useProjectPublication';
+import { useQuery } from '@tanstack/react-query';
+import { fetchProjectPublication } from '@/lib/useProjectPublication';
 import { useI18n } from '@/lib/i18n';
 import { collectionPath, CONTENT_KINDS, parseCollection, parseItem, type ContentKind, type ValidatedItem } from '@/content/v2/schema';
+import type { ProjectV2 } from '@/content/v2/schema';
 import { localizationStatus, type LocalizedEntry } from '@/content/v2/localize';
 import { BrandSymbol } from '@/components/design-system/BrandSymbol';
 import V2Workspace from './V2Workspace';
@@ -62,17 +65,20 @@ function OwnerDashboard({ owner }: { owner: ReturnType<typeof useOwnerContent> }
   const [ready, setReady] = useState(false);
   const commit = pendingPreviewCommit();
   useEffect(() => { if (commit) void isPreviewReady(commit).then(setReady); }, [commit?.sha]);
-  const { locale } = useI18n();
+  const { locale, t } = useI18n();
   const mac = owner.data.projects?.items.find((item) => item.slug === 'mac-native');
-  const distribution = (mac?.distribution as Array<{ provider: string; url?: string; state?: string }> | undefined)?.find((item) => item.provider === 'modrinth' && item.state === 'active')?.url;
-  const metrics = useModrinthStats(distribution);
+  const metrics = useProjectPublication(mac as ProjectV2 | undefined);
+  const connected = owner.data.projects?.items.filter((item) => !!(item.upstream as { provider?: string } | undefined)?.provider) || [];
+  const automation = useQuery({ queryKey:['owner-automation', connected.map((item)=>item.slug).join('|')], enabled:connected.length > 0,
+    queryFn:()=>Promise.all(connected.map(async (item)=>{try { const result=await fetchProjectPublication(item.slug);return {slug:item.slug,stale:result.stale,fetchedAt:result.snapshot.fetchedAt}; } catch {return {slug:item.slug,stale:true,fetchedAt:null};}})), staleTime:60_000,retry:false });
+  const healthy = automation.data?.filter((item)=>!item.stale).length || 0;
   const total = Object.values(owner.data).reduce((count, collection) => count + (collection?.items.length || 0), 0);
   const verifiedPreview = owner.status?.branch === 'v2/full-redesign';
   const tiles = [
     [a('siteStatus'), a('unknown'), Home], [a('preview'), verifiedPreview ? a('connected') : a('unknown'), ExternalLink],
     [a('lastDeploy'), a('unknown'), Rocket], [a('cmsStatus'), owner.status ? a('connected') : a('unknown'), Activity],
     [a('github'), owner.status?.githubAccess ? a('connected') : a('unavailable'), Globe],
-    [a('modrinth'), metrics.data ? `${metrics.data.downloads.toLocaleString(locale)} / ${metrics.data.followers.toLocaleString(locale)}` : a('unknown'), Box],
+    [a('modrinth'), metrics.data ? `${metrics.data.snapshot.project.downloads.toLocaleString(locale)} / ${metrics.data.snapshot.project.followers.toLocaleString(locale)}` : a('unknown'), Box],
   ] as const;
   const localeTotals = (['pt-PT', 'pt-BR', 'en', 'es'] as const).map((language) => {
     let translated = 0; let fields = 0;
@@ -86,6 +92,7 @@ function OwnerDashboard({ owner }: { owner: ReturnType<typeof useOwnerContent> }
   return <div className="admin-dashboard">
     <div className="admin-page-heading"><div><span className="admin-eyebrow">AlahPanda Labs · CMS V2</span><h1>{a('dashboard')}</h1><p>{a('overview')}</p></div><Link to={`${path}/drafts`} className="admin-button admin-button-secondary">{owner.drafts.length} {a('drafts')}</Link></div>
     <div className="admin-status-grid">{tiles.map(([label, value, Icon]) => <div className="admin-status-card" key={label}><span>{label}</span><strong>{value}</strong><Icon size={21} aria-hidden="true"/></div>)}</div>
+    <Panel title={t('automation.title')}><p>{connected.length} {t('automation.connected')}{automation.data && <> · {healthy} {t('automation.current')} · {connected.length - healthy} {t('automation.review')}</>}</p>{automation.data?.filter((item)=>item.stale).map((item)=><p key={item.slug}>{item.slug}: {t('automation.unavailable')} <Link to={`${path}/modpacks?entry=${item.slug}`}>{t('automation.open')}</Link></p>)}{!connected.length && <p>{t('automation.empty')}</p>}</Panel>
     <div className="admin-dashboard-main">
       <Panel title={a('studio')} className="admin-ai-teaser"><Sparkles size={22} aria-hidden="true"/><p>{a('aiUnavailable')}</p><Link className="admin-button admin-button-primary" to={`${path}/ai`}>{a('proposal')}</Link></Panel>
       <Panel title={a('workflow')}><ol className="admin-steps"><li>{a('draft')}</li><li>{a('preview')}</li><li>{a('committedPreview')}</li><li>{a('readyLive')}</li><li>{a('liveProduction')}</li></ol><p>{commit ? `${commit.kind}/${commit.slug} · ${ready ? a('readyLive') : a('committedPreview')} · ${commit.sha.slice(0,10)}` : a('releaseInfo')}</p>{commit && !ready && <p role="status">{a('awaitingPreview')} <button type="button" className="admin-button admin-button-secondary" onClick={() => void isPreviewReady(commit).then(setReady)}>{a('retry')}</button></p>}<Link to={`${path}/drafts`} className="admin-button admin-button-secondary">{a('drafts')}</Link></Panel>
@@ -106,12 +113,11 @@ function ModpackOverview({ owner }: { owner: ReturnType<typeof useOwnerContent> 
   const { locale } = useI18n();
   const projects = owner.data.projects?.items || [];
   const mac = projects.find((item) => item.slug === 'mac-native');
-  const distribution = (mac?.distribution as Array<{provider:string;url?:string;state?:string}> | undefined)?.find((link) => link.provider === 'modrinth' && link.state === 'active')?.url;
-  const metrics = useModrinthStats(distribution);
+  const metrics = useProjectPublication(mac as ProjectV2 | undefined);
   return <Panel title={a('overview')}><div className="admin-table-wrap"><table><thead><tr><th>{a('content')}</th><th>{a('status')}</th><th>{a('releases')}</th><th>{a('modrinth')}</th><th>{a('locales')}</th></tr></thead><tbody>{projects.map((item) => {
-    const versions = owner.data.releases?.items.filter((release) => (item.releaseSlugs as string[] | undefined)?.includes(release.slug)).map((release) => release.version).join(', ');
+    const versions = item.upstream ? 'Modrinth' : owner.data.releases?.items.filter((release) => (item.releaseSlugs as string[] | undefined)?.includes(release.slug)).map((release) => release.version).join(', ');
     const coverage = localizationStatus(item as LocalizedEntry,'projects',locale);
-    return <tr key={item.slug}><td><Link to={`${path}/modpacks?entry=${encodeURIComponent(item.slug)}`}>{item.name}</Link></td><td><span className="admin-badge">{editorLabel(locale,String(item.status || a('unknown')))}</span></td><td>{versions || '—'}</td><td>{item.slug === 'mac-native' ? metrics.data ? `${metrics.data.downloads.toLocaleString(locale)} ${a('downloads')} · ${metrics.data.followers.toLocaleString(locale)} ${a('followers')}` : a('unknown') : '—'}</td><td>{coverage.percent === null ? a('unavailable') : `${coverage.percent}%`}</td></tr>;
+    return <tr key={item.slug}><td><Link to={`${path}/modpacks?entry=${encodeURIComponent(item.slug)}`}>{item.name}</Link></td><td><span className="admin-badge">{editorLabel(locale,String(item.status || a('unknown')))}</span></td><td>{versions || '—'}</td><td>{item.slug === 'mac-native' ? metrics.data ? `${metrics.data.snapshot.project.downloads.toLocaleString(locale)} ${a('downloads')} · ${metrics.data.snapshot.project.followers.toLocaleString(locale)} ${a('followers')}` : a('unknown') : '—'}</td><td>{coverage.percent === null ? a('unavailable') : `${coverage.percent}%`}</td></tr>;
   })}</tbody></table></div>{!projects.length && <p>{a('noRecords')}</p>}</Panel>;
 }
 

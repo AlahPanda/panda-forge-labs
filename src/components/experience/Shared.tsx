@@ -56,14 +56,14 @@ export function ProjectCard({ entry }: { entry: PublicEntry<ProjectV2, Modpack> 
   const project = localizeItem(entry.item, locale);
   const teaser = project.status === 'internal-prototype';
   const image = project.media?.find((media) => media.kind === 'image');
-  const releases = teaser ? [] : publicReleasesFor(project);
+  const releases = teaser || project.upstream ? [] : publicReleasesFor(project);
   return <Link className="experience-card experience-project-card reveal" to={'/modpacks/' + entry.slug}>
     <div className={'experience-card-visual experience-card-visual-project ' + (teaser ? 'experience-visual-prototype' : project.slug === 'mac-native' ? 'experience-visual-native' : '')}>
       {image ? <img src={image.url} alt={image.alt || ''} loading="lazy" width="640" height="360" /> : teaser ? <div className="experience-visual-monogram" aria-hidden="true"><Compass size={52} /></div> : project.slug !== 'mac-native' ? <div className="experience-visual-monogram" aria-hidden="true"><Rocket size={52} /></div> : null}
     </div>
     <div className="experience-card-body"><ProjectStatusBadge status={project.status}/><h3>{project.name}</h3>
       {project.summary && <p>{project.summary}</p>}
-      {!teaser && <div className="experience-project-meta">{releases[0] && <span className="experience-meta">v{releases[0].version} · {t('status.' + releases[0].channel)}</span>}{project.compatibility?.minecraft?.map((version) => <span className="experience-meta" key={version}>Minecraft {version}</span>)}{project.compatibility?.platforms?.map((platform) => <span className="experience-meta" key={platform}>{platform}</span>)}</div>}
+      {!teaser && <div className="experience-project-meta">{releases[0] && <span className="experience-meta">v{releases[0].version} · {t('status.' + releases[0].channel)}</span>}{!project.upstream && project.compatibility?.minecraft?.map((version) => <span className="experience-meta" key={version}>Minecraft {version}</span>)}{project.compatibility?.platforms?.map((platform) => <span className="experience-meta" key={platform}>{platform}</span>)}</div>}
       <span className="experience-text-link">{t('ui.explore')} <ArrowRight size={16} aria-hidden="true" /></span>
     </div>
   </Link>;

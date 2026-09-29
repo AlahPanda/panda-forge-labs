@@ -16,7 +16,7 @@ import LauncherProduct from '@/components/experience/LauncherProduct';
 import SupportCallout from '@/components/experience/SupportCallout';
 import ContactForm from '@/components/experience/ContactForm';
 import { localizeItem } from '@/content/v2/localize';
-import { useModrinthStats } from '@/lib/modrinthStats';
+import { useProjectPublication } from '@/lib/useProjectPublication';
 import { CountUp } from '@/components/experience/CountUp';
 import { articleData, guideData, breadcrumbs } from '@/lib/structuredContent';
 
@@ -40,11 +40,12 @@ export function HomeExperience() {
   const guides = publicGuides().slice(0, 2);
   const mac = publicProject('mac-native');
   const macUrl = mac?.source === 'v2' ? mac.item.distribution?.find((provider) => provider.provider === 'modrinth' && provider.state === 'active')?.url : undefined;
-  const { data: stats } = useModrinthStats(macUrl);
+  const { data: macPublication } = useProjectPublication(mac?.source === 'v2' ? mac.item : undefined);
+  const stats = macPublication?.snapshot.project;
   return <SiteLayout>
     <Seo title="AlahPanda Labs" description={(settings && localizeItem(settings, locale).description) || config?.hero?.subtitle || t('home.heroSub')}/>
     {/* Candidate brand line only; CMS hero copy always takes precedence. */}
-    <PageHero landscape eyebrow={config?.hero?.eyebrow || t('home.eyebrow')} title={config?.hero?.title || 'AlahPanda Labs'} description={config?.hero?.subtitle || t('home.heroSub')}>
+    <PageHero landscape eyebrow={config?.hero?.eyebrow || t('home.eyebrow')} title={config?.hero?.title || 'AlahPanda Labs'} description={config?.hero?.subtitle || t('brand.slogan')}>
       <Link className="experience-button experience-button-primary" to="/modpacks">{t('home.cta.explore')} <ArrowRight size={18}/></Link>
       <Link className="experience-button experience-button-soft" to="/about">{t('nav.about')} <ArrowRight size={18}/></Link>
     </PageHero>
@@ -55,7 +56,7 @@ export function HomeExperience() {
       </nav>
       {config?.sections?.find((section) => section.id === 'featured-projects')?.visible !== false && <section className="experience-section">
         <SectionTitle title={t('home.journey')} to="/modpacks" link={t('home.cta.explore')} icon={Compass}/>
-        {lead && <div className="experience-home-feature"><div className="experience-home-feature-copy"><span className="experience-kicker">{t('home.featuredMac')}</span><p>{localizeItem(lead.item, locale).summary}</p><div className="experience-card-actions"><Link to={'/modpacks/' + lead.slug} className="experience-button experience-button-primary">{t('ui.explore')} <ArrowRight size={17}/></Link>{publicReleasesFor(lead.item)[0]?.distribution?.filter((provider) => provider.state === 'active' && provider.url).slice(0,1).map((provider) => <a key={provider.provider} href={provider.url} className="experience-button experience-button-soft" target="_blank" rel="noopener noreferrer">{t('modpack.download')} · {provider.provider} <ExternalLink size={16}/></a>)}</div></div><ProjectCard entry={lead}/></div>}
+        {lead && <div className="experience-home-feature"><div className="experience-home-feature-copy"><span className="experience-kicker">{t('home.featuredMac')}</span><p>{localizeItem(lead.item, locale).summary}</p><div className="experience-card-actions"><Link to={'/modpacks/' + lead.slug} className="experience-button experience-button-primary">{t('ui.explore')} <ArrowRight size={17}/></Link>{lead.item.upstream ? <a href={`/api/download/${encodeURIComponent(lead.slug)}`} className="experience-button experience-button-soft">{t('modpack.download')} · Modrinth <ExternalLink size={16}/></a> : publicReleasesFor(lead.item)[0]?.distribution?.filter((provider) => provider.state === 'active' && provider.url).slice(0,1).map((provider) => <a key={provider.provider} href={provider.url} className="experience-button experience-button-soft" target="_blank" rel="noopener noreferrer">{t('modpack.download')} · {provider.provider} <ExternalLink size={16}/></a>)}</div></div><ProjectCard entry={lead}/></div>}
         {others.length > 0 && <div className="experience-home-other"><h2>{t('home.more')}</h2><div className={cardGrid}>{others.map((entry) => <ProjectCard key={entry.slug} entry={entry}/>)}</div></div>}
       </section>}
       <section className="experience-section experience-paths"><SectionTitle title={t('home.paths')} icon={Compass}/><div className="experience-grid experience-grid-resources">
@@ -80,10 +81,11 @@ export function ProjectsExperience() {
   const shown = entries.filter((entry) => filter === 'all' || (filter === 'development' ? entry.item.status === 'internal-prototype' || entry.item.status === 'development' : entry.item.status !== 'internal-prototype' && entry.item.status !== 'development'));
   const mac = entries.find((entry) => entry.slug === 'mac-native');
   const macUrl = mac?.item.distribution?.find((provider) => provider.provider === 'modrinth' && provider.state === 'active')?.url;
-  const { data: stats } = useModrinthStats(macUrl);
+  const { data: macPublication } = useProjectPublication(mac?.item);
+  const stats = macPublication?.snapshot.project;
   const title = t('nav.modpacks');
   return <SiteLayout><Seo title={title + ' — AlahPanda Labs'} description={t('ui.modpacksIntro')}/>
-    <PageHero landscape scene="projects" title={title} eyebrow={t('ui.exploreSection')} description={t('ui.modpacksIntro')}><Link className="experience-button experience-button-primary" to="/modpacks/mac-native">Mac Native <ArrowRight size={16}/></Link></PageHero>
+    <PageHero landscape scene="projects" title={title} eyebrow={t('ui.exploreSection')} description={t('brand.slogan')}><Link className="experience-button experience-button-primary" to="/modpacks/mac-native">Mac Native <ArrowRight size={16}/></Link></PageHero>
     <section className="container experience-section experience-catalog"><SectionTitle title={t('home.journey')} icon={Compass}/>
       <div className="experience-filter-row" role="group" aria-label={t('ui.filterProjects')}>{(['all','available','development'] as const).map((value) => <button type="button" key={value} aria-pressed={filter === value} onClick={() => setFilter(value)}>{t('ui.filter.' + value)}</button>)}</div>
       <div className="experience-catalog-columns"><div>{shown.length ? <div className={cardGrid}>{shown.map((entry) => <ProjectCard key={entry.slug} entry={entry}/>)}</div> : <EmptyCollection title={t('project.noMatch')} description={t('ui.noModpacks')}/>}</div>
@@ -101,7 +103,7 @@ export function ProjectDetailExperience() {
   const project: ProjectV2 = localizeItem(entry.item, locale);
   const teaser = project.status === 'internal-prototype';
   const releases = teaser ? [] : publicReleasesFor(project);
-  if (project.slug === 'mac-native' && !teaser) return <MacNativeProduct project={project} releases={releases}/>;
+  if (!teaser && (project.pageTemplate === 'premium' || (!!project.upstream && project.pageTemplate !== 'basic'))) return <MacNativeProduct project={project} releases={releases}/>;
   const image = project.media?.find((medium) => medium.kind === 'image');
   const primary = project.distribution?.find((provider) => provider.state === 'active' && provider.priority === 'primary' && provider.url);
   return <SiteLayout><Seo title={(project.seo?.title || project.name) + ' — AlahPanda Labs'} description={project.seo?.description || project.summary || project.name} image={project.seo?.image || image?.url} noindex={project.seo?.noindex}/>
