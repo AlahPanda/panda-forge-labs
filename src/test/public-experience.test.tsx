@@ -92,14 +92,38 @@ describe('public redesign and editorial boundaries', () => {
     expect(screen.queryByText('0 downloads')).not.toBeInTheDocument();
   });
 
+  it('does not invent project metrics when both publication and public project endpoints fail', async () => {
+    const requests = vi.fn(async () => new Response('offline',{status:503}));
+    vi.stubGlobal('fetch',requests);
+    publicRoute('/modpacks/mac-native','/modpacks/:slug',<ProjectDetailExperience/>);
+    await waitFor(()=>expect(requests).toHaveBeenCalledTimes(2));
+    expect(document.querySelector('.mac-live-stats')).toBeNull();
+    expect(screen.queryByText(/0 Downloads|0 Followers/)).not.toBeInTheDocument();
+    expect(screen.getByRole('heading',{name:'Last verified release'})).toBeInTheDocument();
+  });
+
   it('shows the current published upstream release, stats and current changelog destination', async () => {
     vi.stubGlobal('fetch', vi.fn(async () => new Response(JSON.stringify(publicationFixture()), { status: 200 })));
     publicRoute('/modpacks/mac-native', '/modpacks/:slug', <ProjectDetailExperience/>);
     await waitFor(() => expect(document.querySelector('.mac-stat-primary')).toHaveTextContent(/129.*Downloads on Modrinth/));
     expect(document.querySelector('.mac-live-stats')).toHaveTextContent(/31.*Followers on Modrinth/);
+    expect(document.querySelector('.mac-stat-primary')).toBeVisible();
+    expect(document.querySelector('.mac-live-stats')?.closest('details')).toBeNull();
     expect(screen.getByText('0.6.0', { selector: '.mac-release-version strong' })).toBeInTheDocument();
     expect(screen.getByRole('link', { name: /Download 0\.6\.0 on Modrinth/ })).toHaveAttribute('href', '/api/download/mac-native');
     expect(screen.getByRole('link', { name: /Official release.*modrinth/i })).toHaveAttribute('href','https://modrinth.com/modpack/mac-native/version/test-release');
+  });
+
+  it('keeps validated project metrics visible beside the editorial release when publication is unavailable', async () => {
+    vi.stubGlobal('fetch',vi.fn(async (url: string) => url.startsWith('https://api.modrinth.com/v2/project/mac-native')
+      ? new Response(JSON.stringify({id:'fPtkF9pO',slug:'mac-native',downloads:156,followers:3,gallery:[]}),{status:200})
+      : new Response('unavailable',{status:503})));
+    publicRoute('/modpacks/mac-native','/modpacks/:slug',<ProjectDetailExperience/>);
+    expect(screen.getByRole('heading',{name:'Last verified release'})).toBeInTheDocument();
+    await waitFor(()=>expect(document.querySelector('.mac-stat-primary')).toHaveTextContent(/156.*Downloads on Modrinth/));
+    expect(document.querySelector('.mac-live-stats')).toHaveTextContent(/3.*Followers on Modrinth/);
+    expect(document.querySelector('.mac-live-stats')?.closest('details')).toBeNull();
+    expect(screen.getByText('0.3.1',{selector:'.mac-release-version strong'})).toBeInTheDocument();
   });
 
   it('uses the official gallery as a navigable carousel only when Modrinth supplies images', async () => {

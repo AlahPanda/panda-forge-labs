@@ -22,7 +22,7 @@ const responseSchema = z.object({
 export type ModrinthStats = z.infer<typeof responseSchema>;
 export const MODRINTH_STATS_TTL_MS = 15 * 60_000;
 
-export async function fetchModrinthStats(slug: string, fetcher: typeof fetch = fetch): Promise<ModrinthStats> {
+export async function fetchModrinthStats(slug: string, fetcher: typeof fetch = fetch, projectId?: string): Promise<ModrinthStats> {
   if (!/^[a-zA-Z0-9_-]+$/.test(slug)) throw new Error('Invalid Modrinth project slug');
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), 5_000);
@@ -33,6 +33,7 @@ export async function fetchModrinthStats(slug: string, fetcher: typeof fetch = f
     });
     if (!response.ok) throw new Error('Modrinth stats unavailable');
     const raw = await response.json();
+    if (raw.slug && raw.slug !== slug || projectId && raw.id !== projectId) throw new Error('Modrinth project identity changed');
     // Gallery and icon are optional; only media hosted by the official CDN is displayed.
     const officialMedia = (url: unknown) => { try { const parsed = new URL(String(url)); return parsed.protocol === 'https:' && parsed.hostname === 'cdn.modrinth.com'; } catch { return false; } };
     return responseSchema.parse({
@@ -46,12 +47,12 @@ export async function fetchModrinthStats(slug: string, fetcher: typeof fetch = f
 
 // React Query deduplicates simultaneous visits and retains data between route changes.
 // Failure does not block editorial content or the published download link.
-export function useModrinthStats(projectUrl?: string) {
+export function useModrinthStats(projectUrl?: string, enabled = true, projectId?: string) {
   const slug = modrinthProjectSlug(projectUrl);
   return useQuery({
-    queryKey: ['modrinth-public-stats', slug],
-    queryFn: () => fetchModrinthStats(slug!),
-    enabled: !!slug,
+    queryKey: ['modrinth-public-stats', slug, projectId],
+    queryFn: () => fetchModrinthStats(slug!, fetch, projectId),
+    enabled: !!slug && enabled,
     staleTime: MODRINTH_STATS_TTL_MS,
     gcTime: 60 * 60_000,
     retry: false,

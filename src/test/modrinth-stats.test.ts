@@ -26,6 +26,7 @@ describe('official Modrinth metrics boundary', () => {
     await expect(fetchModrinthStats('mac-native', failed)).rejects.toThrow('unavailable');
     await expect(fetchModrinthStats('mac-native', vi.fn(async () => new Response(JSON.stringify({ downloads: -1, followers: 3 }), { status: 200 })))).rejects.toThrow();
     await expect(fetchModrinthStats('mac-native', vi.fn(async () => new Response(JSON.stringify({ downloads: 4 }), { status: 200 })))).rejects.toThrow();
+    await expect(fetchModrinthStats('mac-native', vi.fn(async () => new Response(JSON.stringify({ id:'other', slug:'other', downloads:4, followers:2 }), { status: 200 })), 'expected-id')).rejects.toThrow('identity changed');
     await expect(fetchModrinthStats('../private', failed)).rejects.toThrow('Invalid');
   });
 });

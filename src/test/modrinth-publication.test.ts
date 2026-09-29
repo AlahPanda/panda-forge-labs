@@ -36,6 +36,10 @@ describe('official Modrinth publication', () => {
     const stale = await resolveSnapshot({projectSlug:'mac-native',projectId:project.id},store,false,fail as unknown as typeof fetch,1000000000000 + SNAPSHOT_TTL_MS + 1);
     expect(stale.stale).toBe(true);
     expect(stale.snapshot.project.release.version).toBe('0.6.0');
+    expect(stale.snapshot.project.downloads).toBe(147);
+    expect(stale.snapshot.project.followers).toBe(23);
+    expect(saved?.project.downloads).toBe(147);
+    expect(saved?.project.followers).toBe(23);
     expect(saved?.project.release.version).toBe('0.6.0');
     await expect(resolveSnapshot({projectSlug:'mac-native',projectId:'other'},store,true,fail as unknown as typeof fetch)).rejects.toThrow();
   });
