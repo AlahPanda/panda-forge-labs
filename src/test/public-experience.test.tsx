@@ -70,7 +70,7 @@ describe('public redesign and editorial boundaries', () => {
     localStorage.setItem('apl.locale', 'es');
     publicRoute('/modpacks/mac-native', '/modpacks/:slug', <ProjectDetailExperience/>);
     expect(document.documentElement.lang).toBe('es');
-    expect(screen.getByRole('link', { name: /Descargar en Modrinth/ })).toHaveAttribute('href','/api/download/mac-native');
+    expect(screen.getByRole('link', { name: /Descargar en Modrinth/ })).toHaveAttribute('href','https://modrinth.com/modpack/mac-native');
     expect(screen.getByText(/Modpack Minecraft para macOS/)).toBeInTheDocument();
   });
 
@@ -79,7 +79,8 @@ describe('public redesign and editorial boundaries', () => {
     expect(screen.getByRole('heading', { name: 'Mac Native' })).toBeInTheDocument();
     expect(screen.getByText('0.3.1', { selector: '.mac-release-version strong' })).toBeInTheDocument();
     expect(screen.getByRole('heading', {name:'Last verified release'})).toBeInTheDocument();
-    expect(screen.getByRole('link', { name: /Download on Modrinth/i })).toHaveAttribute('href', '/api/download/mac-native');
+    expect(screen.getByRole('link', { name: /Download on Modrinth/i })).toHaveAttribute('href', 'https://modrinth.com/modpack/mac-native');
+    expect(document.querySelector('a[href^="/api/download/"]')).toBeNull();
     for (const heading of ['Mac Native on Mac', 'How it works', 'Need help or want to learn more?']) expect(screen.getByRole('heading', { name: heading })).toBeInTheDocument();
     expect(screen.getByRole('link', { name: /What’s inside/ })).toHaveAttribute('href', '#inside');
     expect(screen.getByText(/Mac Native illustration/)).toBeInTheDocument();
@@ -110,7 +111,7 @@ describe('public redesign and editorial boundaries', () => {
     expect(document.querySelector('.mac-stat-primary')).toBeVisible();
     expect(document.querySelector('.mac-live-stats')?.closest('details')).toBeNull();
     expect(screen.getByText('0.6.0', { selector: '.mac-release-version strong' })).toBeInTheDocument();
-    expect(screen.getByRole('link', { name: /Download 0\.6\.0 on Modrinth/ })).toHaveAttribute('href', '/api/download/mac-native');
+    expect(screen.getByRole('link', { name: /Download 0\.6\.0 on Modrinth/ })).toHaveAttribute('href', 'https://modrinth.com/modpack/mac-native');
     expect(screen.getByRole('link', { name: /Official release.*modrinth/i })).toHaveAttribute('href','https://modrinth.com/modpack/mac-native/version/test-release');
   });
 
@@ -191,7 +192,7 @@ describe('public redesign and editorial boundaries', () => {
     const mac = publicProject('mac-native');
     if (mac?.source !== 'v2') throw new Error('Mac Native must be published in V2');
     const release = publicReleasesFor(mac.item)[0];
-    expect(screen.getByRole('link', { name: /download.*modrinth/i })).toHaveAttribute('href', '/api/download/mac-native');
+    expect(screen.getByRole('link', { name: /download.*modrinth/i })).toHaveAttribute('href', 'https://modrinth.com/modpack/mac-native');
     expect(screen.getAllByRole('link', { name: /support/i }).some((link) => link.getAttribute('href') === '/support')).toBe(true);
     expect(screen.getAllByRole('link', { name: /Mac Native 0\.3\.1 Beta/i }).length).toBeGreaterThan(0);
   });
@@ -203,7 +204,7 @@ describe('public redesign and editorial boundaries', () => {
       compatibility: { minecraft: ['1.22'], loaders: ['Fabric'], platforms: ['macOS'] },
       distribution: [{ provider: 'modrinth', state: 'active' as const, url: 'https://modrinth.com/modpack/mac-native/version/0.6.0' }] };
     publicRoute('/modpacks/mac-native', '/modpacks/:slug', <PremiumProjectPage project={{...mac.item, upstream:undefined, knownIssues:['Issue described by the publisher'], requirements:[{title:'Publisher requirement'}]}} releases={[next]}/>);
-    expect(screen.getByRole('link', { name: /Download 0\.6\.0 on Modrinth/ })).toHaveAttribute('href', next.distribution[0].url);
+    expect(screen.getByRole('link', { name: /Download 0\.6\.0 on Modrinth/ })).toHaveAttribute('href', 'https://modrinth.com/modpack/mac-native');
     expect(screen.getAllByText('1.22').length).toBeGreaterThan(0);
     expect(screen.getByText('Known issues', { selector: 'summary' })).toBeInTheDocument();
     fireEvent.click(screen.getByText('Compatibility', { selector: 'summary' }));
@@ -220,7 +221,7 @@ describe('public redesign and editorial boundaries', () => {
     publicRoute('/modpacks/future-pack','/modpacks/:slug',<PremiumProjectPage project={future as unknown as import('@/content/v2/schema').ProjectV2} releases={[]}/>);
     expect(screen.getByRole('heading',{name:'Future Pack'})).toBeInTheDocument();
     expect(screen.getByText('A new way to explore Minecraft.')).toBeInTheDocument();
-    expect(screen.getByRole('link',{name:/Download on Modrinth/})).toHaveAttribute('href','/api/download/future-pack');
+    expect(screen.getByRole('link',{name:/Download on Modrinth/})).toHaveAttribute('href','https://modrinth.com/modpack/future-pack');
     expect(screen.queryByText('Mac Native on Mac')).not.toBeInTheDocument();
   });
 
@@ -233,6 +234,15 @@ describe('public redesign and editorial boundaries', () => {
     expect(document.querySelector('.mac-stat-primary')).toHaveTextContent(/927.*Downloads on Modrinth/);
     expect(screen.getByRole('link',{name:/Official release.*Modrinth/})).toHaveAttribute('href','https://modrinth.com/modpack/future-pack/version/future-release');
     expect(screen.queryByText('Mac Native on Mac')).not.toBeInTheDocument();
+  });
+
+  it('preserves the direct project destination in the optional supporter choice', () => {
+    const mac = publicProject('mac-native');
+    if (mac?.source !== 'v2') throw new Error('Expected published project');
+    publicRoute('/modpacks/mac-native','/modpacks/:slug',<PremiumProjectPage project={{...mac.item,supporterDownload:{enabled:true,url:'https://ko-fi.com/alahpanda'}}} releases={publicReleasesFor(mac.item)}/>);
+    fireEvent.click(screen.getByRole('button',{name:/Download on Modrinth/}));
+    expect(screen.getByRole('link',{name:'Continue normally'})).toHaveAttribute('href','https://modrinth.com/modpack/mac-native');
+    expect(document.querySelector('a[href^="/api/download/"]')).toBeNull();
   });
 
   it('keeps published article and guide cards navigable, with no invented entries', () => {

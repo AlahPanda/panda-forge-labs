@@ -19,6 +19,7 @@ import { localizeItem } from '@/content/v2/localize';
 import { useProjectPublication } from '@/lib/useProjectPublication';
 import { CountUp } from '@/components/experience/CountUp';
 import { articleData, guideData, breadcrumbs } from '@/lib/structuredContent';
+import { officialModrinthProjectUrl } from '@/lib/projectDownload';
 
 const cardGrid = 'experience-grid experience-grid-projects';
 const approvedArticles = (): ArticleV2[] => publicArticles().flatMap((entry) => entry.source === 'v2' ? [entry.item] : []);
@@ -36,6 +37,7 @@ export function HomeExperience() {
   const featured = publicFeaturedProjects().filter((entry) => entry.source === 'v2');
   const lead = featured.find((entry) => entry.slug === (config?.hero?.primaryProjectSlug || 'mac-native') && entry.item.status !== 'internal-prototype');
   const others = featured.filter((entry) => entry.slug !== lead?.slug);
+  const leadDownload = lead ? officialModrinthProjectUrl(lead.item) : undefined;
   const articles = approvedArticles().slice(0, 3);
   const guides = publicGuides().slice(0, 2);
   const mac = publicProject('mac-native');
@@ -56,7 +58,7 @@ export function HomeExperience() {
       </nav>
       {config?.sections?.find((section) => section.id === 'featured-projects')?.visible !== false && <section className="experience-section">
         <SectionTitle title={t('home.journey')} to="/modpacks" link={t('home.cta.explore')} icon={Compass}/>
-        {lead && <div className="experience-home-feature"><div className="experience-home-feature-copy"><span className="experience-kicker">{t('home.featuredMac')}</span><p>{localizeItem(lead.item, locale).summary}</p><div className="experience-card-actions"><Link to={'/modpacks/' + lead.slug} className="experience-button experience-button-primary">{t('ui.explore')} <ArrowRight size={17}/></Link>{lead.item.upstream ? <a href={`/api/download/${encodeURIComponent(lead.slug)}`} className="experience-button experience-button-soft">{t('modpack.download')} · Modrinth <ExternalLink size={16}/></a> : publicReleasesFor(lead.item)[0]?.distribution?.filter((provider) => provider.state === 'active' && provider.url).slice(0,1).map((provider) => <a key={provider.provider} href={provider.url} className="experience-button experience-button-soft" target="_blank" rel="noopener noreferrer">{t('modpack.download')} · {provider.provider} <ExternalLink size={16}/></a>)}</div></div><ProjectCard entry={lead}/></div>}
+        {lead && <div className="experience-home-feature"><div className="experience-home-feature-copy"><span className="experience-kicker">{t('home.featuredMac')}</span><p>{localizeItem(lead.item, locale).summary}</p><div className="experience-card-actions"><Link to={'/modpacks/' + lead.slug} className="experience-button experience-button-primary">{t('ui.explore')} <ArrowRight size={17}/></Link>{leadDownload ? <a href={leadDownload} className="experience-button experience-button-soft">{t('modpack.download')} · Modrinth <ExternalLink size={16}/></a> : publicReleasesFor(lead.item)[0]?.distribution?.filter((provider) => provider.state === 'active' && provider.url).slice(0,1).map((provider) => <a key={provider.provider} href={provider.url} className="experience-button experience-button-soft" target="_blank" rel="noopener noreferrer">{t('modpack.download')} · {provider.provider} <ExternalLink size={16}/></a>)}</div></div><ProjectCard entry={lead}/></div>}
         {others.length > 0 && <div className="experience-home-other"><h2>{t('home.more')}</h2><div className={cardGrid}>{others.map((entry) => <ProjectCard key={entry.slug} entry={entry}/>)}</div></div>}
       </section>}
       <section className="experience-section experience-paths"><SectionTitle title={t('home.paths')} icon={Compass}/><div className="experience-grid experience-grid-resources">

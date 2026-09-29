@@ -10,6 +10,7 @@ import type { ProjectV2, ReleaseV2 } from '@/content/v2/schema';
 import { useI18n } from '@/lib/i18n';
 import { useProjectPublication } from '@/lib/useProjectPublication';
 import { useModrinthStats } from '@/lib/modrinthStats';
+import { officialModrinthProjectUrl } from '@/lib/projectDownload';
 import { localizeItem } from '@/content/v2/localize';
 import { ProjectGallery } from './ProjectGallery';
 import { SupporterDownload, resolveSupporterConfiguration } from './SupporterDownload';
@@ -52,7 +53,7 @@ export function PremiumProjectPage({ project: sourceProject, releases }: { proje
   ];
   const gallery = official?.gallery.length ? official.gallery : localGallery;
   const related = publicProject('crafttoons');
-  const download = project.upstream ? `/api/download/${encodeURIComponent(project.slug)}` : (releaseUrl || projectUrl);
+  const download = officialModrinthProjectUrl(project) || (!project.upstream ? releaseUrl : undefined);
   const supporter = resolveSupporterConfiguration(project.supporterDownload, publicSettings()?.defaultSupporterDownload);
   const socialProof = metrics && <div className="mac-live-stats" aria-label={t('premium.modrinthStats')}><span className="mac-stat-primary" title={`${new Intl.NumberFormat(locale).format(metrics.downloads)} ${t('mac.totalDownloads')}`}><Download size={18}/><strong>{new Intl.NumberFormat(locale,{notation:'compact',maximumFractionDigits:1}).format(metrics.downloads)}</strong><small>{t('mac.totalDownloads')}</small></span><span title={`${new Intl.NumberFormat(locale).format(metrics.followers)} ${t('mac.followers')}`}><Users size={17}/><strong>{new Intl.NumberFormat(locale,{notation:'compact',maximumFractionDigits:1}).format(metrics.followers)}</strong><small>{t('mac.followers')}</small></span></div>;
   return <SiteLayout>
