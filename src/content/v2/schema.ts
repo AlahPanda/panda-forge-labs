@@ -48,6 +48,7 @@ export const distributionSchema = z.object({
 }).strict();
 export const projectSchema = base.extend({
   status: projectStatusSchema, releaseSlugs: z.array(slugSchema).default([]),
+  iconUrl: mediaUrl.optional(),
   pageTemplate: z.enum(['premium', 'basic']).optional(),
   premiumCopy: z.enum(['mac', 'generic']).optional(),
   heroArtwork: z.object({ day: mediaUrl, night: mediaUrl, dayMobile: mediaUrl.optional(), nightMobile: mediaUrl.optional() }).strict().optional(),

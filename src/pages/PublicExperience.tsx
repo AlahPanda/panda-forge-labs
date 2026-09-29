@@ -11,7 +11,7 @@ import type { ArticleV2, ProjectV2 } from '@/content/v2/schema';
 import { ProjectStatusBadge } from '@/components/design-system/ProjectStatus';
 import { HeroLandscape } from '@/components/design-system/HeroLandscape';
 import { PageHero, SectionTitle, SearchField, EmptyCollection, ProjectCard, LauncherCard, ArticleCard, GuideCard, destinations } from '@/components/experience/Shared';
-import { MacNativeProduct } from '@/components/experience/MacNativeProduct';
+import { PremiumProjectPage } from '@/components/experience/MacNativeProduct';
 import LauncherProduct from '@/components/experience/LauncherProduct';
 import SupportCallout from '@/components/experience/SupportCallout';
 import ContactForm from '@/components/experience/ContactForm';
@@ -103,7 +103,7 @@ export function ProjectDetailExperience() {
   const project: ProjectV2 = localizeItem(entry.item, locale);
   const teaser = project.status === 'internal-prototype';
   const releases = teaser ? [] : publicReleasesFor(project);
-  if (!teaser && (project.pageTemplate === 'premium' || (!!project.upstream && project.pageTemplate !== 'basic'))) return <MacNativeProduct project={project} releases={releases}/>;
+  if (!teaser && (project.pageTemplate === 'premium' || (!!project.upstream && project.pageTemplate !== 'basic'))) return <PremiumProjectPage project={project} releases={releases}/>;
   const image = project.media?.find((medium) => medium.kind === 'image');
   const primary = project.distribution?.find((provider) => provider.state === 'active' && provider.priority === 'primary' && provider.url);
   return <SiteLayout><Seo title={(project.seo?.title || project.name) + ' — AlahPanda Labs'} description={project.seo?.description || project.summary || project.name} image={project.seo?.image || image?.url} noindex={project.seo?.noindex}/>

@@ -9,6 +9,7 @@
       "status": "beta",
       "pageTemplate": "premium",
       "premiumCopy": "mac",
+      "iconUrl": "https://cdn.modrinth.com/data/fPtkF9pO/bfda649b0fac7ba5fac41e9da46fead6ed9b8965_96.webp",
       "upstream": {"provider": "modrinth", "projectSlug": "mac-native"},
       "summary": "Modpack Minecraft para macOS, desenvolvido para Macs com Apple Silicon e Intel.",
       "description": "Mac Native concentra-se na experiência Minecraft no Mac. A publicação oficial descreve objetivos de otimização da renderização e gestão de recursos, além de integração com o trackpad em modelos compatíveis. Os resultados dependem do equipamento e da configuração; a lista de mods e as alterações publicadas estão no Modrinth.",

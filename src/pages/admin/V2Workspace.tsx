@@ -185,6 +185,7 @@ export default function V2Workspace({ kind, draftsOnly = false, onChanged, publi
     if (!connection) return;
     setEntry({ ...fresh('projects'), slug: connection.slug, name: connection.name, summary: connection.summary,
       status: connection.release.channel === 'stable' ? 'stable' : connection.release.channel,
+      iconUrl: connection.iconUrl,
       pageTemplate: 'premium', upstream: { provider: 'modrinth', projectId: connection.id, projectSlug: connection.slug },
       distribution: [{provider: 'modrinth', state: 'active', priority: 'primary', url: connection.projectUrl}],
     });
@@ -279,7 +280,7 @@ export default function V2Workspace({ kind, draftsOnly = false, onChanged, publi
           {kind === 'homepage' && <p>{a('releaseInfo')}</p>}
           {!['projects','settings','homepage'].includes(kind) && <p>{value(entry,'projectSlug') || a('noRecords')}</p>}
         </div>}
-        {tab === 'mediaTab' && <div className="admin-form-grid">{(['projects', 'launchers', 'articles', 'guides'] as ContentKind[]).includes(kind) ? <Rows title={a('media')} items={records(entry, 'media')} fields={['url', 'alt', 'caption', 'kind|image|video']} onChange={(v) => change('media', v)} /> : <p>{a('noRecords')}</p>}{kind === 'projects' && (['day','night','dayMobile','nightMobile'] as const).map((moment)=><Input key={moment} label={`Hero artwork ${moment}`} value={value((entry.heroArtwork as Entry)||{},moment)} onChange={(v)=>{const next={...((entry.heroArtwork as Entry)||{})}; if(v)next[moment]=v;else delete next[moment];change('heroArtwork',Object.keys(next).length?next:undefined);}}/>)}</div>}
+        {tab === 'mediaTab' && <div className="admin-form-grid">{(['projects', 'launchers', 'articles', 'guides'] as ContentKind[]).includes(kind) ? <Rows title={a('media')} items={records(entry, 'media')} fields={['url', 'alt', 'caption', 'kind|image|video']} onChange={(v) => change('media', v)} /> : <p>{a('noRecords')}</p>}{kind === 'projects' && <Input label="Project icon URL (HTTPS)" value={value(entry,'iconUrl')} onChange={(v)=>change('iconUrl',v || undefined)}/ >}{kind === 'projects' && (['day','night','dayMobile','nightMobile'] as const).map((moment)=><Input key={moment} label={`Hero artwork ${moment}`} value={value((entry.heroArtwork as Entry)||{},moment)} onChange={(v)=>{const next={...((entry.heroArtwork as Entry)||{})}; if(v)next[moment]=v;else delete next[moment];change('heroArtwork',Object.keys(next).length?next:undefined);}}/>)}</div>}
         {tab === 'seoTab' && <fieldset className="border border-hairline rounded-lg p-4 space-y-3"><legend className="label-mono">SEO</legend>
           <p className="admin-note">{a('canonical')}: <code>{canonicalPath(kind,entry)}</code></p>
           <Input label="Meta title" value={value((entry.seo as Entry) || {}, 'title')} onChange={(v) => change('seo', { ...((entry.seo as Entry) || {}), title: v })} />

@@ -454,6 +454,7 @@ a:hover .experience-text-link svg,.experience-text-link:hover svg { transform: t
 .mac-product-icon,.mac-release-icon { display:grid;place-items:center;flex:none;color:hsl(var(--primary));background:hsl(var(--card) / .86);border:1px solid hsl(var(--border) / .7);box-shadow:var(--shadow-card); }
 .mac-product-icon { width:76px;height:76px;border-radius:20px; }
 .mac-product-icon img,.mac-release-icon img { width:100%;height:100%;object-fit:contain;border-radius:inherit; }
+.mac-icon-initials { font-weight:800;font-size:1.15rem;letter-spacing:-.06em; }
 .mac-title-row { display:flex;gap:14px;align-items:center;flex-wrap:wrap; }
 .mac-title-row h1 { font-size:clamp(2.7rem,4vw,4.3rem);line-height:1.02;letter-spacing:-.055em;font-weight:790; }
 .mac-headline { font-size:clamp(1.15rem,1.8vw,1.55rem);font-weight:720;color:hsl(var(--foreground));letter-spacing:-.035em; }
@@ -513,7 +514,11 @@ a:hover .experience-text-link svg,.experience-text-link:hover svg { transform: t
 .mac-release-actions { display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-left:71px; }
 .mac-release-actions .experience-button { min-height:38px;font-size:.75rem; }
 .mac-release-actions .experience-text-link { font-size:.7rem; }
-.mac-live-stats { font-size:.69rem;color:hsl(var(--muted-foreground));margin:10px 0 0 71px; }
+.mac-live-stats { display:flex;gap:8px;margin:0 0 12px 71px; }
+.mac-live-stats > span { display:flex;align-items:center;gap:6px;min-width:0;padding:8px 11px;border:1px solid hsl(var(--border) / .65);border-radius:var(--radius-md);background:hsl(var(--card) / .8);color:hsl(var(--muted-foreground)); }
+.mac-live-stats > .mac-stat-primary { background:hsl(var(--accent) / .75);color:hsl(var(--primary)); }
+.mac-live-stats strong { color:hsl(var(--foreground));font-size:1.13rem;line-height:1;letter-spacing:-.03em; }
+.mac-live-stats small { font-size:.68rem;font-weight:650;line-height:1.1; }
 .mac-steps-panel { padding-block:12px; }
 .mac-steps { display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px;margin-top:11px; }
 .mac-steps > div { display:grid;grid-template-columns:auto 1fr;gap:2px 8px;align-content:start;font-size:.76rem; }
