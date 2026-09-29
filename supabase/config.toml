@@ -1,3 +1,3 @@
-project_id = "ypfxaqqilqnbpxbttngy"
+project_id = "jnvckqlschyquzzfldrs" # Isolated V2 Preview project. Production must never be deployed from this branch.
 [functions.admin-cms]
 verify_jwt = false # This function verifies its own short-lived admin JWT for every protected action.

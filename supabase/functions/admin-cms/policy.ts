@@ -26,6 +26,8 @@ export function validateContent(path: string, content: unknown): string | null {
   if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed)) return 'Invalid content shape';
   const kind = CONTENT_KINDS.find((candidate) => collectionPath(candidate) === path);
   if (kind) {
+    // Shared V2 validation also rejects translated text awaiting review from public Git.
+    // Drafts stay private until a reviewed translation can be published to Preview.
     try { parseCollection(kind, parsed); return null; }
     catch { return `Invalid ${kind} collection`; }
   }

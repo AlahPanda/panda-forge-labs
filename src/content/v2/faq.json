@@ -1,1 +1,182 @@
-{"schemaVersion":2,"items":[]}
+{
+  "schemaVersion": 2,
+  "items": [
+    {
+      "slug": "general",
+      "name": "General",
+      "sourceLocale": "pt-PT",
+      "translations": {},
+      "items": [
+        {
+          "id": "what-is-labs",
+          "question": "O que é o AlahPanda Labs?",
+          "answer": "É o espaço que reúne projetos e experiências criados por AlahPanda, juntamente com launchers, ajuda e conteúdo editorial."
+        },
+        {
+          "id": "where-projects",
+          "question": "Onde encontro os projetos?",
+          "answer": "Abre [Modpacks](/modpacks) para veres as experiências publicadas e os projetos em desenvolvimento."
+        }
+      ]
+    },
+    {
+      "slug": "modpacks",
+      "name": "Modpacks",
+      "sourceLocale": "pt-PT",
+      "translations": {},
+      "items": [
+        {
+          "id": "free-modpacks",
+          "question": "Posso consultar os projetos sem pagar?",
+          "answer": "Podes explorar as páginas públicas livremente. Para jogar Minecraft: Java Edition precisas de acesso legítimo ao jogo; confirma as condições de cada fornecedor no destino oficial."
+        },
+        {
+          "id": "development-status",
+          "question": "O que significa «Em desenvolvimento»?",
+          "answer": "Indica que o projeto ainda não tem uma release pública confirmada. Não implica uma data de lançamento."
+        },
+        {
+          "id": "beta-status",
+          "question": "O que significa Beta?",
+          "answer": "É o estado editorial de um produto público que continua em desenvolvimento. Consulta sempre a compatibilidade da release publicada."
+        },
+        {
+          "id": "craft-available",
+          "question": "CraftToons já está disponível para download?",
+          "answer": "Não. [CraftToons](/modpacks/crafttoons) é atualmente um protótipo interno apresentado publicamente apenas como projeto em desenvolvimento."
+        }
+      ]
+    },
+    {
+      "slug": "launchers",
+      "name": "Launchers",
+      "sourceLocale": "pt-PT",
+      "translations": {},
+      "items": [
+        {
+          "id": "choose-launcher",
+          "question": "Que launcher devo escolher?",
+          "answer": "Consulta os [launchers](/launchers), as plataformas indicadas e os links oficiais. Confirma no site do fornecedor se a versão pretendida é compatível com o teu sistema."
+        },
+        {
+          "id": "launcher-differences",
+          "question": "Qual é a diferença entre launchers?",
+          "answer": "Podem variar na gestão de instâncias, plataformas e formatos aceites. O catálogo mostra apenas dados que foram revistos; consulta a documentação oficial para detalhes técnicos."
+        },
+        {
+          "id": "astral-links",
+          "question": "Onde encontro os downloads oficiais do AstralRinth?",
+          "answer": "Consulta a [página AstralRinth](/launchers/astralrinth) e confirma os ficheiros no repositório de releases do publicador. Os links históricos com intermediário deixaram de ser recomendados."
+        }
+      ]
+    },
+    {
+      "slug": "downloads-installation",
+      "name": "Downloads & Installation",
+      "sourceLocale": "pt-PT",
+      "translations": {},
+      "items": [
+        {
+          "id": "mac-install",
+          "question": "Como instalo Mac Native?",
+          "answer": "Segue a secção [Instalação de Mac Native](/modpacks/mac-native#installation) e abre a release oficial no Modrinth."
+        },
+        {
+          "id": "mac-update",
+          "question": "Como atualizo o modpack?",
+          "answer": "Confirma primeiro se existe uma nova release na página oficial do Modrinth. Segue as instruções do launcher escolhido e preserva os teus mundos antes de alterações importantes."
+        }
+      ]
+    },
+    {
+      "slug": "accounts-compatibility",
+      "name": "Accounts & Compatibility",
+      "sourceLocale": "pt-PT",
+      "translations": {},
+      "items": [
+        {
+          "id": "minecraft-account",
+          "question": "Do I need a Minecraft account?",
+          "answer": "Yes. To play Minecraft: Java Edition, use a Microsoft account with access to the game."
+        },
+        {
+          "id": "legitimate-account",
+          "question": "Posso jogar sem autenticação legítima?",
+          "answer": "O Labs não fornece instruções para contornar o licenciamento. Usa uma conta com acesso a Minecraft: Java Edition."
+        },
+        {
+          "id": "mac-silicon",
+          "question": "Mac Native funciona em Macs Apple Silicon?",
+          "answer": "A página oficial contempla Apple Silicon e Intel. Consulta os requisitos e a compatibilidade da release antes de instalar."
+        },
+        {
+          "id": "mac-version",
+          "question": "Que versão de Minecraft é suportada?",
+          "answer": "A release 0.3.1 publicada indica Minecraft Java 1.21.11 e Fabric. Verifica a publicação oficial para informação posterior."
+        }
+      ]
+    },
+    {
+      "slug": "website-content",
+      "name": "Website & Content",
+      "sourceLocale": "pt-PT",
+      "translations": {},
+      "items": [
+        {
+          "id": "where-updates",
+          "question": "Onde vejo novidades?",
+          "answer": "Consulta [News](/news) e, para factos de releases de Mac Native, a publicação oficial no Modrinth."
+        },
+        {
+          "id": "guides-status",
+          "question": "Onde estão os guias?",
+          "answer": "A rota [Guides](/guides) existe. Os guias surgirão quando houver conteúdo próprio revisto e publicado."
+        }
+      ]
+    },
+    {
+      "slug": "community",
+      "name": "Community",
+      "sourceLocale": "pt-PT",
+      "translations": {},
+      "items": [
+        {
+          "id": "join-discord",
+          "question": "Como entro no Discord?",
+          "answer": "Usa a ligação Discord no menu ou no rodapé. O convite abre fora deste site."
+        }
+      ]
+    },
+    {
+      "slug": "support-contact",
+      "name": "Support & Contact",
+      "sourceLocale": "pt-PT",
+      "translations": {},
+      "items": [
+        {
+          "id": "where-help",
+          "question": "Onde posso pedir ajuda?",
+          "answer": "Abre [Suporte](/support) para encontrares a instalação, o FAQ e a ligação à comunidade no Discord."
+        },
+        {
+          "id": "report-bug",
+          "question": "Como reporto um problema?",
+          "answer": "Começa na página de [Suporte](/support). Indica o projeto, a versão publicada e os passos que reproduzem o problema; não partilhes passwords ou tokens."
+        }
+      ]
+    },
+    {
+      "slug": "mac-native",
+      "name": "Mac Native",
+      "sourceLocale": "pt-PT",
+      "translations": {},
+      "items": [
+        {
+          "id": "mac-available",
+          "question": "Mac Native já está disponível?",
+          "answer": "Sim. A release pública 0.3.1 Beta está ligada à [página de Mac Native](/modpacks/mac-native) e ao Modrinth oficial."
+        }
+      ]
+    }
+  ]
+}

@@ -6,9 +6,9 @@ import NewsCard from '@/components/NewsCard';
 import { site } from '@/content';
 import { useI18n } from '@/lib/i18n';
 import { ArrowRight } from 'lucide-react';
-import logo from '@/assets/logo.png';
+import { HeroLandscape } from '@/components/design-system/HeroLandscape';
 import AdSlot from '@/components/AdSlot';
-import { publicHomepage, publicFeaturedProjects, publicFeaturedArticles, publicSiteDescription } from '@/content/publicResolver';
+import { publicHomepage, publicFeaturedProjects, publicFeaturedArticles, publicSettings } from '@/content/publicResolver';
 import { PublicV2Card } from '@/components/PublicV2Card';
 
 export default function Home() {
@@ -20,41 +20,35 @@ export default function Home() {
   return (
     <SiteLayout>
       <Seo
-        title="AlahPanda Labs — Premium Minecraft Modpacks"
-        description={publicSiteDescription()}
+        title="AlahPanda Labs"
+        description={publicSettings()?.description || config?.hero?.subtitle || t('home.heroSub')}
       />
 
-      {/* HERO — instrument panel */}
-      <section className="relative overflow-hidden border-b border-hairline">
-        <div className="absolute inset-0 grid-bg opacity-50 pointer-events-none" />
-        <div
-          className="absolute inset-0 pointer-events-none"
-          style={{
-            background:
-              'radial-gradient(60% 50% at 80% 0%, hsl(var(--signal) / 0.12), transparent 70%)',
-          }}
-        />
-
-        <div className="container relative py-20 md:py-28 grid md:grid-cols-12 gap-10 items-center">
-          <div className="md:col-span-7">
-            <div className="flex items-center gap-3 label-mono reveal">
-              <span className="signal-dot" />
+      {/* Brand direction sample. Legacy slogans have no authority in this presentation. */}
+      <section className="hero-universe relative overflow-hidden border-b border-hairline">
+        <HeroLandscape />
+        <div className="container relative hero-content flex items-center">
+          <div className="hero-copy max-w-xl">
+            <div className="inline-flex items-center gap-2 rounded-full border border-hairline bg-card/80 px-3 py-1.5 text-xs font-medium reveal">
+              <span className="signal-dot" aria-hidden="true" />
               <span>{config?.hero?.eyebrow || t('home.eyebrow')}</span>
-              <span className="hairline border-t w-12" />
             </div>
 
-            <h1 className="mt-6 text-5xl md:text-7xl font-semibold tracking-tight leading-[1.02] reveal">
-              {config?.hero?.title ? <span className="block">{config.hero.title}</span> : <><span className="block">{t('home.heroLineA')}</span><span className="block text-signal">{t('home.heroLineB')}</span></>}
+            <h1 className="mt-5 text-4xl sm:text-5xl md:text-6xl font-bold tracking-tight leading-[1.08] reveal">
+              {config?.hero?.title ? <span className="block">{config.hero.title}</span> : <>
+                <span className="block">AlahPanda Labs</span>
+                <span className="block mt-2 text-2xl sm:text-3xl md:text-4xl font-semibold text-signal">{t('home.heroLineB')}</span>
+              </>}
             </h1>
 
-            <p className="mt-6 max-w-xl text-base md:text-lg text-muted-foreground reveal">
+            <p className="mt-5 max-w-lg text-base md:text-lg text-muted-foreground reveal">
               {config?.hero?.subtitle || t('home.heroSub')}
             </p>
 
-            <div className="mt-9 flex flex-wrap items-center gap-3 reveal">
+            <div className="mt-7 flex flex-wrap items-center gap-3 reveal">
               <Link
                 to="/modpacks"
-                className="inline-flex items-center gap-2 px-5 h-11 rounded-md bg-signal text-primary-foreground font-medium hover:bg-signal/90 transition-colors active:scale-[0.97]"
+                className="inline-flex items-center gap-2 px-5 h-11 rounded-full bg-primary text-primary-foreground font-medium hover:bg-signal-strong transition-colors active:scale-[0.98] focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 motion-reduce:transform-none"
               >
                 {t('home.cta.explore')} <ArrowRight className="h-4 w-4" />
               </Link>
@@ -62,39 +56,13 @@ export default function Home() {
                 href={site.discordUrl}
                 target="_blank"
                 rel="noreferrer"
-                className="inline-flex items-center gap-2 px-5 h-11 rounded-md border border-hairline bg-background hover:bg-secondary/60 transition-colors active:scale-[0.97]"
+                className="inline-flex items-center gap-2 px-5 h-11 rounded-full border border-hairline bg-card/90 hover:bg-secondary/90 transition-colors active:scale-[0.98] focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 motion-reduce:transform-none"
               >
                 {t('home.cta.discord')}
               </a>
             </div>
           </div>
 
-          <div className="md:col-span-5 reveal">
-            <div className="relative aspect-square max-w-md ml-auto">
-              <div className="absolute inset-0 rounded-xl border border-hairline bg-elev grid-bg-fine" />
-              <div className="absolute inset-0 flex items-center justify-center">
-                <img
-                  src={logo}
-                  alt="AlahPanda Labs"
-                  width={280}
-                  height={280}
-                  className="drop-shadow-[0_24px_60px_hsl(var(--signal)/0.35)]"
-                />
-              </div>
-              {/* Corner ticks */}
-              {(['tl', 'tr', 'bl', 'br'] as const).map((c) => (
-                <span
-                  key={c}
-                  className={`absolute h-3 w-3 border-signal ${
-                    c === 'tl' ? 'top-2 left-2 border-l border-t' :
-                    c === 'tr' ? 'top-2 right-2 border-r border-t' :
-                    c === 'bl' ? 'bottom-2 left-2 border-l border-b' :
-                    'bottom-2 right-2 border-r border-b'
-                  }`}
-                />
-              ))}
-            </div>
-          </div>
         </div>
       </section>
 
@@ -112,7 +80,7 @@ export default function Home() {
         <div className="container py-20">
           <div className="flex items-end justify-between mb-10 reveal">
             <div>
-              <div className="label-mono">02 — Catalog</div>
+              <div className="label-mono">{t('nav.modpacks')}</div>
               <h2 className="mt-2 text-3xl md:text-4xl font-semibold tracking-tight">{t('home.featured')}</h2>
             </div>
             <Link to="/modpacks" className="text-sm text-muted-foreground hover:text-signal transition-colors hidden md:inline-flex items-center gap-1.5">
@@ -130,7 +98,7 @@ export default function Home() {
         <div className="container py-20">
           <div className="flex items-end justify-between mb-10 reveal">
             <div>
-              <div className="label-mono">03 — Notebook</div>
+              <div className="label-mono">{t('nav.news')}</div>
               <h2 className="mt-2 text-3xl md:text-4xl font-semibold tracking-tight">{t('home.latest')}</h2>
             </div>
             <Link to="/news" className="text-sm text-muted-foreground hover:text-signal transition-colors hidden md:inline-flex items-center gap-1.5">

@@ -1,0 +1,43 @@
+name: Deploy Supabase Preview Function
+
+on:
+  push:
+    branches:
+      - v2/full-redesign
+    paths:
+      - .github/workflows/deploy-supabase-preview.yml
+      - supabase/config.toml
+      - supabase/functions/admin-cms/**
+
+permissions:
+  contents: read
+
+jobs:
+  deploy-admin-cms:
+    runs-on: ubuntu-latest
+
+    env:
+      SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+      SUPABASE_PROJECT_ID: ${{ secrets.SUPABASE_PROJECT_ID }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Set up Supabase CLI
+        uses: supabase/setup-cli@v1
+        with:
+          version: latest
+
+      - name: Confirm isolated Preview destination
+        run: |
+          test "$SUPABASE_PROJECT_ID" = "jnvckqlschyquzzfldrs" || {
+            echo 'Preview project ref mismatch or missing; deploy blocked.' >&2
+            exit 1
+          }
+          test "${GITHUB_REF}" = "refs/heads/v2/full-redesign" || exit 1
+
+      - name: Deploy admin-cms to Preview Supabase
+        run: supabase functions deploy admin-cms --project-ref jnvckqlschyquzzfldrs

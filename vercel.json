@@ -28,7 +28,15 @@
       ]
     }
   ],
+  "redirects": [
+    { "source": "/projects", "destination": "/modpacks", "permanent": true }
+  ],
+  "crons": [{ "path": "/api/sync-modrinth", "schedule": "0 6 * * *" }],
   "rewrites": [
+    {
+      "source": "/api/(.*)",
+      "destination": "/api/$1"
+    },
     {
       "source": "/(.*)",
       "destination": "/"

@@ -1,4 +1,7 @@
 import { ALLOWED_PATHS, validateContent, validateClaims, canSave, isContentKind, parseItem, parseCollection, collectionPath, type ContentKind } from "./policy.ts";
+import { allowedAdminOrigins, isAllowedAdminOrigin } from './origins.ts';
+import { fetchModrinthPublication } from '../../../src/lib/modrinthProject.ts';
+import { duplicateModrinthConnection } from '../../../src/lib/projectConnections.ts';
 // Admin CMS edge function
 // - POST /login         { password } -> { token }
 // - POST /read          { path } (Bearer token) -> current JSON and blob SHA
@@ -6,16 +9,19 @@ import { ALLOWED_PATHS, validateContent, validateClaims, canSave, isContentKind,
 // - POST /redeploy      (Bearer token) -> hits Vercel deploy hook
 //
 // Secrets required:
-//   ADMIN_PASSWORD, ADMIN_JWT_SECRET, ADMIN_ORIGIN, GITHUB_TOKEN, GITHUB_REPO,
+//   ADMIN_PASSWORD, ADMIN_JWT_SECRET, ADMIN_ORIGINS (or legacy ADMIN_ORIGIN), GITHUB_TOKEN, GITHUB_REPO,
 //   GITHUB_BRANCH; optional VERCEL_DEPLOY_HOOK (preview-only for preview config)
 
-const ADMIN_ORIGIN = Deno.env.get('ADMIN_ORIGIN') ?? '';
-
-const corsHeaders = {
-  'Access-Control-Allow-Origin': ADMIN_ORIGIN,
+const ADMIN_ORIGINS = allowedAdminOrigins(Deno.env.get('ADMIN_ORIGINS'), Deno.env.get('ADMIN_ORIGIN'));
+const ADMIN_PREVIEW_ALIAS_RAW = Deno.env.get('ADMIN_PREVIEW_ALIAS');
+const aliasEntries = ADMIN_PREVIEW_ALIAS_RAW ? allowedAdminOrigins(ADMIN_PREVIEW_ALIAS_RAW, undefined) : null;
+const ADMIN_PREVIEW_ALIAS = aliasEntries?.length === 1 ? aliasEntries[0] : undefined;
+const corsHeaders = (origin: string | null): Record<string, string> => ADMIN_ORIGINS !== null && origin !== null && isAllowedAdminOrigin(origin, ADMIN_ORIGINS, ADMIN_PREVIEW_ALIAS) ? {
+  'Access-Control-Allow-Origin': origin,
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
   'Access-Control-Allow-Methods': 'POST, OPTIONS',
-};
+  Vary: 'Origin',
+} : { Vary: 'Origin' };
 
 const ADMIN_PASSWORD = Deno.env.get('ADMIN_PASSWORD') ?? '';
 const JWT_SECRET = Deno.env.get('ADMIN_JWT_SECRET') ?? '';
@@ -141,17 +147,18 @@ async function verifyGithubToken(): Promise<{ ok: true; login: string } | { ok: 
 
 async function readGithubFile(path: string): Promise<{ content: string; sha: string }> {
   const check = await verifyGithubToken();
-  if ('error' in check) throw new Error(check.error);
+  if ('error' in check) throw new GithubAccessError();
   const response = await fetch(`https://api.github.com/repos/${GITHUB_REPO}/contents/${encodeURI(path)}?ref=${encodeURIComponent(GITHUB_BRANCH)}`, { headers: ghHeaders() });
+  if ([401, 403, 404].includes(response.status)) throw new GithubAccessError();
   if (!response.ok) throw new Error(`GitHub read ${response.status}`);
   const file = await response.json();
   const bytes = Uint8Array.from(atob(file.content.replace(/\s/g, '')), (c: string) => c.charCodeAt(0));
   return { content: new TextDecoder().decode(bytes), sha: file.sha };
 }
 
-async function commitFile(path: string, content: string, message: string, expectedSha: string): Promise<{ sha: string; url: string }> {
+async function commitFile(path: string, content: string, message: string, expectedSha: string): Promise<{ sha: string; url: string; commitSha?: string; commitUrl?: string }> {
   const check = await verifyGithubToken();
-  if ('error' in check) throw new Error(check.error);
+  if ('error' in check) throw new GithubAccessError();
 
   const apiBase = `https://api.github.com/repos/${GITHUB_REPO}/contents/${encodeURI(path)}`;
   const fileUrl = `${apiBase}?ref=${encodeURIComponent(GITHUB_BRANCH)}`;
@@ -162,6 +169,7 @@ async function commitFile(path: string, content: string, message: string, expect
     const j = await head.json();
     sha = j.sha;
   } else if (head.status !== 404) {
+    if ([401, 403].includes(head.status)) throw new GithubAccessError();
     throw new Error(`GitHub HEAD ${head.status}: ${await head.text()}`);
   }
 
@@ -178,9 +186,10 @@ async function commitFile(path: string, content: string, message: string, expect
     }),
   });
   if (put.status === 409) throw new ConflictError();
+  if ([401, 403, 404].includes(put.status)) throw new GithubAccessError();
   if (!put.ok) throw new Error(`GitHub PUT ${put.status}: ${await put.text()}`);
   const j = await put.json();
-  return { sha: j.content.sha, url: j.content.html_url };
+  return { sha: j.content.sha, url: j.content.html_url, commitSha: j.commit?.sha, commitUrl: j.commit?.html_url };
 }
 
 async function triggerRedeploy(): Promise<{ ok: boolean; status: number; body: string }> {
@@ -190,18 +199,21 @@ async function triggerRedeploy(): Promise<{ ok: boolean; status: number; body: s
 }
 
 class ConflictError extends Error { constructor() { super('Content changed on GitHub. Reload before saving.'); } }
+class GithubAccessError extends Error { constructor() { super('GitHub access is unavailable'); } }
 
 // Best-effort per-instance limiter; add an external limiter for distributed production.
 const attempts = new Map<string, { count: number; until: number }>();
 
 // ---------- Router ----------
 Deno.serve(async (req) => {
-  if (!ADMIN_ORIGIN || !JWT_SECRET) return json({ error: 'Server not configured' }, 500);
-  if (req.headers.get('Origin') && req.headers.get('Origin') !== ADMIN_ORIGIN) return json({ error: 'Forbidden origin' }, 403);
-  if (req.method === 'OPTIONS') return new Response('ok', { headers: corsHeaders });
+  const origin = req.headers.get('Origin');
+  const json = (data: unknown, status = 200) => responseJson(data, status, origin);
+  if (!ADMIN_ORIGINS || (ADMIN_PREVIEW_ALIAS_RAW && !ADMIN_PREVIEW_ALIAS) || !JWT_SECRET) return json({ error: 'Server not configured' }, 500);
+  if (!isAllowedAdminOrigin(origin, ADMIN_ORIGINS, ADMIN_PREVIEW_ALIAS)) return json({ error: 'Forbidden origin', receivedOrigin: origin, expectedOrigins: ADMIN_ORIGINS, previewAlias: ADMIN_PREVIEW_ALIAS ?? null }, 403);
+  if (req.method === 'OPTIONS') return new Response('ok', { headers: corsHeaders(origin) });
   if (req.method !== 'POST') {
     return new Response(JSON.stringify({ error: 'Method not allowed' }), {
-      status: 405, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      status: 405, headers: { ...corsHeaders(origin), 'Content-Type': 'application/json' },
     });
   }
 
@@ -241,6 +253,13 @@ Deno.serve(async (req) => {
     const token = auth.startsWith('Bearer ') ? auth.slice(7) : '';
     const claims = token ? await verifyJwt(token) : null;
     if (!claims) return json({ error: 'Unauthorized' }, 401);
+
+    if (action === 'modrinth-lookup') {
+      const { reference } = await req.json().catch(() => ({}));
+      if (typeof reference !== 'string' || reference.length > 200) return json({ error: 'Invalid Modrinth reference' }, 400);
+      try { return json({ project: await fetchModrinthPublication(reference) }); }
+      catch { return json({ error: 'Official Modrinth publication unavailable or invalid' }, 502); }
+    }
 
     if (action === 'read') {
       const { path } = await req.json().catch(() => ({}));
@@ -291,6 +310,20 @@ Deno.serve(async (req) => {
       const collection = parseCollection(kind, JSON.parse(file.content));
       const item = parseItem(kind, current.content);
       const items = collection.items.filter((entry) => entry.slug !== slug);
+      if (kind === 'projects') {
+        const upstream = (item as Record<string, unknown>).upstream as { provider?: string; projectId?: string; projectSlug?: string } | undefined;
+        if (upstream) {
+          if (!upstream.projectSlug || duplicateModrinthConnection(upstream, items as { upstream?: typeof upstream }[])) return json({ error: 'Duplicate Modrinth connection' }, 409);
+          const prior = collection.items.find((entry) => entry.slug === slug) as Record<string, unknown> | undefined;
+          const oldConnection = prior?.upstream as typeof upstream;
+          if (!oldConnection || oldConnection.projectSlug !== upstream.projectSlug || oldConnection.projectId !== upstream.projectId) {
+            let published;
+            try { published = await fetchModrinthPublication(upstream.projectSlug); }
+            catch { return json({ error: 'Verify the current release on Modrinth before publishing this connection' }, 502); }
+            if (published.slug !== upstream.projectSlug || upstream.projectId && published.id !== upstream.projectId) return json({ error: 'Modrinth project identity mismatch' }, 400);
+          }
+        }
+      }
       items.push(item);
       const content = JSON.stringify({ schemaVersion: 2, items }, null, 2) + '\n';
       if (validateContent(path, content)) return json({ error: 'Invalid collection' }, 400);
@@ -298,7 +331,7 @@ Deno.serve(async (req) => {
       // Git is committed before deleting the draft. If deletion fails, the stale base SHA blocks republishing.
       try { await draftsRequest('DELETE', draftQuery(kind, slug, current.revision)); }
       catch (error) { console.error('Published draft cleanup failed', error); }
-      return json({ ok: true, sha: commit.sha, url: commit.url });
+      return json({ ok: true, ...commit, branch: GITHUB_BRANCH });
     }
 
     if (action === 'save') {
@@ -316,7 +349,8 @@ Deno.serve(async (req) => {
     }
 
     if (action === 'status') {
-      return json({ repo: GITHUB_REPO, branch: GITHUB_BRANCH, draftStorageConfigured: !!(SUPABASE_URL && SERVICE_ROLE_KEY), deployHookConfigured: !!VERCEL_DEPLOY_HOOK });
+      const github = await verifyGithubToken().catch(() => ({ ok: false as const }));
+      return json({ repo: GITHUB_REPO, branch: GITHUB_BRANCH, githubAccess: github.ok, draftStorageConfigured: !!(SUPABASE_URL && SERVICE_ROLE_KEY), deployHookConfigured: !!VERCEL_DEPLOY_HOOK });
     }
 
     if (action === 'me') {
@@ -327,13 +361,13 @@ Deno.serve(async (req) => {
   } catch (e) {
     const msg = e instanceof Error ? e.message : String(e);
     console.error('admin-cms error:', msg);
-    return json({ error: e instanceof ConflictError ? msg : 'Request failed' }, e instanceof ConflictError ? 409 : 500);
+    return json({ error: e instanceof ConflictError ? msg : e instanceof GithubAccessError ? 'GitHub access is unavailable' : 'Request failed' }, e instanceof ConflictError ? 409 : e instanceof GithubAccessError ? 503 : 500);
   }
 });
 
-function json(data: unknown, status = 200) {
+function responseJson(data: unknown, status = 200, origin: string | null = null) {
   return new Response(JSON.stringify(data), {
     status,
-    headers: { ...corsHeaders, 'Content-Type': 'application/json', 'Cache-Control': 'no-store' },
+    headers: { ...corsHeaders(origin), 'Content-Type': 'application/json', 'Cache-Control': 'no-store' },
   });
 }

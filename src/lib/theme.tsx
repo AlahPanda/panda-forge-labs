@@ -1,46 +1,62 @@
-import { createContext, useContext, useEffect, useState, ReactNode } from 'react';
+import { createContext, useContext, useEffect, useLayoutEffect, useRef, useState, type ReactNode } from 'react';
 
 type Theme = 'dark' | 'light';
+export type ThemePreference = Theme | 'system';
 const STORAGE_KEY = 'apl.theme';
 
 interface ThemeCtx {
   theme: Theme;
-  setTheme: (t: Theme) => void;
+  preference: ThemePreference;
+  setTheme: (theme: Theme) => void;
+  setPreference: (preference: ThemePreference) => void;
   toggle: () => void;
 }
-
 const Ctx = createContext<ThemeCtx | null>(null);
+const systemIsDark = () => typeof window !== 'undefined' && !!window.matchMedia?.('(prefers-color-scheme: dark)').matches;
 
 export function ThemeProvider({ children }: { children: ReactNode }) {
-  const [theme, setThemeState] = useState<Theme>('dark');
+  const previousTheme = useRef<Theme | null>(null);
+  const [preference, setPreferenceState] = useState<ThemePreference>(() => {
+    try {
+      const stored = window.localStorage.getItem(STORAGE_KEY);
+      if (stored === 'dark' || stored === 'light') return stored;
+    } catch { /* Storage can be unavailable. */ }
+    return 'system';
+  });
+  const [systemDark, setSystemDark] = useState(systemIsDark);
+  const theme: Theme = preference === 'system' ? (systemDark ? 'dark' : 'light') : preference;
 
-  useEffect(() => {
-    const stored = (typeof window !== 'undefined' && window.localStorage.getItem(STORAGE_KEY)) as Theme | null;
-    const initial: Theme = stored === 'light' || stored === 'dark' ? stored : 'dark';
-    setThemeState(initial);
-  }, []);
-
-  useEffect(() => {
+  useLayoutEffect(() => {
     const root = document.documentElement;
-    const body = document.body;
-    if (theme === 'dark') {
-      root.classList.add('dark');
-      body.classList.add('dark');
-    } else {
-      root.classList.remove('dark');
-      body.classList.remove('dark');
-    }
-    if (typeof window !== 'undefined') window.localStorage.setItem(STORAGE_KEY, theme);
+    if (previousTheme.current && previousTheme.current !== theme) root.dataset.themeTransition = 'true';
+    previousTheme.current = theme;
+    root.classList.toggle('dark', theme === 'dark');
+    document.body.classList.toggle('dark', theme === 'dark');
+    root.style.colorScheme = theme;
+    document.querySelector('meta[name="theme-color"]')?.setAttribute('content', theme === 'dark' ? '#121c2b' : '#f6f0e6');
+    const timer = window.setTimeout(() => { delete root.dataset.themeTransition; }, 420);
+    return () => { window.clearTimeout(timer); delete root.dataset.themeTransition; };
   }, [theme]);
 
-  const setTheme = (t: Theme) => setThemeState(t);
-  const toggle = () => setThemeState((prev) => (prev === 'dark' ? 'light' : 'dark'));
+  useEffect(() => {
+    const media = window.matchMedia?.('(prefers-color-scheme: dark)');
+    if (!media) return;
+    const onChange = () => setSystemDark(media.matches);
+    media.addEventListener('change', onChange);
+    return () => media.removeEventListener('change', onChange);
+  }, []);
 
-  return <Ctx.Provider value={{ theme, setTheme, toggle }}>{children}</Ctx.Provider>;
+  const setPreference = (next: ThemePreference) => {
+    setPreferenceState(next);
+    try {
+      if (next === 'system') window.localStorage.removeItem(STORAGE_KEY);
+      else window.localStorage.setItem(STORAGE_KEY, next);
+    } catch { /* Theme still works in this session. */ }
+  };
+  return <Ctx.Provider value={{ theme, preference, setTheme: setPreference, setPreference, toggle: () => setPreference(theme === 'dark' ? 'light' : 'dark') }}>{children}</Ctx.Provider>;
 }
-
 export function useTheme() {
-  const ctx = useContext(Ctx);
-  if (!ctx) throw new Error('useTheme must be used within ThemeProvider');
-  return ctx;
+  const context = useContext(Ctx);
+  if (!context) throw new Error('useTheme must be used within ThemeProvider');
+  return context;
 }

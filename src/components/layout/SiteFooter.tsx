@@ -1,73 +1,22 @@
 import { Link } from 'react-router-dom';
+import { Compass, ExternalLink, Leaf, MessageCircle } from 'lucide-react';
+import { BrandSymbol } from '@/components/design-system/BrandSymbol';
 import { site } from '@/content';
 import { useI18n } from '@/lib/i18n';
-import { Lock, Coffee } from 'lucide-react';
 import { publicContactEmail, publicSettings } from '@/content/publicResolver';
+import { siteLinks } from './SiteHeader';
+import { localizeItem } from '@/content/v2/localize';
 
 export default function SiteFooter() {
-  const { t } = useI18n();
-  const year = new Date().getFullYear();
-  const contactEmail = publicContactEmail();
-
-  return (
-    <footer className="border-t border-hairline mt-24">
-      <div className="container py-12 grid grid-cols-1 md:grid-cols-4 gap-10">
-        <div className="md:col-span-2">
-          <div className="text-sm font-semibold tracking-tight">{publicSettings()?.name || site.name}</div>
-          <p className="mt-2 text-sm text-muted-foreground max-w-sm">{t('footer.tagline')}</p>
-
-          {site.ads.showSupportButton && (
-            <a
-              href={site.supportUrl}
-              target="_blank"
-              rel="noreferrer"
-              className="mt-5 inline-flex items-center gap-2 px-4 h-10 rounded-md bg-signal/10 border border-signal/30 text-signal font-medium hover:bg-signal/20 transition-colors active:scale-[0.97]"
-            >
-              <Coffee className="h-4 w-4" /> Support on Ko-fi
-            </a>
-          )}
-        </div>
-        <div>
-          <div className="label-mono mb-3">Hub</div>
-          <ul className="space-y-2 text-sm">
-            <li><Link to="/modpacks" className="hover:text-signal transition-colors">{t('nav.modpacks')}</Link></li>
-            <li><Link to="/launchers" className="hover:text-signal transition-colors">{t('nav.launchers')}</Link></li>
-            <li><Link to="/news" className="hover:text-signal transition-colors">{t('nav.news')}</Link></li>
-            <li><Link to="/about" className="hover:text-signal transition-colors">{t('nav.about')}</Link></li>
-            <li><Link to="/faq" className="hover:text-signal transition-colors">{t('nav.faq')}</Link></li>
-            <li><Link to="/support" className="hover:text-signal transition-colors">Support</Link></li>
-          </ul>
-        </div>
-        <div>
-          <div className="label-mono mb-3">{t('footer.legal')}</div>
-          <ul className="space-y-2 text-sm">
-            <li><Link to="/legal?kind=privacy" className="text-zinc-400 hover:text-white transition-colors">{t('footer.privacy')}</Link></li>
-            <li><Link to="/legal?kind=terms" className="text-zinc-400 hover:text-white transition-colors">{t('footer.terms')}</Link></li>
-            <li><a href={`mailto:${contactEmail}`} className="hover:text-signal transition-colors">{contactEmail}</a></li>
-          </ul>
-        </div>
-      </div>
-
-      <div className="border-t border-hairline">
-        <div className="container py-5 flex items-center justify-between gap-4">
-          <div className="flex items-center gap-3">
-            <Link
-              to="/admin"
-              aria-label="Lab access"
-              title="Lab access"
-              className="inline-flex items-center justify-center h-6 w-6 rounded text-muted-foreground/40 hover:text-signal hover:bg-secondary/60 transition-colors"
-            >
-              <Lock className="h-3 w-3" />
-            </Link>
-            <span className="font-mono text-[11px] text-muted-foreground/70">
-              © {year} AlahPanda Labs · {t('footer.rights')}
-            </span>
-          </div>
-          <div className="font-mono text-[11px] text-muted-foreground/60">
-            v2.1 · build.{year}
-          </div>
-        </div>
-      </div>
-    </footer>
-  );
+  const { t, locale } = useI18n();
+  const settings = publicSettings();
+  return <footer className="experience-footer">
+    <div className="container experience-footer-main">
+      <div className="experience-footer-intro"><Link to="/" className="experience-brand"><BrandSymbol className="experience-brand-symbol"/>{settings ? localizeItem(settings, locale).name : site.name}</Link><p>{t('footer.tagline')}</p><span className="experience-footer-ornament"><Compass size={49}/><Leaf size={25}/></span></div>
+      <nav aria-label={t('ui.footerNavigation')}><h2>{t('ui.exploreSection')}</h2><div>{siteLinks.filter((link) => link.to !== '/').map((link) => <Link key={link.to} to={link.to}>{t(link.key)}</Link>)}</div></nav>
+      <div><h2>{t('ui.community')}</h2><a href={site.discordUrl} target="_blank" rel="noopener noreferrer">Discord <ExternalLink size={13}/></a><Link to="/support">{t('nav.support')}</Link><a href={'mailto:' + publicContactEmail()}>{publicContactEmail()}</a></div>
+      <div><h2>{t('footer.legal')}</h2><Link to="/legal?kind=privacy">{t('footer.privacy')}</Link><Link to="/legal?kind=terms">{t('footer.terms')}</Link><Link to="/admin" className="experience-admin-link">{t('ui.ownerCms')}</Link></div>
+    </div>
+    <div className="container experience-footer-bottom"><span>© {new Date().getFullYear()} AlahPanda Labs · {t('footer.rights')}</span><span>{t('footer.tagline')}</span></div>
+  </footer>;
 }

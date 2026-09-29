@@ -4,7 +4,7 @@ import { i18n, LOCALES, type Locale } from '@/content';
 interface I18nCtx {
   locale: Locale;
   setLocale: (l: Locale) => void;
-  t: (key: string) => string;
+  t: (key: string, values?: Record<string, string>) => string;
 }
 
 const Ctx = createContext<I18nCtx | null>(null);
@@ -37,7 +37,12 @@ export function I18nProvider({ children }: { children: ReactNode }) {
   const value = useMemo<I18nCtx>(() => {
     const dict = i18n[locale] ?? i18n.en;
     const fallback = i18n.en;
-    const t = (key: string) => dict[key] ?? fallback[key] ?? key;
+    const t = (key: string, values?: Record<string, string>) => {
+      const phrase = dict[key] ?? fallback[key];
+      // Unknown keys are a developer error; show a neutral localized label.
+      if (!phrase) return dict['ui.unavailable'] ?? fallback['ui.unavailable'] ?? 'Content unavailable';
+      return phrase.replace(/\{([a-zA-Z]+)\}/g, (match, name: string) => values?.[name] ?? match);
+    };
     return { locale, setLocale, t };
   }, [locale]);
 

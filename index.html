@@ -3,47 +3,33 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    
-    <!-- Metatag de Validação do AdSense -->
-    <meta name="google-adsense-account" content="ca-pub-1826086897592568">
-
-    <title>AlahPanda Labs — Premium Minecraft Modpacks</title>
+    <title>AlahPanda Labs — Modpacks and experiences</title>
     
     <!-- Mini Logo (Favicon) -->
-    <link rel="icon" type="image/png" href="/favicon.png" />
+    <link rel="icon" href="/favicon.ico" />
 
-    <meta name="description" content="A modern hub for premium Minecraft modpacks: Mac Native and CraftToons. Engineered for performance." />
+    <meta name="description" content="Explore modpacks and experiences created by AlahPanda." />
     <meta name="author" content="AlahPanda Labs" />
-    <meta name="theme-color" content="#0c1220" />
+    <meta name="theme-color" content="#f8f5f0" />
+    <script>
+      // Apply the chosen theme before styles paint.
+      try {
+        var savedTheme = localStorage.getItem('apl.theme');
+        var darkTheme = savedTheme === 'dark' || (savedTheme !== 'light' && matchMedia('(prefers-color-scheme: dark)').matches);
+        document.documentElement.classList.toggle('dark', darkTheme);
+        document.documentElement.style.colorScheme = darkTheme ? 'dark' : 'light';
+        document.querySelector('meta[name="theme-color"]').setAttribute('content', darkTheme ? '#121c2b' : '#f6f0e6');
+      } catch (error) { /* ThemeProvider handles unavailable storage. */ }
+    </script>
 
-    <meta property="og:title" content="AlahPanda Labs — Premium Minecraft Modpacks" />
-    <meta property="og:description" content="A modern hub for premium Minecraft modpacks. Mac Native and CraftToons." />
+    <meta property="og:title" content="AlahPanda Labs — Modpacks and experiences" />
+    <meta property="og:description" content="Explore modpacks and experiences created by AlahPanda." />
     <meta property="og:type" content="website" />
 
     <meta name="twitter:card" content="summary_large_image" />
-
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
-    
-    <!-- Google tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-PMMB39LBY9"></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-
-      function gtag(){dataLayer.push(arguments);}
-
-      gtag('js', new Date());
-      gtag('config', 'G-PMMB39LBY9');
-    </script>
-
-    <meta name="google-site-verification" content="lpU7dM73JGsXh1wzsufTMpoki-DlhfrGu3cx6aKbJHc" />
-    
-    <!-- Google AdSense -->
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1826086897592568" crossorigin="anonymous"></script>
   </head>
 
-  <body class="dark">
+  <body>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>

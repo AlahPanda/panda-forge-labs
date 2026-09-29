@@ -1,5 +1,4 @@
 import { useEffect, useRef } from 'react';
-import { site } from '@/content';
 
 interface Props {
   /** AdSense ad slot ID. Optional — if absent, only the placeholder shows. */
@@ -26,7 +25,8 @@ const HEIGHT: Record<NonNullable<Props['format']>, string> = {
 
 export default function AdSlot({ slot, format = 'banner', className = '', label = 'Advertisement' }: Props) {
   const ref = useRef<HTMLModElement>(null);
-  const enabled = site.ads.adsenseEnabled && !!site.ads.adsenseClient;
+  // A certified CMP has not been connected. Ads must stay disabled even if legacy settings change.
+  const enabled = false;
 
   useEffect(() => {
     if (!enabled) return;
@@ -51,7 +51,7 @@ export default function AdSlot({ slot, format = 'banner', className = '', label 
           ref={ref}
           className="adsbygoogle block w-full h-full"
           style={{ display: 'block' }}
-          data-ad-client={site.ads.adsenseClient}
+          data-ad-client=""
           data-ad-slot={slot}
           data-ad-format="auto"
           data-full-width-responsive="true"

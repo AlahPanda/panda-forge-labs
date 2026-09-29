@@ -1,11 +1,417 @@
 {
   "schemaVersion": 2,
   "items": [
-    {"slug":"prism","name":"Prism Launcher","sourceLocale":"en","translations":{},"summary":"An open-source Minecraft launcher for managing separate instances, accounts and mods.","platforms":[],"officialLinks":[{"label":"Official Prism Launcher website","url":"https://prismlauncher.org/"}]},
-    {"slug":"modrinth-app","name":"Modrinth App","sourceLocale":"en","translations":{},"summary":"Modrinth's open-source app for installing mods and keeping them up to date.","platforms":[],"officialLinks":[{"label":"Official Modrinth App page","url":"https://modrinth.com/app"}]},
-    {"slug":"atlauncher","name":"ATLauncher","sourceLocale":"en","translations":{},"platforms":[],"officialLinks":[{"label":"Official ATLauncher downloads","url":"https://atlauncher.com/downloads"}]},
-    {"slug":"curseforge-app","name":"CurseForge App","sourceLocale":"en","translations":{},"platforms":[],"officialLinks":[{"label":"Official CurseForge App page","url":"https://www.curseforge.com/download/app"}]},
-    {"slug":"multimc","name":"MultiMC","sourceLocale":"en","translations":{},"summary":"A Minecraft launcher for managing separate instances.","platforms":[],"officialLinks":[{"label":"Official MultiMC website","url":"https://multimc.org/"}]},
-    {"slug":"gdlauncher","name":"GDLauncher","sourceLocale":"en","translations":{},"platforms":[],"officialLinks":[{"label":"Official GDLauncher website","url":"https://gdlauncher.com/"}]}
+    {
+      "slug": "astralrinth",
+      "name": "AstralRinth",
+      "sourceLocale": "en",
+      "translations": {},
+      "summary": "An independent Modrinth-based launcher with its own interface and published packages for Windows, macOS and Linux.",
+      "description": "AstralRinth is a separate fork of the Modrinth App. This page refers to the didirus/Xorison publication and its release artifacts. It is not the official Minecraft launcher or the official Modrinth App. The AlahPanda Pick badge is an editorial choice, not an objective ranking or paid endorsement.",
+      "platforms": [
+        "Windows",
+        "macOS Apple Silicon",
+        "Linux"
+      ],
+      "developer": "didirus",
+      "currentVersion": "0.19.202",
+      "lastVerified": "2026-09-28T00:00:00.000Z",
+      "featured": true,
+      "instanceManagement": "The published release notes describe instance creation, modpack import/export and a library of installations.",
+      "javaManagement": "The publisher documents Java selection in settings.",
+      "modpackProviders": [
+        "Modrinth"
+      ],
+      "knownLimitations": [
+        "Windows ARM and macOS Intel builds are marked experimental in the publisher release; they are not listed as stable downloads here."
+      ],
+      "installation": "Choose the package for your system from the publisher release page. Verify its publisher and package name before running it. Sign in using a legitimate Minecraft account entitled to Java Edition when required. Create or import an instance and check game version and loader compatibility before adding content.",
+      "features": [
+        {
+          "title": "Distinct interface",
+          "description": "An independently branded Modrinth App fork."
+        },
+        {
+          "title": "Modpack workflows",
+          "description": "The publisher release notes describe instance and .mrpack import/export workflows."
+        }
+      ],
+      "officialLinks": [
+        {
+          "label": "Publisher source repository",
+          "url": "https://git.xorison.dev/didirus/AstralRinth"
+        },
+        {
+          "label": "Official release page",
+          "url": "https://git.xorison.dev/didirus/AstralRinth/releases/tag/AR-0.19.202"
+        }
+      ],
+      "downloads": [
+        {
+          "label": "Windows x64 setup",
+          "platform": "Windows",
+          "url": "https://git.xorison.dev/didirus/AstralRinth/releases/download/AR-0.19.202/AstralRinth%20App_0.19.202_x64-setup.exe"
+        },
+        {
+          "label": "Windows x64 MSI",
+          "platform": "Windows",
+          "url": "https://git.xorison.dev/didirus/AstralRinth/releases/download/AR-0.19.202/AstralRinth%20App_0.19.202_x64_en-US.msi"
+        },
+        {
+          "label": "macOS Apple Silicon DMG",
+          "platform": "macOS",
+          "url": "https://git.xorison.dev/didirus/AstralRinth/releases/download/AR-0.19.202/AstralRinth%20App_0.19.202_aarch64.dmg"
+        },
+        {
+          "label": "Linux AppImage x64",
+          "platform": "Linux",
+          "url": "https://git.xorison.dev/didirus/AstralRinth/releases/download/AR-0.19.202/AstralRinth%20App_0.19.202_amd64.AppImage"
+        },
+        {
+          "label": "Linux DEB x64",
+          "platform": "Linux",
+          "url": "https://git.xorison.dev/didirus/AstralRinth/releases/download/AR-0.19.202/AstralRinth%20App_0.19.202_amd64.deb"
+        },
+        {
+          "label": "Linux RPM x64",
+          "platform": "Linux",
+          "url": "https://git.xorison.dev/didirus/AstralRinth/releases/download/AR-0.19.202/AstralRinth%20App-0.19.202-1.x86_64.rpm"
+        }
+      ],
+      "sources": [
+        {
+          "label": "Publisher release artifacts",
+          "url": "https://git.xorison.dev/didirus/AstralRinth/releases/tag/AR-0.19.202",
+          "checkedAt": "2026-09-28T00:00:00.000Z"
+        },
+        {
+          "label": "Publisher repository",
+          "url": "https://git.xorison.dev/didirus/AstralRinth",
+          "checkedAt": "2026-09-28T00:00:00.000Z"
+        }
+      ]
+    },
+    {
+      "slug": "prism",
+      "name": "Prism Launcher",
+      "sourceLocale": "en",
+      "translations": {},
+      "summary": "An open-source Minecraft launcher for managing separate instances, accounts and mods.",
+      "platforms": [
+        "Windows",
+        "macOS",
+        "Linux"
+      ],
+      "officialLinks": [
+        {
+          "label": "Official website",
+          "url": "https://prismlauncher.org/"
+        },
+        {
+          "label": "Official downloads",
+          "url": "https://prismlauncher.org/download/"
+        },
+        {
+          "label": "Official documentation",
+          "url": "https://prismlauncher.org/wiki/"
+        }
+      ],
+      "developer": "Prism Launcher Contributors",
+      "license": "GPL-3.0-only",
+      "sourceCodeUrl": "https://github.com/PrismLauncher/PrismLauncher",
+      "supportedLoaders": [
+        "Forge",
+        "Fabric",
+        "Quilt",
+        "LiteLoader"
+      ],
+      "modpackProviders": [
+        "Modrinth",
+        "CurseForge",
+        "Technic",
+        "FTB"
+      ],
+      "instanceManagement": "Creates separate Minecraft installations, each with its own mods, resource packs, worlds and settings.",
+      "javaManagement": "Optional automatic Java detection and Mojang Java download; availability can vary by package.",
+      "features": [
+        {
+          "title": "Separate instances",
+          "description": "Keep game versions and modifications separate."
+        },
+        {
+          "title": "Pack sources",
+          "description": "Install modpacks from Modrinth, CurseForge and other supported providers."
+        }
+      ],
+      "installation": "Download Prism Launcher for your operating system from its official website. Sign in with a legitimate Microsoft account entitled to Minecraft: Java Edition. Create an instance matching the game version and loader required by the modpack.",
+      "sources": [
+        {
+          "label": "Prism overview",
+          "url": "https://prismlauncher.org/about/",
+          "checkedAt": "2026-09-28T00:00:00.000Z"
+        },
+        {
+          "label": "Prism Java documentation",
+          "url": "https://prismlauncher.org/wiki/getting-started/installing-java/",
+          "checkedAt": "2026-09-28T00:00:00.000Z"
+        },
+        {
+          "label": "Prism source license",
+          "url": "https://github.com/PrismLauncher/PrismLauncher",
+          "checkedAt": "2026-09-28T00:00:00.000Z"
+        }
+      ],
+      "lastVerified": "2026-09-28T00:00:00.000Z"
+    },
+    {
+      "slug": "modrinth-app",
+      "name": "Modrinth App",
+      "sourceLocale": "en",
+      "translations": {},
+      "summary": "Modrinth's open-source app for installing mods and keeping them up to date.",
+      "platforms": [
+        "Windows",
+        "macOS",
+        "Linux"
+      ],
+      "officialLinks": [
+        {
+          "label": "Official Modrinth App page",
+          "url": "https://modrinth.com/app"
+        }
+      ],
+      "developer": "Modrinth",
+      "sourceCodeUrl": "https://github.com/modrinth/code",
+      "modpackProviders": [
+        "Modrinth"
+      ],
+      "instanceManagement": "Browse, install and play Modrinth projects in separate app instances.",
+      "features": [
+        {
+          "title": "Modrinth content",
+          "description": "Install mods and modpacks from the Modrinth catalog."
+        }
+      ],
+      "installation": "Download the Modrinth App from the official page. Sign in to a legitimate Minecraft account, then install a published modpack into an instance.",
+      "sources": [
+        {
+          "label": "Modrinth App download",
+          "url": "https://modrinth.com/app",
+          "checkedAt": "2026-09-28T00:00:00.000Z"
+        },
+        {
+          "label": "Modrinth App documentation",
+          "url": "https://docs.modrinth.com/contributing/theseus/",
+          "checkedAt": "2026-09-28T00:00:00.000Z"
+        }
+      ],
+      "lastVerified": "2026-09-28T00:00:00.000Z"
+    },
+    {
+      "slug": "atlauncher",
+      "name": "ATLauncher",
+      "sourceLocale": "en",
+      "translations": {},
+      "platforms": [
+        "Windows",
+        "macOS",
+        "Linux"
+      ],
+      "officialLinks": [
+        {
+          "label": "Official downloads",
+          "url": "https://atlauncher.com/downloads"
+        },
+        {
+          "label": "Official website",
+          "url": "https://atlauncher.com/"
+        }
+      ],
+      "summary": "A Minecraft launcher for installing its catalog of modpacks and packs from Modrinth, CurseForge and Technic.",
+      "developer": "ATLauncher",
+      "license": "GPL-3.0",
+      "sourceCodeUrl": "https://github.com/ATLauncher/ATLauncher",
+      "modpackProviders": [
+        "ATLauncher",
+        "Modrinth",
+        "CurseForge",
+        "Technic"
+      ],
+      "javaManagement": "The Windows setup can install appropriate Java versions; the official download page also describes manual selection.",
+      "sources": [
+        {
+          "label": "ATLauncher overview",
+          "url": "https://atlauncher.com/",
+          "checkedAt": "2026-09-28T00:00:00.000Z"
+        },
+        {
+          "label": "ATLauncher downloads",
+          "url": "https://atlauncher.com/downloads",
+          "checkedAt": "2026-09-28T00:00:00.000Z"
+        },
+        {
+          "label": "ATLauncher source license",
+          "url": "https://github.com/ATLauncher/ATLauncher",
+          "checkedAt": "2026-09-28T00:00:00.000Z"
+        }
+      ],
+      "lastVerified": "2026-09-28T00:00:00.000Z"
+    },
+    {
+      "slug": "curseforge-app",
+      "name": "CurseForge App",
+      "sourceLocale": "en",
+      "translations": {},
+      "platforms": [
+        "Windows",
+        "macOS"
+      ],
+      "officialLinks": [
+        {
+          "label": "Official CurseForge App downloads",
+          "url": "https://www.curseforge.com/download/app"
+        },
+        {
+          "label": "Official help",
+          "url": "https://support.curseforge.com/support/solutions/articles/9000196984-installing-modpacks"
+        }
+      ],
+      "summary": "The official CurseForge app for discovering and managing Minecraft mods and modpacks.",
+      "developer": "CurseForge",
+      "modpackProviders": [
+        "CurseForge"
+      ],
+      "instanceManagement": "Install modpacks through the CurseForge app; check the official help for import and launcher choices.",
+      "sources": [
+        {
+          "label": "CurseForge download",
+          "url": "https://www.curseforge.com/download/app",
+          "checkedAt": "2026-09-28T00:00:00.000Z"
+        },
+        {
+          "label": "CurseForge modpack help",
+          "url": "https://support.curseforge.com/support/solutions/articles/9000196984-installing-modpacks",
+          "checkedAt": "2026-09-28T00:00:00.000Z"
+        }
+      ],
+      "lastVerified": "2026-09-28T00:00:00.000Z"
+    },
+    {
+      "slug": "multimc",
+      "name": "MultiMC",
+      "sourceLocale": "en",
+      "translations": {},
+      "summary": "A Minecraft launcher for managing separate instances.",
+      "platforms": [
+        "Windows",
+        "macOS",
+        "Linux"
+      ],
+      "officialLinks": [
+        {
+          "label": "Official MultiMC website and downloads",
+          "url": "https://multimc.org/"
+        }
+      ],
+      "developer": "MultiMC",
+      "instanceManagement": "Maintain cleanly separated Minecraft instances with distinct mods, saves and resource packs.",
+      "sources": [
+        {
+          "label": "MultiMC overview",
+          "url": "https://multimc.org/",
+          "checkedAt": "2026-09-28T00:00:00.000Z"
+        },
+        {
+          "label": "MultiMC source",
+          "url": "https://github.com/MultiMC/Launcher",
+          "checkedAt": "2026-09-28T00:00:00.000Z"
+        }
+      ],
+      "lastVerified": "2026-09-28T00:00:00.000Z"
+    },
+    {
+      "slug": "gdlauncher",
+      "name": "GDLauncher",
+      "sourceLocale": "en",
+      "translations": {},
+      "platforms": [
+        "Windows",
+        "macOS",
+        "Linux"
+      ],
+      "officialLinks": [
+        {
+          "label": "Official GDLauncher website",
+          "url": "https://gdlauncher.com/"
+        },
+        {
+          "label": "Official documentation",
+          "url": "https://gdlauncher.com/docs"
+        }
+      ],
+      "summary": "A Minecraft launcher with modpack installation and automatic Java management.",
+      "developer": "GDLauncher",
+      "supportedLoaders": [
+        "Forge",
+        "Fabric",
+        "Quilt",
+        "NeoForge"
+      ],
+      "modpackProviders": [
+        "CurseForge",
+        "Modrinth"
+      ],
+      "javaManagement": "The official site describes automatic management of Java and dependencies.",
+      "sources": [
+        {
+          "label": "GDLauncher website",
+          "url": "https://gdlauncher.com/",
+          "checkedAt": "2026-09-28T00:00:00.000Z"
+        },
+        {
+          "label": "GDLauncher documentation",
+          "url": "https://gdlauncher.com/docs",
+          "checkedAt": "2026-09-28T00:00:00.000Z"
+        }
+      ],
+      "lastVerified": "2026-09-28T00:00:00.000Z"
+    },
+    {
+      "slug": "sklauncher",
+      "name": "SKLauncher",
+      "sourceLocale": "en",
+      "translations": {},
+      "summary": "A launcher for Minecraft: Java Edition published by SKmedix.",
+      "platforms": [
+        "Windows",
+        "Linux",
+        "macOS"
+      ],
+      "officialLinks": [
+        {
+          "label": "Official SKLauncher website",
+          "url": "https://skmedix.pl/"
+        },
+        {
+          "label": "Official installation documentation",
+          "url": "https://docs.skmedix.pl/getting-started/install"
+        }
+      ],
+      "developer": "SKmedix",
+      "instanceManagement": "Manage Minecraft: Java Edition installations and modifications in the launcher.",
+      "sources": [
+        {
+          "label": "SKLauncher documentation",
+          "url": "https://docs.skmedix.pl/",
+          "checkedAt": "2026-09-28T00:00:00.000Z"
+        },
+        {
+          "label": "SKLauncher downloads",
+          "url": "https://docs.skmedix.pl/getting-started/downloads",
+          "checkedAt": "2026-09-28T00:00:00.000Z"
+        }
+      ],
+      "lastVerified": "2026-09-28T00:00:00.000Z"
+    }
   ]
 }

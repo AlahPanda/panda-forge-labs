@@ -1,5 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { webcrypto } from 'node:crypto';
+import { allowedAdminOrigins, isAllowedAdminOrigin } from '../../supabase/functions/admin-cms/origins';
 
 type Handler = (request: Request) => Promise<Response>;
 let handler: Handler;
@@ -16,7 +17,7 @@ beforeEach(async () => {
   vi.stubGlobal('crypto', webcrypto);
   vi.stubGlobal('Deno', {
     env: { get: (key: string) => ({ ADMIN_ORIGIN: 'https://preview.example', ADMIN_PASSWORD: 'test-password', ADMIN_JWT_SECRET: 'test-secret',
-      GITHUB_TOKEN: 'server-only', GITHUB_REPO: 'AlahPanda/panda-forge-labs', GITHUB_BRANCH: 'v2/security-foundation',
+      GITHUB_TOKEN: 'server-only', GITHUB_REPO: 'AlahPanda/panda-forge-labs', GITHUB_BRANCH: 'v2/full-redesign',
       SUPABASE_URL: 'https://supabase.example', SUPABASE_SERVICE_ROLE_KEY: 'private-key' } as Record<string, string>)[key] },
     serve: (fn: Handler) => { handler = fn; },
   });
@@ -32,7 +33,7 @@ beforeEach(async () => {
     if (url.endsWith('/user')) return response({ login: 'owner' });
     if (url.endsWith('/repos/AlahPanda/panda-forge-labs')) return response({});
     if (url.includes('/contents/src/content/v2/projects.json')) {
-      if (method === 'PUT') return response({ content: { sha: 'b'.repeat(40), html_url: 'https://github.example/commit' } });
+      if (method === 'PUT') return response({ content: { sha: 'b'.repeat(40), html_url: 'https://github.example/file' }, commit: {sha:'d'.repeat(40),html_url:'https://github.example/commit'} });
       return response({ sha, content: btoa(JSON.stringify(collection)) });
     }
     throw new Error(`Unexpected request ${method} ${url}`);
@@ -47,6 +48,62 @@ const post = (action: string, body: unknown, token?: string) => handler(new Requ
 const login = async () => ((await (await post('login', { password: 'test-password' })).json()) as { token: string }).token;
 
 describe('authenticated draft → publish route', () => {
+  it('accepts only exact, explicitly configured HTTPS Preview origins', () => {
+    const allowed = allowedAdminOrigins('https://preview.example, https://deployment.example', undefined);
+    expect(allowed).toEqual(['https://preview.example','https://deployment.example']);
+    expect(isAllowedAdminOrigin('https://deployment.example', allowed!)).toBe(true);
+    expect(isAllowedAdminOrigin('https://other.example', allowed!)).toBe(false);
+    expect(isAllowedAdminOrigin('https://alahpanda-labs-7i96i80bt-alahpandas-projects.vercel.app', allowed!)).toBe(true);
+    expect(isAllowedAdminOrigin('https://alahpanda-labs-abcdef123-alahpandas-projects.vercel.app', allowed!)).toBe(true);
+    expect(isAllowedAdminOrigin('https://alahpanda-labs-git-v2-full-redesign-alahpandas-projects.vercel.app', allowed!, 'https://alahpanda-labs-git-v2-full-redesign-alahpandas-projects.vercel.app')).toBe(true);
+    for (const origin of [null, 'null', '*', 'http://alahpanda-labs-7i96i80bt-alahpandas-projects.vercel.app', 'https://evil-7i96i80bt-alahpandas-projects.vercel.app', 'https://alahpanda-labs-7i96i80bt-other-projects.vercel.app', 'https://alahpanda-labs-7i96i80bt-alahpandas-projects.vercel.app.evil.com', 'https://alahpanda-labs-git-v2-full-redesign-alahpandas-projects.vercel.app', 'https://alahpanda-labs-*-alahpandas-projects.vercel.app', 'https://alahpanda-labs-a-alahpandas-projects.vercel.app', 'https://alahpanda-labs-7i96i80bt-alahpandas-projects.vercel.app/path', 'https://alahpanda-labs-7i96i80bt-alahpandas-projects.vercel.app:444']) expect(isAllowedAdminOrigin(origin, allowed!), String(origin)).toBe(false);
+    for (const input of ['*','https://*.vercel.app','http://preview.example','https://preview.example/path','https://preview.example/','https://preview.example, *']) expect(allowedAdminOrigins(input,undefined)).toBeNull();
+  });
+  it('serves a second allowed origin with its own exact CORS header and refuses other origins', async () => {
+    vi.resetModules();
+    vi.stubGlobal('Deno', { env: { get: (key: string) => ({ ADMIN_ORIGINS: 'https://preview.example,https://deployment.example', ADMIN_JWT_SECRET: 'test-secret', ADMIN_PASSWORD:'test-password' } as Record<string,string>)[key] }, serve: (fn: Handler) => { handler = fn; } });
+    await import('../../supabase/functions/admin-cms/index.ts');
+    const options = await handler(new Request('https://supabase.example/functions/v1/admin-cms/login', {method:'OPTIONS',headers:{Origin:'https://deployment.example'}}));
+    expect(options.headers.get('Access-Control-Allow-Origin')).toBe('https://deployment.example');
+    expect(options.headers.get('Vary')).toBe('Origin');
+    const accepted = await handler(new Request('https://supabase.example/functions/v1/admin-cms/login', {method:'POST',headers:{Origin:'https://deployment.example','Content-Type':'application/json'},body:JSON.stringify({password:'test-password'})}));
+    expect(accepted.status).toBe(200);
+    expect(accepted.headers.get('Access-Control-Allow-Origin')).toBe('https://deployment.example');
+    const refused = await handler(new Request('https://supabase.example/functions/v1/admin-cms/login', {method:'POST',headers:{Origin:'https://other.example','Content-Type':'application/json'},body:JSON.stringify({password:'test-password'})}));
+    expect(refused.status).toBe(403);
+    expect(refused.headers.get('Access-Control-Allow-Origin')).toBeNull();
+    expect(await refused.json()).toEqual({error:'Forbidden origin',receivedOrigin:'https://other.example',expectedOrigins:['https://preview.example','https://deployment.example'],previewAlias:null});
+    const generated = await handler(new Request('https://supabase.example/functions/v1/admin-cms/login', {method:'POST',headers:{Origin:'https://alahpanda-labs-7i96i80bt-alahpandas-projects.vercel.app','Content-Type':'application/json'},body:JSON.stringify({password:'test-password'})}));
+    expect(generated.status).toBe(200);
+    expect(generated.headers.get('Access-Control-Allow-Origin')).toBe('https://alahpanda-labs-7i96i80bt-alahpandas-projects.vercel.app');
+    const missing = await handler(new Request('https://supabase.example/functions/v1/admin-cms/login', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({password:'test-password'})}));
+    expect(missing.status).toBe(403);
+    expect(missing.headers.get('Access-Control-Allow-Origin')).toBeNull();
+  });
+  it('rejects a foreign origin before processing login', async () => {
+    const r = await handler(new Request('https://supabase.example/functions/v1/admin-cms/login', {method:'POST',headers:{Origin:'https://ephemeral.example','Content-Type':'application/json'},body:JSON.stringify({password:'test-password'})}));
+    expect(r.status).toBe(403);
+    expect(await r.json()).toEqual({error:'Forbidden origin',receivedOrigin:'https://ephemeral.example',expectedOrigins:['https://preview.example'],previewAlias:null});
+    expect(requests).toHaveLength(0);
+  });
+  it('fails closed when the owner password is absent instead of using a default', async () => {
+    vi.resetModules();
+    vi.stubGlobal('Deno', { env: { get: (key: string) => key === 'ADMIN_PASSWORD' ? undefined : ({ ADMIN_ORIGIN: 'https://preview.example', ADMIN_JWT_SECRET: 'test-secret' } as Record<string, string>)[key] }, serve: (fn: Handler) => { handler = fn; } });
+    await import('../../supabase/functions/admin-cms/index.ts');
+    const result = await post('login', { password: 'anything' });
+    expect(result.status).toBe(500);
+    expect(await result.json()).toEqual({ error: 'Server not configured' });
+    expect(requests).toHaveLength(0);
+  });
+
+  it('accepts only the configured server-side password', async () => {
+    const denied = await post('login', { password: 'wrong' });
+    expect(denied.status).toBe(401);
+    const accepted = await post('login', { password: 'test-password' });
+    expect(accepted.status).toBe(200);
+    expect(typeof (await accepted.json()).token).toBe('string');
+    expect(requests).toHaveLength(0);
+  });
   it('rejects unauthenticated writes before accessing storage', async () => {
     expect((await post('draft-save', { kind: 'projects', slug: 'example', item })).status).toBe(401);
     expect(requests).toHaveLength(0);
@@ -62,7 +119,8 @@ describe('authenticated draft → publish route', () => {
     const put = requests.find((r) => r.method === 'PUT');
     expect(put).toBeDefined();
     const payload = JSON.parse(put?.body || '{}');
-    expect(payload.branch).toBe('v2/security-foundation');
+    expect(payload.branch).toBe('v2/full-redesign');
+    expect(await published.json()).toMatchObject({branch:'v2/full-redesign',commitSha:'d'.repeat(40),commitUrl:'https://github.example/commit'});
     expect(JSON.parse(atob(payload.content)).items).toMatchObject([{ slug: 'example', status: 'development' }]);
     expect(requests.some((r) => r.url.includes('/rest/v1/cms_drafts') && r.method === 'DELETE')).toBe(true);
   });

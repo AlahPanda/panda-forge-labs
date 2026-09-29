@@ -1,1 +1,289 @@
-{"schemaVersion":2,"items":[]}
+{
+  "schemaVersion": 2,
+  "items": [
+    {
+      "slug": "complete-mac-native",
+      "name": "Mac Native: installation and configuration",
+      "summary": "Install the published release safely, check compatibility and adjust your Mac without promising universal performance.",
+      "body": "## Before you begin\nMac Native is a public beta for Minecraft: Java Edition on macOS. Its published 0.3.1 release lists Minecraft 1.21.11 and Fabric. The project describes support for Apple Silicon and Intel Macs, but performance depends on model, memory, graphics settings and the world. Use a Microsoft account with legitimate access to Java Edition. Back up existing worlds before moving them between instances.\n\n## Choose the official release\nOpen the [Mac Native project](/modpacks/mac-native) and follow its Modrinth release link. Check Minecraft version, loader, client-side environment and the publisher's Content and Changes tabs. Do not substitute another similarly named archive or assume older packs are compatible.\n\n## Install and launch\nIn Modrinth App, find the published project, install a new instance and sign in to the appropriate Microsoft account. If you use Prism, create or import the pack through its Modrinth option; the Prism documentation describes the Add Instance workflow. Keep the pack in its own instance. Start it once before changing options so a failure is easier to isolate.\n\n## Tune carefully\nThere is no verified universal RAM allocation, shader preset or render distance for every Mac. Change one setting at a time, note the original value and compare gameplay in the same world. A shader or optional mod can change compatibility and resource use. The project's Modrinth Content list is authoritative for bundled mods; this guide does not prescribe a replacement list.\n\n## Troubleshoot\nCheck that the installed game version and Fabric loader match the release. If the game fails, capture the launcher log, note your Mac model and macOS version, and test a clean instance before changing many settings. Keep a backup of worlds and report reproducible problems through [Support](/support). Consult [Modrinth] (https://modrinth.com/modpack/mac-native) for current release facts.",
+      "sourceLocale": "en",
+      "translations": {
+        "pt-PT": {
+          "state": "complete",
+          "fields": {
+            "name": "Mac Native: instalação e configuração",
+            "summary": "Instala a release publicada, verifica a compatibilidade e ajusta o Mac sem prometer desempenho universal.",
+            "body": "## Antes de começares\nMac Native é uma beta pública para Minecraft: Java Edition em macOS. A release 0.3.1 publicada indica Minecraft 1.21.11 e Fabric. O projeto contempla Apple Silicon e Intel, mas o resultado depende do modelo, da memória, das opções gráficas e do mundo. Usa uma conta Microsoft com acesso legítimo ao jogo. Faz uma cópia dos mundos antes de os moveres entre instâncias.\n\n## Escolher a release oficial\nAbre [Mac Native](/modpacks/mac-native) e segue a ligação para a release no Modrinth. Confirma versão do jogo, loader, ambiente client-side e os separadores Content e Changes do publicador. Não substituas por um ficheiro de nome parecido nem assumes compatibilidade de versões anteriores.\n\n## Instalar e iniciar\nNa aplicação Modrinth, encontra o projeto publicado e instala uma nova instância. Entra com a conta Microsoft apropriada. Se usares Prism, cria ou importa o pack pela opção Modrinth, conforme a documentação Add Instance. Mantém o pack numa instância separada e inicia-o antes de mudares opções.\n\n## Ajustar com método\nNão existe uma quantidade de RAM, preset de shaders ou distância de renderização universalmente validada para todos os Macs. Altera uma opção de cada vez e compara no mesmo mundo. Mods opcionais podem alterar compatibilidade e consumo. A lista Content no Modrinth é a fonte para os mods incluídos.\n\n## Resolver problemas\nConfirma a versão Minecraft e Fabric da release. Se falhar, guarda o log do launcher, modelo de Mac e versão de macOS. Testa uma instância limpa e mantém backup dos mundos. Reporta problemas reproduzíveis em [Apoio](/support). Consulta o [Modrinth](https://modrinth.com/modpack/mac-native) para dados atuais."
+          }
+        },
+        "pt-BR": {
+          "state": "complete",
+          "fields": {
+            "name": "Mac Native: instalação e configuração",
+            "summary": "Instale a versão publicada, confira a compatibilidade e ajuste o Mac sem prometer desempenho universal.",
+            "body": "## Antes de começar\nMac Native é uma versão beta pública para Minecraft: Java Edition no macOS. A versão 0.3.1 publicada indica Minecraft 1.21.11 e Fabric. O projeto contempla Macs Apple Silicon e Intel, mas o resultado depende do modelo, memória, gráficos e mundo. Use uma conta Microsoft com acesso legítimo ao jogo. Faça backup dos mundos antes de movê-los entre instâncias.\n\n## Escolher a versão oficial\nAbra [Mac Native](/modpacks/mac-native) e siga o link da versão no Modrinth. Confira versão do jogo, loader, ambiente client-side e as abas Content e Changes do publicador. Não substitua por um arquivo de nome parecido nem presuma compatibilidade de versões antigas.\n\n## Instalar e iniciar\nNo aplicativo Modrinth, encontre o projeto publicado e instale uma nova instância. Entre com a conta Microsoft apropriada. Se usar Prism, crie ou importe o pacote pela opção Modrinth, conforme a documentação Add Instance. Mantenha o pacote numa instância separada e inicie antes de mudar opções.\n\n## Ajustar com método\nNão existe quantidade de RAM, shader ou distância de renderização universalmente validada para todos os Macs. Mude uma opção por vez e compare no mesmo mundo. Mods opcionais podem alterar compatibilidade e uso de recursos. A aba Content no Modrinth é a fonte para os mods incluídos.\n\n## Resolver problemas\nConfira a versão Minecraft e Fabric da publicação. Se houver falha, guarde o log do launcher, modelo do Mac e versão do macOS. Teste uma instância limpa e mantenha backup dos mundos. Reporte problemas reproduzíveis em [Suporte](/support). Confira o [Modrinth](https://modrinth.com/modpack/mac-native) para dados atuais."
+          }
+        },
+        "es": {
+          "state": "complete",
+          "fields": {
+            "name": "Mac Native: instalación y configuración",
+            "summary": "Instala la versión publicada, comprueba la compatibilidad y ajusta tu Mac sin promesas universales de rendimiento.",
+            "body": "## Antes de empezar\nMac Native es una beta pública de Minecraft: Java Edition para macOS. La versión 0.3.1 publicada indica Minecraft 1.21.11 y Fabric. El proyecto contempla Macs Apple Silicon e Intel, pero los resultados dependen del equipo, memoria, gráficos y mundo. Utiliza una cuenta Microsoft con acceso legítimo al juego. Haz una copia de los mundos antes de moverlos entre instancias.\n\n## Elegir la versión oficial\nAbre [Mac Native](/modpacks/mac-native) y sigue el enlace de la versión en Modrinth. Comprueba versión del juego, loader, entorno client-side y las secciones Content y Changes del editor. No sustituyas el archivo por otro parecido ni supongas compatibilidad con versiones antiguas.\n\n## Instalar e iniciar\nEn Modrinth App, encuentra el proyecto publicado e instala una instancia nueva. Inicia sesión con la cuenta Microsoft adecuada. Si usas Prism, crea o importa el paquete desde Modrinth según la documentación Add Instance. Mantén el paquete en una instancia propia e inícialo antes de cambiar opciones.\n\n## Ajustar con método\nNo existe una cantidad de RAM, shader o distancia de renderizado universalmente validada para todos los Macs. Cambia una opción a la vez y compara en el mismo mundo. Los mods opcionales pueden alterar compatibilidad y consumo. La sección Content de Modrinth es la fuente de los mods incluidos.\n\n## Resolver problemas\nComprueba la versión de Minecraft y Fabric. Si falla, guarda el registro del launcher, modelo de Mac y versión de macOS. Prueba una instancia limpia y conserva copias de tus mundos. Informa de problemas reproducibles en [Soporte](/support). Consulta [Modrinth](https://modrinth.com/modpack/mac-native) para datos actuales."
+          }
+        }
+      },
+      "updatedAt": "2026-09-28T00:00:00.000Z",
+      "level": "beginner",
+      "sources": [
+        {
+          "label": "Mac Native official release",
+          "url": "https://modrinth.com/modpack/mac-native/version/0.3.1",
+          "checkedAt": "2026-09-28T00:00:00.000Z"
+        },
+        {
+          "label": "Mac Native project",
+          "url": "https://modrinth.com/modpack/mac-native",
+          "checkedAt": "2026-09-28T00:00:00.000Z"
+        }
+      ],
+      "media": [
+        {
+          "kind": "image",
+          "url": "/brand/guides-day.webp",
+          "alt": "Original AlahPanda illustration for guides"
+        }
+      ]
+    },
+    {
+      "slug": "prism-launcher-setup",
+      "name": "Prism Launcher: a practical setup guide",
+      "summary": "Create a separate instance, install a pack from Modrinth and keep game versions compatible.",
+      "body": "## What Prism does\nPrism Launcher manages separate Minecraft: Java Edition installations. Each instance has its own version, loader, mods, resource packs, worlds and settings. The official project lists Windows, macOS and Linux downloads, and support for packs from Modrinth, CurseForge, Technic and FTB.\n\n## Install safely\nDownload Prism from [prismlauncher.org](https://prismlauncher.org/download/). Follow the package instructions for your system, then sign in using a Microsoft account entitled to Minecraft: Java Edition. Do not reuse credentials on unofficial mirrors.\n\n## Create an instance\nChoose Add Instance, select a Minecraft version and loader, or choose the Modrinth tab to install a published pack. Prism's official guide also supports importing compatible `.mrpack` or `.zip` archives. Keep different modpacks in separate instances and confirm the version and loader before launch.\n\n## Java and mods\nPrism can auto-detect or download the appropriate Java runtime on supported packages; this option may differ between distributions. Check the Settings screen and the official Java guide before changing a runtime. Add individual mods from the instance's Mods tab and verify every dependency, loader and game version. More mods are not automatically better.\n\n## Maintenance\nBack up saves before upgrading a pack. If a launch fails, open the instance log, check the version, loader and recent changes, then revert one change at a time. Use the official [Prism documentation](https://prismlauncher.org/wiki/) and [Support](/support) for the next step.",
+      "sourceLocale": "en",
+      "translations": {
+        "pt-PT": {
+          "state": "complete",
+          "fields": {
+            "name": "Prism Launcher: guia de configuração",
+            "summary": "Cria uma instância separada, instala um pack pelo Modrinth e mantém versões compatíveis.",
+            "body": "## O que faz\nPrism gere instalações separadas de Minecraft: Java Edition. Cada instância tem versão, loader, mods, recursos, mundos e opções próprios. O projeto publica versões para Windows, macOS e Linux e suporta packs de Modrinth, CurseForge, Technic e FTB.\n\n## Instalar com segurança\nObtém Prism em [prismlauncher.org](https://prismlauncher.org/download/). Segue as instruções do teu sistema e entra com uma conta Microsoft com acesso a Minecraft: Java Edition. Não introduzas credenciais em mirrors desconhecidos.\n\n## Criar instância\nEscolhe Add Instance, seleciona versão e loader, ou usa Modrinth para instalar um pack publicado. A documentação oficial também explica a importação de `.mrpack` ou `.zip` compatíveis. Mantém cada pack separado e confirma versão e loader antes de iniciar.\n\n## Java e mods\nEm pacotes suportados, Prism pode detetar ou descarregar o Java adequado; a opção varia entre distribuições. Consulta as Settings e o guia oficial de Java. Adiciona mods pela aba Mods da instância e confirma dependências, loader e versão. Mais mods não garantem uma experiência melhor.\n\n## Manutenção\nFaz backup dos mundos antes de atualizar. Se falhar, abre o log da instância, verifica versão, loader e alterações recentes; reverte uma de cada vez. Consulta a [documentação Prism](https://prismlauncher.org/wiki/) e o [Apoio](/support)."
+          }
+        },
+        "pt-BR": {
+          "state": "complete",
+          "fields": {
+            "name": "Prism Launcher: guia de configuração",
+            "summary": "Crie uma instância separada, instale um pacote pelo Modrinth e mantenha versões compatíveis.",
+            "body": "## O que faz\nPrism gerencia instalações separadas de Minecraft: Java Edition. Cada instância possui versão, loader, mods, recursos, mundos e configurações próprias. O projeto publica versões para Windows, macOS e Linux e suporta pacotes de Modrinth, CurseForge, Technic e FTB.\n\n## Instalar com segurança\nBaixe Prism em [prismlauncher.org](https://prismlauncher.org/download/). Siga as instruções do sistema e entre com uma conta Microsoft com acesso a Minecraft: Java Edition. Não digite credenciais em mirrors desconhecidos.\n\n## Criar instância\nEscolha Add Instance, selecione a versão e o loader, ou use a aba Modrinth para instalar um pacote publicado. A documentação oficial explica a importação de `.mrpack` ou `.zip` compatíveis. Mantenha pacotes separados e confira versão e loader antes de iniciar.\n\n## Java e mods\nEm pacotes compatíveis, Prism pode detectar ou baixar o Java adequado; a opção varia por distribuição. Consulte Settings e o guia oficial de Java. Adicione mods pela aba Mods e confira dependências, loader e versão. Mais mods não garantem uma experiência melhor.\n\n## Manutenção\nFaça backup dos mundos antes de atualizar. Se falhar, abra o log, confira versão, loader e mudanças recentes; reverta uma de cada vez. Consulte a [documentação Prism](https://prismlauncher.org/wiki/) e o [Suporte](/support)."
+          }
+        },
+        "es": {
+          "state": "complete",
+          "fields": {
+            "name": "Prism Launcher: guía de configuración",
+            "summary": "Crea una instancia independiente, instala un paquete desde Modrinth y mantén versiones compatibles.",
+            "body": "## Qué hace\nPrism gestiona instalaciones separadas de Minecraft: Java Edition. Cada instancia tiene su propia versión, loader, mods, recursos, mundos y configuración. El proyecto ofrece descargas para Windows, macOS y Linux y admite paquetes de Modrinth, CurseForge, Technic y FTB.\n\n## Instalación segura\nDescarga Prism de [prismlauncher.org](https://prismlauncher.org/download/). Sigue las instrucciones del sistema e inicia sesión con una cuenta Microsoft con acceso a Minecraft: Java Edition. No introduzcas credenciales en mirrors desconocidos.\n\n## Crear una instancia\nElige Add Instance, selecciona versión y loader, o utiliza Modrinth para instalar un paquete publicado. La documentación oficial también explica la importación de `.mrpack` o `.zip` compatibles. Separa cada paquete y comprueba versión y loader antes de iniciarlo.\n\n## Java y mods\nEn paquetes compatibles, Prism puede detectar o descargar Java; la opción depende de la distribución. Consulta Settings y la guía oficial de Java. Añade mods en la pestaña Mods y comprueba dependencias, loader y versión. Más mods no garantizan mejores resultados.\n\n## Mantenimiento\nHaz copias de tus mundos antes de actualizar. Si falla, abre el registro, comprueba versión, loader y cambios recientes; revierte uno por vez. Consulta la [documentación Prism](https://prismlauncher.org/wiki/) y [Soporte](/support)."
+          }
+        }
+      },
+      "updatedAt": "2026-09-28T00:00:00.000Z",
+      "level": "beginner",
+      "sources": [
+        {
+          "label": "Prism instances",
+          "url": "https://prismlauncher.org/wiki/getting-started/create-instance/",
+          "checkedAt": "2026-09-28T00:00:00.000Z"
+        },
+        {
+          "label": "Prism packs",
+          "url": "https://prismlauncher.org/wiki/getting-started/download-modpacks/",
+          "checkedAt": "2026-09-28T00:00:00.000Z"
+        },
+        {
+          "label": "Prism Java",
+          "url": "https://prismlauncher.org/wiki/getting-started/installing-java/",
+          "checkedAt": "2026-09-28T00:00:00.000Z"
+        }
+      ],
+      "media": [
+        {
+          "kind": "image",
+          "url": "/brand/guides-day.webp",
+          "alt": "Original AlahPanda illustration for guides"
+        }
+      ]
+    },
+    {
+      "slug": "astralrinth-modrinth-setup",
+      "name": "AstralRinth and Modrinth App: choose the right installation path",
+      "summary": "Two distinct applications with separate publishers and downloads.",
+      "body": "## Separate applications\nThe Modrinth App is published by Modrinth. AstralRinth is an independent fork published by didirus on Xorison. Their names and interfaces may be related, but one is not an official download mirror for the other. The AstralRinth release page lists Windows x64, macOS Apple Silicon and Linux packages. Experimental builds are labeled separately.\n\n## Start with the publisher\nFor Modrinth App, open [modrinth.com/app](https://modrinth.com/app). For AstralRinth, use the [publisher releases](/launchers/astralrinth), which link to the Xorison repository. Choose the architecture and package format shown for your OS. Do not use a historical URL shortener or an unrelated fork as proof of provenance.\n\n## Install a pack\nAfter installing, authenticate with a legitimate Microsoft account for Minecraft: Java Edition when needed. Find the official modpack page, check its game version and loader, and install to a dedicated instance. Mac Native currently publishes a Fabric build for Minecraft 1.21.11; verify the release before proceeding. Launch once before adding optional mods.\n\n## Keep the instance healthy\nBack up worlds before updating and read release notes. If authentication or game start fails, check which application you installed, its version, the account entitlement and its logs. The third-party launcher may offer additional account modes, but this guide does not instruct bypassing game licensing. For a conservative path, use the official Modrinth App or Prism Launcher.",
+      "sourceLocale": "en",
+      "translations": {
+        "pt-PT": {
+          "state": "complete",
+          "fields": {
+            "name": "AstralRinth e Modrinth App: escolher a instalação",
+            "summary": "Duas aplicações distintas, com publicadores e downloads próprios.",
+            "body": "## Aplicações distintas\nA Modrinth App é publicada pela Modrinth. AstralRinth é um fork independente publicado por didirus em Xorison. Apesar de partilharem algumas ideias, uma não é um espelho oficial da outra. A página de releases de AstralRinth apresenta ficheiros para Windows x64, macOS Apple Silicon e Linux. As versões experimentais são identificadas à parte.\n\n## Começar pelo publicador\nPara a Modrinth App, visita [modrinth.com/app](https://modrinth.com/app). Para AstralRinth, segue as [releases do publicador](/launchers/astralrinth) no repositório Xorison. Escolhe a arquitetura e o formato de pacote adequados ao teu sistema. Um encurtador de ligações antigo ou um fork não relacionado não provam a origem do ficheiro.\n\n## Instalar um pack\nDepois da instalação, autentica-te com uma conta Microsoft com acesso legítimo a Minecraft: Java Edition quando necessário. Abre a página oficial do modpack, confirma versão do jogo e loader e instala-o numa instância separada. Mac Native publica atualmente uma versão Fabric para Minecraft 1.21.11; volta a verificar a release antes de instalar. Inicia o jogo uma vez antes de acrescentares mods opcionais.\n\n## Manter a instância\nFaz backup dos mundos antes das atualizações e lê as notas da release. Se falhar a autenticação ou o arranque, confirma qual aplicação instalaste, a respetiva versão, o acesso da conta e os logs. O launcher de terceiros pode ter outros modos de conta; este guia não ensina a contornar o licenciamento. Para uma opção conservadora, usa a Modrinth App oficial ou o Prism Launcher."
+          }
+        },
+        "pt-BR": {
+          "state": "complete",
+          "fields": {
+            "name": "AstralRinth e Modrinth App: escolha a instalação",
+            "summary": "Dois aplicativos distintos, com publicadores e downloads próprios.",
+            "body": "## Aplicativos distintos\nO Modrinth App é publicado pela Modrinth. AstralRinth é um fork independente publicado por didirus na Xorison. Apesar de algumas semelhanças, um não é espelho oficial do outro. A página de versões do AstralRinth apresenta arquivos para Windows x64, macOS Apple Silicon e Linux. Compilações experimentais são identificadas separadamente.\n\n## Comece pelo publicador\nPara Modrinth App, visite [modrinth.com/app](https://modrinth.com/app). Para AstralRinth, siga as [versões do publicador](/launchers/astralrinth) no repositório Xorison. Escolha arquitetura e formato de pacote adequados ao seu sistema. Um encurtador de links antigo ou fork não relacionado não comprova a origem do arquivo.\n\n## Instale um pacote\nDepois da instalação, autentique-se com uma conta Microsoft com acesso legítimo a Minecraft: Java Edition quando necessário. Abra a página oficial do modpack, confira versão do jogo e loader e instale numa instância separada. Mac Native publica atualmente uma versão Fabric para Minecraft 1.21.11; confira a publicação novamente antes de instalar. Inicie uma vez antes de acrescentar mods opcionais.\n\n## Mantenha a instância\nFaça backup dos mundos antes de atualizar e leia as notas da versão. Se autenticação ou inicialização falhar, confira o aplicativo instalado, sua versão, o acesso da conta e os logs. O launcher de terceiros pode oferecer outros modos de conta; este guia não ensina a contornar o licenciamento. Para uma opção conservadora, use o Modrinth App oficial ou Prism Launcher."
+          }
+        },
+        "es": {
+          "state": "complete",
+          "fields": {
+            "name": "AstralRinth y Modrinth App: elige cómo instalar",
+            "summary": "Dos aplicaciones distintas con editores y descargas propios.",
+            "body": "## Aplicaciones distintas\nModrinth App es una publicación de Modrinth. AstralRinth es un fork independiente publicado por didirus en Xorison. Aunque compartan algunas ideas, uno no es un espejo oficial del otro. La página de versiones de AstralRinth ofrece archivos para Windows x64, macOS Apple Silicon y Linux. Las compilaciones experimentales están indicadas por separado.\n\n## Empieza por el editor\nPara Modrinth App, visita [modrinth.com/app](https://modrinth.com/app). Para AstralRinth, sigue las [versiones del editor](/launchers/astralrinth) en el repositorio Xorison. Elige la arquitectura y el paquete adecuados para tu sistema. Un acortador de enlaces antiguo o un fork ajeno no prueban el origen del archivo.\n\n## Instala un paquete\nTras instalar la aplicación, inicia sesión con una cuenta Microsoft con acceso legítimo a Minecraft: Java Edition cuando sea necesario. Abre la página oficial del modpack, verifica versión del juego y loader e instala en una instancia separada. Mac Native publica actualmente una versión Fabric para Minecraft 1.21.11; confirma la versión antes de proceder. Inicia una vez antes de añadir mods opcionales.\n\n## Conserva la instancia\nHaz copias de los mundos antes de actualizar y lee las notas de la versión. Si falla el inicio de sesión o del juego, comprueba qué aplicación instalaste, su versión, los derechos de la cuenta y los registros. El launcher externo puede ofrecer otros modos de cuenta; esta guía no enseña a eludir licencias. Para un camino conservador, usa Modrinth App oficial o Prism Launcher."
+          }
+        }
+      },
+      "updatedAt": "2026-09-28T00:00:00.000Z",
+      "level": "beginner",
+      "sources": [
+        {
+          "label": "AstralRinth publisher releases",
+          "url": "https://git.xorison.dev/didirus/AstralRinth/releases",
+          "checkedAt": "2026-09-28T00:00:00.000Z"
+        },
+        {
+          "label": "Modrinth App",
+          "url": "https://modrinth.com/app",
+          "checkedAt": "2026-09-28T00:00:00.000Z"
+        }
+      ],
+      "media": [
+        {
+          "kind": "image",
+          "url": "/brand/guides-day.webp",
+          "alt": "Original AlahPanda illustration for guides"
+        }
+      ],
+      "seo": {
+        "noindex": true
+      }
+    },
+    {
+      "slug": "what-is-minecraft-launcher",
+      "name": "What is a Minecraft launcher?",
+      "summary": "Understand accounts, Java, instances and mod loaders before choosing a tool.",
+      "body": "## The launcher’s job\nA launcher downloads and starts a particular Minecraft edition and version. The official Minecraft Launcher is published by Mojang/Microsoft. Third-party launchers can help organize installations, but do not grant a game license. Use a legitimate Microsoft account entitled to Minecraft: Java Edition for authenticated play.\n\n## Instances and Java\nAn instance is a separate game folder/configuration, usually with its own mods, saves and settings. Separating instances makes testing safer and prevents one pack from unexpectedly changing another. Java Edition requires a suitable Java runtime; the correct version depends on the game release. Some launchers can manage Java automatically while others ask you to configure it.\n\n## Mods and loaders\nA mod adds or changes game functionality. A loader such as Fabric, Forge, NeoForge or Quilt provides the platform for compatible mods. A resource pack changes assets, while a modpack collects a defined configuration of mods and files. The Minecraft version, loader, mod dependencies and pack version must match. Do not mix files solely because their names look similar.\n\n## Choose and maintain\nCompare official download sources, supported platforms, instance handling and documentation. Prism and Modrinth App are distinct choices; the publisher’s site is the best source of current features. Back up worlds before major updates, read changelogs and keep the launch log for troubleshooting. Continue with [Launchers](/launchers) or [Modpacks](/modpacks).",
+      "sourceLocale": "en",
+      "translations": {
+        "pt-PT": {
+          "state": "complete",
+          "fields": {
+            "name": "O que é um launcher de Minecraft?",
+            "summary": "Entende versões, instâncias, Java e loaders antes de escolher.",
+            "body": "## O papel do launcher\nUm launcher transfere e inicia uma edição e versão de Minecraft. O Minecraft Launcher oficial é publicado por Mojang/Microsoft. Launchers de terceiros podem organizar instalações, mas não oferecem uma licença do jogo. Usa uma conta Microsoft com acesso legítimo a Minecraft: Java Edition para jogar com autenticação.\n\n## Instâncias e Java\nUma instância é uma pasta/configuração de jogo separada, normalmente com mods, mundos e opções próprios. Separá-las torna os testes mais seguros e evita que um pack altere outro. Java Edition necessita de um runtime Java adequado; a versão depende da release do jogo. Alguns launchers gerem Java automaticamente; outros pedem configuração manual.\n\n## Mods e loaders\nUm mod acrescenta ou altera funcionalidades. Um loader como Fabric, Forge, NeoForge ou Quilt fornece a base para mods compatíveis. Um resource pack altera recursos visuais, enquanto um modpack reúne mods e ficheiros numa configuração definida. A versão Minecraft, o loader, as dependências e a versão do pack têm de coincidir. Não mistures ficheiros apenas por terem nomes semelhantes.\n\n## Escolher e manter\nCompara fontes oficiais, plataformas, gestão de instâncias e documentação. Prism e Modrinth App são opções distintas; o site do publicador é a melhor fonte para funcionalidades atuais. Faz backup dos mundos antes de grandes atualizações, lê changelogs e guarda o log para resolver problemas. Continua em [Launchers](/launchers) ou [Modpacks](/modpacks)."
+          }
+        },
+        "pt-BR": {
+          "state": "complete",
+          "fields": {
+            "name": "O que é um launcher de Minecraft?",
+            "summary": "Entenda versões, instâncias, Java e loaders antes de escolher.",
+            "body": "## O papel do launcher\nUm launcher baixa e inicia uma edição e versão do Minecraft. O Minecraft Launcher oficial é publicado por Mojang/Microsoft. Launchers de terceiros podem organizar instalações, mas não concedem uma licença do jogo. Use uma conta Microsoft com acesso legítimo a Minecraft: Java Edition para jogar com autenticação.\n\n## Instâncias e Java\nUma instância é uma pasta/configuração separada do jogo, geralmente com mods, mundos e opções próprias. Separá-las torna testes mais seguros e evita que um pacote altere outro. Java Edition requer um runtime Java adequado; a versão depende da publicação do jogo. Alguns launchers gerenciam Java automaticamente; outros exigem configuração manual.\n\n## Mods e loaders\nUm mod adiciona ou altera funcionalidades. Um loader como Fabric, Forge, NeoForge ou Quilt oferece a base para mods compatíveis. Um pacote de recursos altera os arquivos visuais, enquanto um modpack reúne mods e arquivos numa configuração definida. Versão Minecraft, loader, dependências e versão do pacote precisam coincidir. Não misture arquivos apenas pelo nome parecido.\n\n## Escolha e manutenção\nCompare fontes oficiais, plataformas, gestão de instâncias e documentação. Prism e Modrinth App são opções distintas; o site do publicador é a melhor fonte de recursos atuais. Faça backup dos mundos antes de grandes atualizações, leia os changelogs e guarde o log para solucionar problemas. Continue em [Launchers](/launchers) ou [Modpacks](/modpacks)."
+          }
+        },
+        "es": {
+          "state": "complete",
+          "fields": {
+            "name": "¿Qué es un launcher de Minecraft?",
+            "summary": "Comprende versiones, instancias, Java y loaders antes de elegir.",
+            "body": "## La función del launcher\nUn launcher descarga e inicia una edición y versión de Minecraft. Minecraft Launcher oficial es publicado por Mojang/Microsoft. Los launchers de terceros pueden organizar instalaciones, pero no conceden una licencia del juego. Usa una cuenta Microsoft con acceso legítimo a Minecraft: Java Edition para jugar con autenticación.\n\n## Instancias y Java\nUna instancia es una carpeta/configuración separada del juego, normalmente con mods, mundos y opciones propios. Separarlas facilita las pruebas y evita que un paquete altere otro. Java Edition necesita un entorno Java adecuado; su versión depende del juego. Algunos launchers gestionan Java automáticamente y otros requieren configuración manual.\n\n## Mods y loaders\nUn mod añade o cambia funciones. Un loader como Fabric, Forge, NeoForge o Quilt sirve de base para mods compatibles. Un paquete de recursos cambia archivos visuales, mientras que un modpack agrupa mods y archivos en una configuración definida. Deben coincidir versión de Minecraft, loader, dependencias y versión del paquete. No mezcles archivos solo por tener nombres parecidos.\n\n## Elegir y mantener\nCompara fuentes oficiales, plataformas, gestión de instancias y documentación. Prism y Modrinth App son opciones distintas; el sitio del editor es la mejor fuente de funciones actuales. Haz copias de mundos antes de grandes actualizaciones, lee los cambios y conserva el registro para diagnosticar problemas. Sigue en [Launchers](/launchers) o [Modpacks](/modpacks)."
+          }
+        }
+      },
+      "updatedAt": "2026-09-28T00:00:00.000Z",
+      "level": "beginner",
+      "sources": [
+        {
+          "label": "Minecraft account help",
+          "url": "https://help.minecraft.net/hc/en-us/articles/23430683774221",
+          "checkedAt": "2026-09-28T00:00:00.000Z"
+        },
+        {
+          "label": "Prism overview",
+          "url": "https://prismlauncher.org/about/",
+          "checkedAt": "2026-09-28T00:00:00.000Z"
+        }
+      ],
+      "media": [
+        {
+          "kind": "image",
+          "url": "/brand/guides-day.webp",
+          "alt": "Original AlahPanda illustration for guides"
+        }
+      ],
+      "seo": {
+        "noindex": true
+      }
+    },
+    {
+      "slug": "what-are-minecraft-modpacks",
+      "name": "What are Minecraft modpacks?",
+      "summary": "A practical explanation of packs, loaders, versions, dependencies, backups and experiences.",
+      "body": "## More than a folder of mods\nA modpack combines selected mods and configuration for a defined Minecraft: Java Edition version and mod loader. It may also contain resource packs and default settings. A mod changes code or gameplay; a resource pack changes assets; a shader changes rendering when supported. These are not interchangeable. AlahPanda calls its projects experiences because each is designed around a different intention, from a Mac-focused play setup to experimental visual ideas.\n\n## Compatibility first\nRead the pack’s published release. Note the game version, loader, supported operating systems or environment, and the official distribution provider. A pack for Fabric does not automatically work on Forge. A client-side pack is not necessarily a server pack. Do not infer maturity from a version number; status and release facts are separate.\n\n## Install and update\nUse an official provider link and a compatible launcher. Create a separate instance, authenticate legitimately, and install the pack using the publisher’s instructions. Before an update, back up your worlds and configuration. Read the changelog and verify whether the update changes the Minecraft version or loader. If it fails, use the launcher log and restore the backup instead of deleting the only world copy.\n\n## Choose an experience\nLook for a clear goal, current support, documentation and an official download. [Mac Native](/modpacks/mac-native) is a public beta; [CraftToons](/modpacks/crafttoons) is an in-development teaser without a public release. Explore the [catalog](/modpacks) and ask for [support](/support) when a compatibility detail is unclear.",
+      "sourceLocale": "en",
+      "translations": {
+        "pt-PT": {
+          "state": "complete",
+          "fields": {
+            "name": "O que são modpacks de Minecraft?",
+            "summary": "Compatibilidade, instalação e atualização de uma experiência composta por mods.",
+            "body": "## Mais do que uma pasta de mods\nUm modpack combina mods e configuração para uma versão definida de Minecraft: Java Edition e um mod loader. Pode incluir resource packs e opções predefinidas. Um mod altera código ou jogabilidade; um resource pack altera recursos e um shader altera a renderização quando suportado. Não são equivalentes. A AlahPanda fala de experiências porque cada projeto tem uma intenção distinta, desde uma instalação focada no Mac até ideias visuais experimentais.\n\n## Compatibilidade primeiro\nLê a release publicada. Confirma versão do jogo, loader, sistemas operativos ou ambiente e fornecedor oficial de distribuição. Um pack Fabric não funciona automaticamente em Forge. Um pack client-side não é necessariamente um pack de servidor. Não deduzas maturidade pelo número da versão: estado e release são conceitos separados.\n\n## Instalar e atualizar\nUsa a ligação do fornecedor oficial e um launcher compatível. Cria uma instância separada, autentica-te legitimamente e instala conforme as instruções do publicador. Antes de atualizar, faz backup dos mundos e configuração. Lê o changelog e verifica se mudam a versão Minecraft ou o loader. Se falhar, consulta o log e recupera o backup em vez de apagares a única cópia do mundo.\n\n## Escolher uma experiência\nProcura um objetivo claro, suporte atual, documentação e download oficial. [Mac Native](/modpacks/mac-native) é uma beta pública; [CraftToons](/modpacks/crafttoons) é um teaser em desenvolvimento sem release pública. Explora o [catálogo](/modpacks) e pede [apoio](/support) se houver dúvidas de compatibilidade."
+          }
+        },
+        "pt-BR": {
+          "state": "complete",
+          "fields": {
+            "name": "O que são modpacks de Minecraft?",
+            "summary": "Compatibilidade, instalação e atualização de uma experiência composta por mods.",
+            "body": "## Mais que uma pasta de mods\nUm modpack combina mods e configurações para uma versão definida de Minecraft: Java Edition e um mod loader. Pode incluir pacotes de recursos e opções padrão. Um mod altera código ou jogabilidade; um pacote de recursos altera arquivos e um shader muda a renderização quando compatível. Não são equivalentes. A AlahPanda chama seus projetos de experiências porque cada um tem uma intenção diferente, desde jogar no Mac até ideias visuais experimentais.\n\n## Compatibilidade primeiro\nLeia a versão publicada. Confira versão do jogo, loader, sistemas operacionais ou ambiente e distribuidor oficial. Um pacote Fabric não funciona automaticamente com Forge. Um pacote client-side não é necessariamente para servidores. Não deduza maturidade pelo número da versão: status e lançamento são conceitos separados.\n\n## Instalação e atualização\nUse o link do distribuidor oficial e um launcher compatível. Crie uma instância separada, faça login legitimamente e instale segundo as instruções do publicador. Antes de atualizar, faça backup dos mundos e configurações. Leia as mudanças e confira se a versão Minecraft ou loader mudou. Se falhar, consulte o log e restaure o backup em vez de apagar a única cópia do mundo.\n\n## Escolha uma experiência\nBusque um objetivo claro, suporte atual, documentação e download oficial. [Mac Native](/modpacks/mac-native) é uma versão beta pública; [CraftToons](/modpacks/crafttoons) é um teaser em desenvolvimento sem lançamento público. Explore o [catálogo](/modpacks) e procure [suporte](/support) para dúvidas de compatibilidade."
+          }
+        },
+        "es": {
+          "state": "complete",
+          "fields": {
+            "name": "¿Qué son los modpacks de Minecraft?",
+            "summary": "Compatibilidad, instalación y actualización de una experiencia formada por mods.",
+            "body": "## Más que una carpeta de mods\nUn modpack combina mods y configuración para una versión definida de Minecraft: Java Edition y un mod loader. También puede incluir paquetes de recursos y ajustes predeterminados. Un mod cambia código o jugabilidad; un paquete de recursos cambia archivos visuales y un shader modifica la representación cuando es compatible. No son equivalentes. AlahPanda llama a sus proyectos experiencias porque cada uno tiene una intención distinta, desde jugar en Mac hasta ideas visuales experimentales.\n\n## Compatibilidad primero\nLee la versión publicada. Comprueba versión del juego, loader, sistemas operativos o entorno y distribuidor oficial. Un paquete Fabric no funciona automáticamente con Forge. Un paquete client-side no es necesariamente para servidores. No deduzcas madurez del número de versión: estado y lanzamiento son conceptos separados.\n\n## Instalar y actualizar\nUsa un enlace del distribuidor oficial y un launcher compatible. Crea una instancia separada, inicia sesión legítimamente e instala según las instrucciones del editor. Antes de actualizar, haz una copia de mundos y configuración. Lee los cambios y comprueba si cambian la versión de Minecraft o el loader. Si falla, consulta el registro y restaura la copia en vez de borrar el único mundo.\n\n## Elegir una experiencia\nBusca un objetivo claro, soporte actual, documentación y una descarga oficial. [Mac Native](/modpacks/mac-native) es una beta pública; [CraftToons](/modpacks/crafttoons) es un teaser en desarrollo sin versión pública. Explora el [catálogo](/modpacks) y pide [ayuda](/support) si tienes dudas de compatibilidad."
+          }
+        }
+      },
+      "updatedAt": "2026-09-28T00:00:00.000Z",
+      "level": "beginner",
+      "sources": [
+        {
+          "label": "Prism modpack installation",
+          "url": "https://prismlauncher.org/wiki/getting-started/download-modpacks/",
+          "checkedAt": "2026-09-28T00:00:00.000Z"
+        },
+        {
+          "label": "Mac Native publication",
+          "url": "https://modrinth.com/modpack/mac-native",
+          "checkedAt": "2026-09-28T00:00:00.000Z"
+        }
+      ],
+      "media": [
+        {
+          "kind": "image",
+          "url": "/brand/guides-day.webp",
+          "alt": "Original AlahPanda illustration for guides"
+        }
+      ],
+      "seo": {
+        "noindex": true
+      }
+    }
+  ]
+}

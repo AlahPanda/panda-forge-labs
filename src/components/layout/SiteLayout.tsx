@@ -6,9 +6,9 @@ import { useReveal } from '@/lib/useReveal';
 export default function SiteLayout({ children }: { children: ReactNode }) {
   const ref = useReveal();
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="experience-site min-h-screen flex flex-col">
       <SiteHeader />
-      <main ref={ref as any} className="flex-1">
+      <main ref={ref as any} className="flex-1 experience-page-enter">
         {children}
       </main>
       <SiteFooter />
