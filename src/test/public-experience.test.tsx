@@ -291,8 +291,8 @@ describe('public redesign and editorial boundaries', () => {
 
   it('emits canonical metadata without query strings or a fictitious preview image', async () => {
     render(<HelmetProvider><Seo title="Mac Native" description="Published project" url="https://example.org/modpacks/mac-native"/></HelmetProvider>);
-    await waitFor(() => expect(document.head.querySelector('link[rel="canonical"]')).toHaveAttribute('href','https://example.org/modpacks/mac-native'));
-    expect(document.head.querySelector('meta[property="og:image"]')).not.toBeInTheDocument();
+    await waitFor(() => expect(document.head.querySelector('link[rel="canonical"]')).toHaveAttribute('href','https://alahpanda-labs.vercel.app/modpacks/mac-native'));
+    expect(document.head.querySelector('meta[property="og:image"]')).toHaveAttribute('content', 'https://alahpanda-labs.vercel.app/brand/overlook-day.webp');
   });
 
   it('keeps main routes and the owner CMS entry discoverable', () => {

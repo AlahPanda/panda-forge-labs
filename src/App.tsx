@@ -53,8 +53,8 @@ const App = () => (
                 <Route path="/faq" element={<FaqExperience />} />
                 <Route path="/about" element={<AboutExperience />} />
                 <Route path="/legal" element={<Legal />} />
-                <Route path="/legal/privacy" element={<Navigate to="/legal?kind=privacy" replace />} />
-                <Route path="/legal/terms" element={<Navigate to="/legal?kind=terms" replace />} />
+                <Route path="/legal/privacy" element={<Legal kind="privacy" />} />
+                <Route path="/legal/terms" element={<Legal kind="terms" />} />
                 <Route path="/support" element={<SupportExperience />} />
                 <Route path="/admin" element={<Suspense fallback={<OwnerLoading/>}><AdminLogin /></Suspense>} />
                 <Route path="/admin/editor/*" element={<Suspense fallback={<OwnerLoading/>}><AdminGate><AdminEditor /></AdminGate></Suspense>} />

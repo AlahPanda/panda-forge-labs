@@ -41,14 +41,10 @@ export interface LauncherItem {
   faqs: LauncherFAQ[];
 }
 
-/** AstralRinth — platform builds (ouo.io) */
-const ASTRAL_DOWNLOADS = [
-  { label: 'Windows (.exe)', url: 'https://ouo.io/Hs6To1' },
-  { label: 'macOS (ARM/M1/M2)', url: 'https://ouo.io/8kxZK3' },
-  { label: 'Linux (.deb)', url: 'https://ouo.io/wDKBhZQ' },
-  { label: 'Linux (.rpm)', url: 'https://ouo.io/9m7bL3' },
-  { label: 'Linux (.AppImage)', url: 'https://ouo.io/jO6D1I' },
-];
+/** Unverified historical shortener downloads are quarantined.
+ * Current AstralRinth downloads come from published V2 official distribution data.
+ */
+const ASTRAL_DOWNLOADS: Array<{ label: string; url: string }> = [];
 
 export const launchersCatalog: LauncherItem[] = [
   {
@@ -90,10 +86,7 @@ export const launchersCatalog: LauncherItem[] = [
         q: 'Microsoft account versus offline?',
         a: 'Microsoft login matches modern Mojang defaults; offline availability depends on how you provision accounts legally — follow Mojang/Microsoft terms wherever you roam.',
       },
-      {
-        q: 'Why ouo.io links?',
-        a: 'We route downloads through ouo.io for bookkeeping; each button below still resolves to your chosen package and opens in a new tab.',
-      },
+
     ],
   },
   {

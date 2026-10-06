@@ -1,4 +1,4 @@
-import { useSearchParams } from 'react-router-dom';
+import { Navigate, useSearchParams } from 'react-router-dom';
 import SiteLayout from '@/components/layout/SiteLayout';
 import Seo from '@/components/Seo';
 import { PageHero } from '@/components/experience/Shared';
@@ -35,7 +35,8 @@ function Terms() {
 export default function Legal({ kind }: { kind?: Kind }) {
   const { t } = useI18n(); const [params] = useSearchParams();
   const resolved = kind ?? (params.get('kind') === 'terms' ? 'terms' : 'privacy');
-  return <SiteLayout><Seo title={`${resolved === 'privacy' ? 'Privacy' : 'Terms'} — AlahPanda Labs`} description="Website privacy and terms information"/>
+  if (!kind) return <Navigate to={'/legal/' + resolved} replace />;
+  return <SiteLayout><Seo url={'/legal/' + resolved} title={`${resolved === 'privacy' ? 'Privacy' : 'Terms'} — AlahPanda Labs`} description="Website privacy and terms information"/>
     <PageHero tone="quiet" eyebrow={t('footer.legal')} title={resolved === 'privacy' ? t('footer.privacy') : t('footer.terms')} description={t('ui.legalInformation')}/>
     <article lang="en" className="container experience-detail-body experience-legal experience-reading"><div className="experience-content-panel">{resolved === 'privacy' ? <Privacy/> : <Terms/>}</div></article>
   </SiteLayout>;

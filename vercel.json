@@ -1,6 +1,27 @@
 {
   "headers": [
     {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "Referrer-Policy",
+          "value": "strict-origin-when-cross-origin"
+        },
+        {
+          "key": "Permissions-Policy",
+          "value": "camera=(), microphone=(), geolocation=(), payment=()"
+        },
+        {
+          "key": "X-Frame-Options",
+          "value": "SAMEORIGIN"
+        }
+      ]
+    },
+    {
       "source": "/index.html",
       "headers": [
         {
@@ -29,9 +50,42 @@
     }
   ],
   "redirects": [
-    { "source": "/projects", "destination": "/modpacks", "permanent": true }
+    {
+      "source": "/projects",
+      "destination": "/modpacks",
+      "permanent": true
+    },
+    {
+      "source": "/legal",
+      "has": [
+        {
+          "type": "query",
+          "key": "kind",
+          "value": "privacy"
+        }
+      ],
+      "destination": "/legal/privacy",
+      "permanent": true
+    },
+    {
+      "source": "/legal",
+      "has": [
+        {
+          "type": "query",
+          "key": "kind",
+          "value": "terms"
+        }
+      ],
+      "destination": "/legal/terms",
+      "permanent": true
+    }
   ],
-  "crons": [{ "path": "/api/sync-modrinth", "schedule": "0 6 * * *" }],
+  "crons": [
+    {
+      "path": "/api/sync-modrinth",
+      "schedule": "0 6 * * *"
+    }
+  ],
   "rewrites": [
     {
       "source": "/api/(.*)",
