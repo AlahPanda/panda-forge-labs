@@ -15,4 +15,3 @@ export function validatedPublicItems<T>(kind: ContentKind, input: unknown): T[] 
     } catch { return []; }
   });
 }
-
