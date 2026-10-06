@@ -82,7 +82,7 @@ No approval flag/CMS action is required for indexing published Git content. The 
 - Focused public resolver/security/public routes/trust tests passed; new HTTP/discovery suite: **21 tests**.
 - Full Vitest: **151 tests passed, 17 files**. Includes current public routes, Home/News links, V2/CMS/auth/workflow, APIs, i18n and Modrinth behavior.
 - TypeScript app, Vite/build, Edge and new News function configurations: passed. Edge bundle and Node syntax check passed; temporary bundles remain outside the repository.
-- Production build: passed; main minified JS **739.91 → 718.61 kB**. Existing >650 kB and old Browserslist warnings remain; dependencies are unchanged.
+- Production build: passed; main minified JS **739.91 → 718.81 kB**. Existing >650 kB and old Browserslist warnings remain; dependencies are unchanged.
 - Lint: **0 errors, 23 warnings** (previous baseline report: 70). No unrelated warning repair.
 - Actual local HTTP requests against the bundled function **using the built dist artifacts**: published 200 with own canonical/index headers; removed 410; unknown 404; compiled entrypoint preserved. Built sitemap/RSS each contain eight News entries.
 - Import/reference scan: no broken relative/alias imports or local media paths. Operational Markdown links resolve. Only necessary tombstone tests/report and an immutable Git citation mention retired/deleted identities.
