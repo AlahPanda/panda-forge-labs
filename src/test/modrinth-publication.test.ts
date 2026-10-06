@@ -66,3 +66,57 @@ describe('official Modrinth publication', () => {
     for(const bad of ['https://evil.example/modpack/mac-native/version/id','https://modrinth.com.evil.example/modpack/mac-native/version/id','http://modrinth.com/modpack/mac-native/version/id','https://modrinth.com/modpack/other/version/id']) expect(officialReleaseDestination('mac-native',bad)).toBe('https://modrinth.com/modpack/mac-native');
   });
 });
+
+describe('release refresh recovery', () => {
+  const connection = { projectSlug: 'mac-native', projectId: project.id };
+  const now = Date.parse('2026-10-06T12:00:00Z');
+  const old = (): Snapshot => ({ fetchedAt: new Date(now - SNAPSHOT_TTL_MS - 1).toISOString(), project: parseModrinthPublication(project, [versions[0]]) });
+  it('orders releases by publication date, not by lexical or semantic version', () => {
+    const future = version('0.10.0', '2026-10-07T00:00:00Z');
+    expect(parseModrinthPublication(project, [...versions, future]).release.version).toBe('0.10.0');
+    expect(parseModrinthPublication(project, [version('9.0.0', '2026-01-01T00:00:00Z'), future]).release.version).toBe('0.10.0');
+  });
+  it('refreshes an expired snapshot and a future release without any editorial releaseSlug', async () => {
+    const write = vi.fn();
+    const result = await resolveSnapshot(connection, { read: async () => old(), write }, false, fetcher as typeof fetch, now);
+    expect(result.snapshot.project.release.version).toBe('0.6.0');
+    expect(write).toHaveBeenCalledOnce();
+    const futureFetcher = vi.fn(async (url) => new Response(JSON.stringify(String(url).endsWith('/version') ? [version('0.7.0', '2026-10-07T00:00:00Z')] : project)));
+    expect((await resolveSnapshot(connection, null, false, futureFetcher as typeof fetch, now)).snapshot.project.release.version).toBe('0.7.0');
+  });
+  it('survives a snapshot read failure and resumes persistence on a successful write', async () => {
+    const write = vi.fn();
+    const result = await resolveSnapshot(connection, { read: async () => { throw new Error('store offline'); }, write }, false, fetcher as typeof fetch, now);
+    expect(result).toMatchObject({ stale: false, persistence: 'available', diagnostics: { failureStage: 'snapshot-read' } });
+    expect(result.snapshot.project.release.version).toBe('0.6.0');
+    expect(write).toHaveBeenCalledOnce();
+  });
+  it('returns fresh release even when persistence is absent or write fails', async () => {
+    for (const store of [null, { read: async () => old(), write: async () => { throw new Error('write unavailable'); } }]) {
+      const result = await resolveSnapshot(connection, store, false, fetcher as typeof fetch, now);
+      expect(result).toMatchObject({ stale: false, persistence: 'unavailable' });
+      expect(result.snapshot.project.release.version).toBe('0.6.0');
+    }
+  });
+  it('never overwrites LKG with malformed upstream', async () => {
+    const write = vi.fn();
+    const badFetcher = vi.fn(async () => new Response(JSON.stringify({ invalid: true })));
+    const result = await resolveSnapshot(connection, { read: async () => old(), write }, true, badFetcher as typeof fetch, now);
+    expect(result).toMatchObject({ stale: true, diagnostics: { failureStage: 'upstream' } });
+    expect(result.snapshot.project.release.version).toBe('0.3.1');
+    expect(write).not.toHaveBeenCalled();
+  });
+  it('force bypasses TTL while ordinary reads reuse a fresh validated snapshot', async () => {
+    const snapshot = { ...old(), fetchedAt: new Date(now).toISOString() };
+    const upstream = vi.fn(fetcher);
+    const store = { read: async () => snapshot, write: vi.fn() };
+    expect((await resolveSnapshot(connection, store, false, upstream as typeof fetch, now)).snapshot.project.release.version).toBe('0.3.1');
+    expect(upstream).not.toHaveBeenCalled();
+    expect((await resolveSnapshot(connection, store, true, upstream as typeof fetch, now)).snapshot.project.release.version).toBe('0.6.0');
+  });
+  it('rejects stored project substitution even when the snapshot timestamp is fresh', async () => {
+    const changed = { ...old(), fetchedAt: new Date(now).toISOString() }; changed.project.slug = 'another-project';
+    const badFetcher = vi.fn(async () => new Response('', { status: 503 }));
+    await expect(resolveSnapshot(connection, { read: async () => changed, write: vi.fn() }, false, badFetcher as typeof fetch, now)).rejects.toThrow();
+  });
+});

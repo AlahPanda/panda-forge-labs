@@ -88,11 +88,11 @@
   ],
   "rewrites": [
     {
-      "source": "/api/(.*)",
-      "destination": "/api/$1"
+      "source": "/api/modrinth/:slug",
+      "destination": "/api/modrinth?slug=:slug"
     },
     {
-      "source": "/(.*)",
+      "source": "/((?!api(?:/|$)).*)",
       "destination": "/"
     }
   ]
