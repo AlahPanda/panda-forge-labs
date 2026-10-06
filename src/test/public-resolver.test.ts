@@ -61,7 +61,7 @@ describe('public Content V2 resolution', () => {
     expect(`/guides/${entries[0].slug}`).toBe('/guides/starting-out');
   });
 
-  it('keeps legacy routes for launchers and articles pending editorial migration', () => {
+  it('preserves launcher URLs and serves articles exclusively from V2', () => {
     const migrated = ['astralrinth', 'prism', 'modrinth-app', 'atlauncher', 'curseforge-app', 'multimc', 'gdlauncher', 'sklauncher'];
     for (const slug of migrated) {
       const entry = publicLauncher(slug);
@@ -79,18 +79,19 @@ describe('public Content V2 resolution', () => {
     expect(publicSettings()?.contactEmail).toBeUndefined();
     expect(publicFaq().find((entry) => entry.slug === 'general')?.source).toBe('v2');
     expect(publicFaq().filter((entry) => entry.source === 'legacy').map((entry) => entry.slug)).toEqual(['performance', 'support']);
-    expect(publicArticles().filter((entry) => entry.source === 'legacy')).toHaveLength(5);
+    expect(publicArticles().every((entry) => entry.source === 'v2')).toBe(true);
+    expect(publicArticle('neoforge-vs-fabric-modding-2026')).toBeUndefined();
     expect(publicArticle('missing')).toBeUndefined();
     expect(publicGuides()).toHaveLength(5);
     expect(publicHomepage()?.sections).toEqual([{ id: 'metrics', visible: false }]);
   });
 
-  it('keeps eight sourced article drafts in V2 with full associated translations and noindex pending review', () => {
+  it('keeps eight published V2 articles indexable with their sources and translations', () => {
     const articles = publicArticles().filter((entry) => entry.source === 'v2');
     expect(articles).toHaveLength(8);
     for (const entry of articles) {
       if (entry.source !== 'v2') continue;
-      expect(entry.item.seo?.noindex).toBe(true);
+      expect(entry.item.seo?.noindex).not.toBe(true);
       expect(entry.item.sources?.length).toBeGreaterThan(0);
       for (const locale of ['pt-PT', 'pt-BR', 'es'] as const) {
         expect(entry.item.translations[locale]?.state).toBe('complete');

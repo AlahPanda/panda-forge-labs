@@ -1,11 +1,15 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { adminApi, adminAuth, classifyAdminError } from '../lib/adminApi';
 import { isPreviewReady, rememberPreviewCommit, pendingPreviewCommit } from '../lib/previewDeployment';
 
 beforeEach(() => {
+  vi.stubEnv('VITE_SUPABASE_URL', 'https://cms-test.supabase.co');
+  vi.stubEnv('VITE_SUPABASE_PUBLISHABLE_KEY', 'public-test-key');
   sessionStorage.clear();
   vi.unstubAllGlobals();
 });
+
+afterEach(() => vi.unstubAllEnvs());
 
 describe('CMS browser transport', () => {
   it('lets the Edge decide when the current Preview differs from the preferred alias', async () => {
@@ -50,12 +54,12 @@ describe('CMS browser transport', () => {
     adminAuth.setToken('session-jwt');
     const fetchMock = vi.fn().mockResolvedValue({ ok: true, json: async () => ({ ok: true, sha: 'new', url: 'https://example.test' }) });
     vi.stubGlobal('fetch', fetchMock);
-    await adminApi.save('src/content/news.json', '{"articles":[]}', 'old', 'update');
+    await adminApi.save('src/content/v2/articles.json', '{"schemaVersion":2,"items":[]}', 'old', 'update');
     const [url, options] = fetchMock.mock.calls[0];
     expect(url).toContain('/functions/v1/admin-cms/save');
     expect(url).not.toContain('api.github.com');
     expect(options.headers.Authorization).toBe('Bearer session-jwt');
-    expect(JSON.parse(options.body)).toMatchObject({ sha: 'old', path: 'src/content/news.json' });
+    expect(JSON.parse(options.body)).toMatchObject({ sha: 'old', path: 'src/content/v2/articles.json' });
   });
   it('refuses writes without a session and clears an expired token', async () => {
     const fetchMock = vi.fn().mockResolvedValue({ ok: false, status: 401, json: async () => ({ error: 'Unauthorized' }) });

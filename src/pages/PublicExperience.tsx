@@ -171,8 +171,7 @@ export function ArticleExperience() {
   const { t, locale } = useI18n();
   const { slug } = useParams();
   const entry = slug ? publicArticles().find((article) => article.slug === slug) : undefined;
-  if (!entry) return <MissingExperience title={t('ui.articleNotFound')} to="/news"/>;
-  if (entry.source === 'legacy') return <SiteLayout><Seo title={t('ui.articleUnderReview') + ' — AlahPanda Labs'} description={t('ui.articleReview')}/><PageHero eyebrow={t('nav.news')} title={t('ui.articleUnderReview')} description={t('ui.articleReview')}/><section className="container experience-section"><EmptyCollection title={t('ui.reviewPending')} description={t('ui.reviewOthers')} to="/news" link={t('ui.allNews')}/></section></SiteLayout>;
+  if (!entry) return <MissingExperience title={t('ui.articleNotFound')} to="/news" noindex/>;
   const article: ArticleV2 = localizeItem(entry.item, locale);
   const image = article.media?.find((media) => media.kind === 'image');
   const related = approvedArticles().filter((item) => item.slug !== article.slug && item.projectSlug && item.projectSlug === article.projectSlug).slice(0, 3);
@@ -249,8 +248,8 @@ export function SupportExperience() {
   </SiteLayout>;
 }
 
-export function MissingExperience({ title, to = '/' }: { title?: string; to?: string }) {
+export function MissingExperience({ title, to = '/', noindex = false }: { title?: string; to?: string; noindex?: boolean }) {
   const { t } = useI18n();
   title ??= t('ui.notFound');
-  return <SiteLayout><Seo title={title + ' — AlahPanda Labs'}/><div className="container experience-missing"><Compass size={54} aria-hidden="true"/><span className="experience-kicker">404 · {t('ui.anotherPath')}</span><h1>{title}</h1><p>{t('ui.noPublished')}</p><Link to={to} className="experience-button experience-button-primary"><ArrowLeft size={16}/> {to === '/' ? t('ui.backHome') : t('ui.backCollection')}</Link></div></SiteLayout>;
+  return <SiteLayout><Seo title={title + ' — AlahPanda Labs'} noindex={noindex}/><div className="container experience-missing"><Compass size={54} aria-hidden="true"/><span className="experience-kicker">404 · {t('ui.anotherPath')}</span><h1>{title}</h1><p>{t('ui.noPublished')}</p><Link to={to} className="experience-button experience-button-primary"><ArrowLeft size={16}/> {to === '/' ? t('ui.backHome') : t('ui.backCollection')}</Link></div></SiteLayout>;
 }

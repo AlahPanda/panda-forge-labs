@@ -7,6 +7,7 @@ import { publicLaunchers, publicProjects, publicReleasesFor } from '@/content/pu
 import { launchersForList } from '@/lib/launchers';
 import Seo from '@/components/Seo';
 import App from '@/App';
+import { discoveryDocuments } from '../../build/discovery';
 
 beforeEach(() => {
   vi.stubGlobal('scrollTo', vi.fn());
@@ -40,12 +41,13 @@ describe('public production identity', () => {
     expect(html).toContain(publicSite.description);
     expect(html).toContain(PUBLIC_SITE_ORIGIN + publicSite.image);
     expect(readFileSync('public' + publicSite.image).length).toBeGreaterThan(0);
-    const sitemap = readFileSync('public/sitemap.xml', 'utf8');
+    const discovery = discoveryDocuments({});
+    const sitemap = discovery['sitemap.xml'];
     expect(sitemap).toContain(PUBLIC_SITE_ORIGIN + '/legal/privacy');
     expect(sitemap).toContain(PUBLIC_SITE_ORIGIN + '/legal/terms');
     expect(sitemap).not.toMatch(/legal\?|\/admin|\/draft|preview\.test/);
     for (const loc of sitemap.matchAll(/<loc>(.*?)<\/loc>/g)) expect(loc[1].startsWith(PUBLIC_SITE_ORIGIN + '/')).toBe(true);
-    expect(readFileSync('public/robots.txt', 'utf8')).toContain('Disallow: /admin');
+    expect(discovery['robots.txt']).toContain('Disallow: /admin');
   });
 });
 
