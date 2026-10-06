@@ -1,10 +1,11 @@
 import { readFileSync, writeFileSync } from 'node:fs';
-const origin = process.env.PUBLIC_SITE_ORIGIN || 'https://alahpanda-labs.vercel.app';
-const load = (kind) => JSON.parse(readFileSync(new URL(`../src/content/v2/${kind}.json`, import.meta.url),'utf8')).items;
+const { origin } = JSON.parse(readFileSync(new URL('../src/config/publicSite.json', import.meta.url), 'utf8'));
+const load = (kind) => JSON.parse(readFileSync(new URL(`../src/content/v2/${kind}.json`, import.meta.url),'utf8')).items.filter((item) => item.draft === undefined);
 const escape = (value) => String(value || '').replace(/[&<>"']/g,(letter)=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&apos;'}[letter]));
 const url = (path) => new URL(path,origin).href;
-const routes=['/','/modpacks','/launchers','/news','/guides','/faq','/about','/support','/legal?kind=privacy','/legal?kind=terms'];
+const routes=['/','/modpacks','/launchers','/news','/guides','/faq','/about','/support','/legal/privacy','/legal/terms'];
 for (const [kind,prefix] of [['projects','modpacks'],['launchers','launchers'],['articles','news'],['guides','guides']]) for (const item of load(kind)) if (!item.seo?.noindex && !(kind==='projects' && item.status==='internal-prototype')) routes.push(`/${prefix}/${item.slug}`);
 writeFileSync(new URL('../public/sitemap.xml',import.meta.url),`<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${routes.map((path)=>`  <url><loc>${escape(url(path))}</loc></url>`).join('\n')}\n</urlset>\n`);
 const articles=load('articles').filter((item)=>!item.seo?.noindex && item.publishedAt);
 writeFileSync(new URL('../public/rss.xml',import.meta.url),`<?xml version="1.0" encoding="UTF-8"?>\n<rss version="2.0"><channel><title>AlahPanda Labs News</title><link>${escape(url('/news'))}</link><description>Published AlahPanda Labs editorial updates</description><language>en</language>${articles.map((article)=>`<item><title>${escape(article.name)}</title><link>${escape(url('/news/'+article.slug))}</link><guid isPermaLink="true">${escape(url('/news/'+article.slug))}</guid><description>${escape(article.summary)}</description><pubDate>${new Date(article.publishedAt).toUTCString()}</pubDate></item>`).join('')}</channel></rss>\n`);
+writeFileSync(new URL('../public/robots.txt', import.meta.url), `User-agent: *\nAllow: /\nDisallow: /admin\n\nSitemap: ${url('/sitemap.xml')}\n`);

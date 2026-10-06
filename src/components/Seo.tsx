@@ -1,4 +1,5 @@
 import { Helmet } from 'react-helmet-async';
+import { canonicalUrl, publicAssetUrl, publicSite } from '@/lib/publicSite';
 
 interface Props {
   title: string;
@@ -10,13 +11,12 @@ interface Props {
   jsonLd?: Record<string, unknown> | Record<string, unknown>[];
 }
 
-/** Dynamic metadata via react-helmet-async — works for OG/Twitter previews. */
+/** Runtime metadata; index.html supplies a static crawler baseline. */
 export default function Seo({ title, description, image, url, type = 'website', noindex = false, jsonLd }: Props) {
   const desc = description ?? '';
-  const origin = typeof window !== 'undefined' ? window.location.origin : '';
   const pathname = typeof window !== 'undefined' ? window.location.pathname : '/';
-  const fullUrl = url ?? (origin ? new URL(pathname, origin).href : '');
-  const img = image && origin ? new URL(image, origin).href : undefined;
+  const fullUrl = canonicalUrl(url ?? pathname);
+  const img = publicAssetUrl(image || publicSite.image);
 
   return (
     <Helmet prioritizeSeoTags>
