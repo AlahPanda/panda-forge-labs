@@ -71,10 +71,10 @@ The API smoke fixture initially lacked a project ID; fixing only the temporary f
 - System locale follows navigator.languages, then navigator.language; unsupported languages use English; manual selection persists and System clears the override. Tests pass. System theme follows OS; Light/Dark overrides persist; System clears override; selector displays preference. Tests pass.
 - Existing headers, cron and redirects match main exactly. HSTS was not changed; it is supplied by the hosting layer, not disabled in this repository. No authentication, origin/JWT, private drafts, concurrency or sanitization weakening. No secrets/environment changes or new server-secret frontend exposure.
 
-## Final acceptance gate
+## Owner acceptance and Production gate
 
-Do not merge automatically. A green build/check does not prove runtime persistence or authenticated Preview behavior.
+Owner manually inspected the authorized integration Preview on 2026-10-08 and confirmed that the integrated website is operational and behaves as expected. Preview runtime owner acceptance is complete. The owner authorized PR #16 rollout by merge commit after the final gates; source cleanup is conditional on successful Production acceptance.
 
-Before owner approval, verify on the authorized integration Preview: current API JSON/version/stale/persistence/fetchedAt, current product page and official primary CTA, guide/Java in four locales, language/theme preference behavior, favicon/mobile sanity, current/retired/unknown News 200/410/404, sitemap/RSS and the exact Google file body. Use HTTP <=10 seconds and browser <=20 seconds; stop on Deployment Protection and do not bypass it.
+Production acceptance remains separate from Preview acceptance. After merge, verify on Production: current API JSON/version/stale/persistence/fetchedAt, current product page and official primary CTA, guide/Java in four locales, language/theme preference behavior, favicon/mobile sanity, current/retired/unknown News 200/410/404, sitemap/RSS and the exact Google file body. Use HTTP <=10 seconds and browser <=20 seconds; report timeouts and stop on Deployment Protection without bypassing it.
 
 The narrowed #13 Edge allowlist is in Git only; it was not remotely deployed by this integration. Existing owner deployment procedures and environment/branch targeting still require deliberate owner action. Source PRs and branches remain intact until rollout is accepted.
