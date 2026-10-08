@@ -1,0 +1,21 @@
+{
+  "name": "AlahPanda Labs",
+  "short_name": "AlahPanda Labs",
+  "start_url": "/",
+  "scope": "/",
+  "display": "browser",
+  "icons": [
+    {
+      "src": "/icons/alahpanda-labs-8365955e8a88/icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/alahpanda-labs-8365955e8a88/icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}
