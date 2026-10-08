@@ -1,3 +1,4 @@
+import { adminConfiguration } from './adminConfiguration';
 import type { ContentKind } from '@/content/v2/schema';
 
 const TOKEN_KEY = 'apl.admin.token';
@@ -35,9 +36,10 @@ export const adminAuth = {
 };
 
 async function call<T>(action: string, body: unknown = {}, auth = true): Promise<T> {
-  const supabase = import.meta.env.VITE_SUPABASE_URL;
-  const apikey = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY;
-  if (!supabase || !apikey || !/^https:\/\/[^/]+$/.test(supabase)) throw new AdminApiError('missing-config', 'Supabase Preview configuration is missing.');
+  const config = adminConfiguration();
+  const supabase = config.url;
+  const apikey = config.key;
+  if (!config.ready) throw new AdminApiError('missing-config', 'Supabase configuration is missing or invalid: ' + JSON.stringify(config.status));
   const headers: Record<string, string> = {
     'Content-Type': 'application/json',
     apikey,
@@ -50,7 +52,7 @@ async function call<T>(action: string, body: unknown = {}, auth = true): Promise
   let res: Response;
   try { res = await fetch(`${supabase}/functions/v1/admin-cms/${action}`, {
     method: 'POST', headers, body: JSON.stringify(body),
-  }); } catch { throw new AdminApiError('network', 'Could not reach the Preview CMS API. Check network, CORS, and ADMIN_ORIGINS.'); }
+  }); } catch { throw new AdminApiError('network', 'Could not reach the CMS API. Check network, CORS, and ADMIN_ORIGINS.'); }
   const data = await res.json().catch(() => ({}));
   if (!res.ok) {
     if (res.status === 401 && auth) adminAuth.clear();

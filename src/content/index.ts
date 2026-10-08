@@ -1,9 +1,7 @@
 import siteData from '@/content/site.json';
 import modpacksData from '@/content/modpacks.json';
-import newsData from 'virtual:published-news';
 import faqData from '@/content/faq.json';
 import i18nData from '@/content/i18n.json';
-import reviewsData from '@/content/reviews.json';
 
 export type Locale = 'en' | 'pt-PT' | 'pt-BR' | 'es';
 export const LOCALES: Locale[] = ['en', 'pt-PT', 'pt-BR', 'es'];
@@ -57,36 +55,10 @@ export interface Modpack {
   changelog: { version: string; date: string; notes: string }[];
 }
 
-export interface Article {
-  slug: string;
-  title: string;
-  excerpt: string;
-  body: string;
-  category: string;
-  modpackSlug: string | null;
-  author: string;
-  publishedAt: string;
-  readMinutes: number;
-  featured: boolean;
-  draft: boolean;
-  tags: string[];
-  /** 16:9 hero image. */
-  image?: string;
-}
-
 export interface FaqCategory {
   id: string;
   title: string;
   items: { q: string; a: string }[];
-}
-
-export interface Review {
-  id: string;
-  modpackSlug: string;
-  author: string;
-  rating: number;
-  body: string;
-  publishedAt: string;
 }
 
 export interface SiteConfig {
@@ -105,14 +77,5 @@ export interface SiteConfig {
 
 export const site = siteData.site as SiteConfig;
 export const modpacks = (modpacksData.modpacks as Modpack[]).slice();
-export const articles = (newsData.articles as Article[]).slice();
 export const faq = faqData.categories as FaqCategory[];
-export const reviews = (reviewsData.reviews as Review[]).slice();
 export const i18n = i18nData as Record<Locale, Record<string, string>>;
-
-export const getModpack = (slug: string) => modpacks.find((m) => m.slug === slug);
-export const getArticle = (slug: string) => articles.find((a) => a.slug === slug && !a.draft);
-export const featuredModpacks = () => modpacks.filter((m) => m.featured);
-export const featuredArticles = () => articles.filter((a) => a.featured && !a.draft);
-export const publishedArticles = () => articles.filter((a) => !a.draft);
-export const reviewsFor = (slug: string) => reviews.filter((r) => r.modpackSlug === slug);

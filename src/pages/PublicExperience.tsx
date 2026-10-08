@@ -171,8 +171,7 @@ export function ArticleExperience() {
   const { t, locale } = useI18n();
   const { slug } = useParams();
   const entry = slug ? publicArticles().find((article) => article.slug === slug) : undefined;
-  if (!entry) return <MissingExperience title={t('ui.articleNotFound')} to="/news"/>;
-  if (entry.source === 'legacy') return <SiteLayout><Seo title={t('ui.articleUnderReview') + ' — AlahPanda Labs'} description={t('ui.articleReview')}/><PageHero eyebrow={t('nav.news')} title={t('ui.articleUnderReview')} description={t('ui.articleReview')}/><section className="container experience-section"><EmptyCollection title={t('ui.reviewPending')} description={t('ui.reviewOthers')} to="/news" link={t('ui.allNews')}/></section></SiteLayout>;
+  if (!entry) return <MissingExperience title={t('ui.articleNotFound')} to="/news" noindex/>;
   const article: ArticleV2 = localizeItem(entry.item, locale);
   const image = article.media?.find((media) => media.kind === 'image');
   const related = approvedArticles().filter((item) => item.slug !== article.slug && item.projectSlug && item.projectSlug === article.projectSlug).slice(0, 3);
@@ -194,6 +193,20 @@ export function GuidesExperience() {
     </section><div className="container"><SupportCallout/></div></SiteLayout>;
 }
 
+function GuideReleaseFacts({ projectSlug }: { projectSlug?: string }) {
+  const { t } = useI18n();
+  const entry = projectSlug ? publicProject(projectSlug) : undefined;
+  const publication = useProjectPublication(entry?.source === 'v2' ? entry.item : undefined);
+  const release = publication.data?.snapshot.project.release;
+  if (!release) return null;
+  return <aside className="experience-content-panel mb-6" aria-label={t('guide.releaseFacts')}>
+    <h2>{t('guide.releaseFacts')}</h2>
+    <p>{release.version} · Minecraft {release.minecraft.join(' / ')} · {release.loaders.join(' / ')}</p>
+    {publication.data?.stale && <p>{t('guide.staleFacts')}</p>}
+    <a href={release.url} target="_blank" rel="noopener noreferrer" className="experience-text-link">{t('guide.releaseNotes')} <ExternalLink size={16}/></a>
+  </aside>;
+}
+
 export function GuideDetailExperience() {
   const { t, locale } = useI18n();
   const { slug } = useParams();
@@ -204,7 +217,7 @@ export function GuideDetailExperience() {
   const image = guide.media?.find((media) => media.kind === 'image');
   return <SiteLayout><Seo title={(guide.seo?.title || guide.name) + ' — AlahPanda Labs'} description={guide.seo?.description || guide.summary || guide.name} image={guide.seo?.image || image?.url} noindex={guide.seo?.noindex} type="article" jsonLd={[guideData(PUBLIC_SITE_ORIGIN,guide,guide.translations?.[locale]?.fields.body ? locale : guide.sourceLocale),breadcrumbs(PUBLIC_SITE_ORIGIN,[{name:t('nav.home'),path:'/'},{name:t('nav.guides'),path:'/guides'},{name:guide.name,path:'/guides/'+guide.slug}])]}/>
     <article className="container experience-article-detail"><Link className="experience-back" to="/guides"><ArrowLeft size={16}/> {t('nav.guides')}</Link><span className="experience-kicker"><BookOpen size={17}/> {t('ui.guide')}{guide.level && ` · ${t('ui.level.' + guide.level)}`}{guide.updatedAt && ` · ${guide.updatedAt.slice(0,10)}`}</span><h1>{guide.name}</h1>{guide.summary && <p className="experience-lead">{guide.summary}</p>}{image && <img className="experience-article-cover" src={image.url} alt={image.alt || ''} loading="lazy"/>}
-      <div className="experience-content-panel experience-reading"><RichMarkdown markdown={guide.body || ''}/>{guide.steps?.map((step) => <section key={step.title} className="experience-section"><h2>{step.title}</h2><RichMarkdown markdown={step.body}/></section>)}</div><div className="experience-card-actions experience-next-links"><ProjectRelation slug={guide.projectSlug}/>{guide.launcherSlug && publicLauncher(guide.launcherSlug)?.source === 'v2' && <Link to={'/launchers/' + guide.launcherSlug} className="experience-text-link">{t('nav.launchers')} <ArrowRight size={16}/></Link>}<Link to="/support" className="experience-text-link">{t('nav.support')} <ArrowRight size={16}/></Link></div>{related.length > 0 && <section className="experience-section"><SectionTitle title={t('ui.relatedGuides')}/><div className="experience-grid experience-grid-resources">{related.map((item) => <GuideCard key={item.slug} guide={item}/>)}</div></section>}</article>
+      <div className="experience-content-panel experience-reading"><GuideReleaseFacts projectSlug={guide.projectSlug}/><RichMarkdown markdown={guide.body || ''}/>{guide.steps?.map((step) => <section key={step.title} className="experience-section"><h2>{step.title}</h2><RichMarkdown markdown={step.body}/></section>)}</div><div className="experience-card-actions experience-next-links"><ProjectRelation slug={guide.projectSlug}/>{guide.launcherSlug && publicLauncher(guide.launcherSlug)?.source === 'v2' && <Link to={'/launchers/' + guide.launcherSlug} className="experience-text-link">{t('nav.launchers')} <ArrowRight size={16}/></Link>}<Link to="/support" className="experience-text-link">{t('nav.support')} <ArrowRight size={16}/></Link></div>{related.length > 0 && <section className="experience-section"><SectionTitle title={t('ui.relatedGuides')}/><div className="experience-grid experience-grid-resources">{related.map((item) => <GuideCard key={item.slug} guide={item}/>)}</div></section>}</article>
   </SiteLayout>;
 }
 
@@ -249,8 +262,8 @@ export function SupportExperience() {
   </SiteLayout>;
 }
 
-export function MissingExperience({ title, to = '/' }: { title?: string; to?: string }) {
+export function MissingExperience({ title, to = '/', noindex = false }: { title?: string; to?: string; noindex?: boolean }) {
   const { t } = useI18n();
   title ??= t('ui.notFound');
-  return <SiteLayout><Seo title={title + ' — AlahPanda Labs'}/><div className="container experience-missing"><Compass size={54} aria-hidden="true"/><span className="experience-kicker">404 · {t('ui.anotherPath')}</span><h1>{title}</h1><p>{t('ui.noPublished')}</p><Link to={to} className="experience-button experience-button-primary"><ArrowLeft size={16}/> {to === '/' ? t('ui.backHome') : t('ui.backCollection')}</Link></div></SiteLayout>;
+  return <SiteLayout><Seo title={title + ' — AlahPanda Labs'} noindex={noindex}/><div className="container experience-missing"><Compass size={54} aria-hidden="true"/><span className="experience-kicker">404 · {t('ui.anotherPath')}</span><h1>{title}</h1><p>{t('ui.noPublished')}</p><Link to={to} className="experience-button experience-button-primary"><ArrowLeft size={16}/> {to === '/' ? t('ui.backHome') : t('ui.backCollection')}</Link></div></SiteLayout>;
 }

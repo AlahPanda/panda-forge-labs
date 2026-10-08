@@ -1,11 +1,16 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { adminApi, adminAuth, classifyAdminError } from '../lib/adminApi';
+import { adminConfiguration } from '../lib/adminConfiguration';
 import { isPreviewReady, rememberPreviewCommit, pendingPreviewCommit } from '../lib/previewDeployment';
 
 beforeEach(() => {
+  vi.stubEnv('VITE_SUPABASE_URL', 'https://cms-test.supabase.co');
+  vi.stubEnv('VITE_SUPABASE_PUBLISHABLE_KEY', 'public-test-key');
   sessionStorage.clear();
   vi.unstubAllGlobals();
 });
+
+afterEach(() => vi.unstubAllEnvs());
 
 describe('CMS browser transport', () => {
   it('lets the Edge decide when the current Preview differs from the preferred alias', async () => {
@@ -50,12 +55,12 @@ describe('CMS browser transport', () => {
     adminAuth.setToken('session-jwt');
     const fetchMock = vi.fn().mockResolvedValue({ ok: true, json: async () => ({ ok: true, sha: 'new', url: 'https://example.test' }) });
     vi.stubGlobal('fetch', fetchMock);
-    await adminApi.save('src/content/news.json', '{"articles":[]}', 'old', 'update');
+    await adminApi.save('src/content/v2/articles.json', '{"schemaVersion":2,"items":[]}', 'old', 'update');
     const [url, options] = fetchMock.mock.calls[0];
     expect(url).toContain('/functions/v1/admin-cms/save');
     expect(url).not.toContain('api.github.com');
     expect(options.headers.Authorization).toBe('Bearer session-jwt');
-    expect(JSON.parse(options.body)).toMatchObject({ sha: 'old', path: 'src/content/news.json' });
+    expect(JSON.parse(options.body)).toMatchObject({ sha: 'old', path: 'src/content/v2/articles.json' });
   });
   it('refuses writes without a session and clears an expired token', async () => {
     const fetchMock = vi.fn().mockResolvedValue({ ok: false, status: 401, json: async () => ({ error: 'Unauthorized' }) });
@@ -65,5 +70,25 @@ describe('CMS browser transport', () => {
     adminAuth.setToken('expired');
     await expect(adminApi.me()).rejects.toThrow('Unauthorized');
     expect(adminAuth.getToken()).toBeNull();
+  });
+});
+
+
+describe('CMS public configuration', () => {
+  it('fails explicitly before login network calls if VITE configuration is absent', async () => {
+    vi.stubEnv('VITE_SUPABASE_URL', ''); vi.stubEnv('VITE_SUPABASE_PUBLISHABLE_KEY', '');
+    const fetch = vi.fn(); vi.stubGlobal('fetch', fetch);
+    await expect(adminApi.login('invalid-test')).rejects.toMatchObject({ code: 'missing-config' });
+    expect(adminConfiguration().status).toEqual({ VITE_SUPABASE_URL: 'missing', VITE_SUPABASE_PUBLISHABLE_KEY: 'missing' });
+    expect(fetch).not.toHaveBeenCalled();
+  });
+  it('normalizes a valid trailing slash and reaches the configured Edge; bad credentials still fail', async () => {
+    vi.stubEnv('VITE_SUPABASE_URL', 'https://intended.supabase.co/'); vi.stubEnv('VITE_SUPABASE_PUBLISHABLE_KEY', 'public-test-key');
+    const request = vi.fn(async (_input: RequestInfo | URL, _init?: RequestInit) => ({ ok: false, status: 401, json: async () => ({ error: 'Invalid password' }) })); vi.stubGlobal('fetch', request);
+    await expect(adminApi.login('invalid-test')).rejects.toMatchObject({ code: 'invalid-password' });
+    expect(request.mock.calls[0][0]).toBe('https://intended.supabase.co/functions/v1/admin-cms/login');
+  });
+  it('rejects insecure or credential-bearing configuration', () => {
+    for (const url of ['http://project.supabase.co', 'https://user:pass@project.supabase.co', 'https://project.supabase.co/other']) expect(adminConfiguration(url, 'public-key').ready).toBe(false);
   });
 });

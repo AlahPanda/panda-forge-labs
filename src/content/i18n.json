@@ -130,10 +130,8 @@
     "ui.noPublished": "There is nothing published at this address.",
     "ui.article": "Article",
     "ui.guide": "Guide",
-    "ui.articleUnderReview": "Article under review",
     "ui.reviewPending": "Editorial review pending",
     "ui.noReview": "This entry is awaiting editorial review. Details and download links are unavailable until verified.",
-    "ui.articleReview": "This article is temporarily unavailable while we verify its content and provenance.",
     "ui.launcherIntro": "Different ways to launch Minecraft. Explore official destinations and published details.",
     "ui.newsIntro": "Updates and stories from AlahPanda Labs, once published and reviewed.",
     "ui.guidesIntro": "Find published guides and learn at your own pace.",
@@ -188,7 +186,6 @@
     "ui.articleNotFound": "Article not found",
     "ui.guideNotFound": "Guide not found",
     "ui.reviewExplainer": "We are checking this launcher's information before presenting it here.",
-    "ui.reviewOthers": "Explore other published content while this article is reviewed.",
     "ui.reviewedLaunchers": "Browse reviewed launchers",
     "ui.newsDescription": "Published news and articles from AlahPanda Labs.",
     "ui.guideDescription": "Published guides from AlahPanda Labs.",
@@ -281,7 +278,10 @@
     "automation.review": "requiring review",
     "automation.unavailable": "Upstream unavailable or last-known-good in use.",
     "automation.open": "Review connection",
-    "automation.empty": "Connect a published Modrinth project in Modpacks to enable sync."
+    "automation.empty": "Connect a published Modrinth project in Modpacks to enable sync.",
+    "guide.releaseFacts": "Official release facts",
+    "guide.staleFacts": "Saved release facts; refresh is currently unavailable.",
+    "guide.releaseNotes": "Official release notes"
   },
   "pt-PT": {
     "nav.home": "Início",
@@ -414,10 +414,8 @@
     "ui.noPublished": "Não há conteúdo publicado neste endereço.",
     "ui.article": "Artigo",
     "ui.guide": "Guia",
-    "ui.articleUnderReview": "Artigo em revisão",
     "ui.reviewPending": "Aguarda revisão editorial",
     "ui.noReview": "Esta entrada aguarda revisão editorial. Os detalhes e ligações de transferência só surgirão após verificação.",
-    "ui.articleReview": "Este artigo está temporariamente indisponível enquanto verificamos o conteúdo e a proveniência.",
     "ui.launcherIntro": "Diferentes formas de iniciar Minecraft. Explora os destinos oficiais e os detalhes publicados.",
     "ui.newsIntro": "Atualizações e histórias de AlahPanda Labs após publicação e revisão.",
     "ui.guidesIntro": "Encontra guias publicados e aprende ao teu ritmo.",
@@ -472,7 +470,6 @@
     "ui.articleNotFound": "Artigo não encontrado",
     "ui.guideNotFound": "Guia não encontrado",
     "ui.reviewExplainer": "Estamos a verificar as informações deste launcher antes de as apresentar.",
-    "ui.reviewOthers": "Explora outros conteúdos publicados enquanto este artigo é revisto.",
     "ui.reviewedLaunchers": "Explorar launchers revistos",
     "ui.newsDescription": "Notícias e artigos publicados por AlahPanda Labs.",
     "ui.guideDescription": "Guias publicados por AlahPanda Labs.",
@@ -565,7 +562,10 @@
     "automation.review": "a rever",
     "automation.unavailable": "Fonte indisponível ou último estado válido em uso.",
     "automation.open": "Rever ligação",
-    "automation.empty": "Liga um projeto publicado no Modrinth através de Modpacks para ativar a sincronização."
+    "automation.empty": "Liga um projeto publicado no Modrinth através de Modpacks para ativar a sincronização.",
+    "guide.releaseFacts": "Dados da release oficial",
+    "guide.staleFacts": "Dados guardados; a atualização está indisponível neste momento.",
+    "guide.releaseNotes": "Notas oficiais da release"
   },
   "pt-BR": {
     "nav.home": "Início",
@@ -698,10 +698,8 @@
     "ui.noPublished": "Não há conteúdo publicado neste endereço.",
     "ui.article": "Artigo",
     "ui.guide": "Guia",
-    "ui.articleUnderReview": "Artigo em revisão",
     "ui.reviewPending": "Aguarda revisão editorial",
     "ui.noReview": "Esta entrada aguarda revisão editorial. Detalhes e links de download só aparecerão após verificação.",
-    "ui.articleReview": "Este artigo está temporariamente indisponível enquanto verificamos o conteúdo e a origem.",
     "ui.launcherIntro": "Diferentes formas de iniciar Minecraft. Explore destinos oficiais e detalhes publicados.",
     "ui.newsIntro": "Atualizações e histórias de AlahPanda Labs após publicação e revisão.",
     "ui.guidesIntro": "Encontre guias publicados e aprenda no seu ritmo.",
@@ -756,7 +754,6 @@
     "ui.articleNotFound": "Artigo não encontrado",
     "ui.guideNotFound": "Guia não encontrado",
     "ui.reviewExplainer": "Estamos verificando as informações deste launcher antes de apresentá-las.",
-    "ui.reviewOthers": "Explore outros conteúdos publicados enquanto este artigo é revisado.",
     "ui.reviewedLaunchers": "Explorar launchers revisados",
     "ui.newsDescription": "Notícias e artigos publicados pelo AlahPanda Labs.",
     "ui.guideDescription": "Guias publicados pelo AlahPanda Labs.",
@@ -849,7 +846,10 @@
     "automation.review": "para revisão",
     "automation.unavailable": "Fonte indisponível ou último estado válido em uso.",
     "automation.open": "Revisar conexão",
-    "automation.empty": "Conecte um projeto publicado no Modrinth em Modpacks para ativar a sincronização."
+    "automation.empty": "Conecte um projeto publicado no Modrinth em Modpacks para ativar a sincronização.",
+    "guide.releaseFacts": "Dados da versão oficial",
+    "guide.staleFacts": "Dados salvos; a atualização está indisponível no momento.",
+    "guide.releaseNotes": "Notas oficiais da versão"
   },
   "es": {
     "nav.home": "Inicio",
@@ -982,10 +982,8 @@
     "ui.noPublished": "No hay contenido publicado en esta dirección.",
     "ui.article": "Artículo",
     "ui.guide": "Guía",
-    "ui.articleUnderReview": "Artículo en revisión",
     "ui.reviewPending": "Pendiente de revisión editorial",
     "ui.noReview": "Esta entrada espera revisión editorial. Los detalles y enlaces de descarga estarán disponibles tras verificarse.",
-    "ui.articleReview": "Este artículo no está disponible temporalmente mientras verificamos su contenido y procedencia.",
     "ui.launcherIntro": "Distintas formas de iniciar Minecraft. Explora los destinos oficiales y los detalles publicados.",
     "ui.newsIntro": "Actualizaciones e historias de AlahPanda Labs tras publicación y revisión.",
     "ui.guidesIntro": "Encuentra guías publicadas y aprende a tu ritmo.",
@@ -1040,7 +1038,6 @@
     "ui.articleNotFound": "Artículo no encontrado",
     "ui.guideNotFound": "Guía no encontrada",
     "ui.reviewExplainer": "Estamos verificando la información de este launcher antes de presentarla.",
-    "ui.reviewOthers": "Explora otros contenidos publicados mientras revisamos este artículo.",
     "ui.reviewedLaunchers": "Explorar launchers revisados",
     "ui.newsDescription": "Noticias y artículos publicados por AlahPanda Labs.",
     "ui.guideDescription": "Guías publicadas por AlahPanda Labs.",
@@ -1133,6 +1130,9 @@
     "automation.review": "para revisar",
     "automation.unavailable": "Fuente no disponible o último estado válido en uso.",
     "automation.open": "Revisar conexión",
-    "automation.empty": "Conecta un proyecto publicado en Modrinth desde Modpacks para activar la sincronización."
+    "automation.empty": "Conecta un proyecto publicado en Modrinth desde Modpacks para activar la sincronización.",
+    "guide.releaseFacts": "Datos de la versión oficial",
+    "guide.staleFacts": "Datos guardados; la actualización no está disponible ahora.",
+    "guide.releaseNotes": "Notas oficiales de la versión"
   }
 }
