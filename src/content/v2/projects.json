@@ -5,27 +5,173 @@
       "slug": "mac-native",
       "name": "Mac Native",
       "sourceLocale": "pt-PT",
-      "translations": {},
+      "translations": {
+        "en": {
+          "state": "complete",
+          "fields": {
+            "summary": "Minecraft modpack for macOS, created for Apple Silicon and Intel Macs.",
+            "description": "Mac Native focuses on the Minecraft experience on Mac. The official publication describes rendering and resource-management goals. Results depend on hardware and configuration; published mods and changes are available on Modrinth.",
+            "installation": "Open the official Mac Native project on Modrinth and check the chosen release’s Minecraft version and loader. Install a separate instance in Modrinth App. Launch with the supplied configuration and read the guide for VSync, Java and shaders."
+          },
+          "structured": {
+            "features": {
+              "feature-0": {
+                "title": "Made for Mac",
+                "description": "The official publication addresses Apple Silicon and Intel Macs."
+              },
+              "feature-1": {
+                "title": "Client-side experience",
+                "description": "Rendering and resource-management components without a universal performance promise."
+              },
+              "feature-2": {
+                "title": "Trackpad integration",
+                "description": "The project describes hotbar haptics on compatible built-in MacBook Force Touch trackpads, not external trackpads."
+              }
+            },
+            "faq": {
+              "faq-0": {
+                "question": "Which Macs does it address?",
+                "answer": "The official project addresses Apple Silicon and Intel. Check the Minecraft version, loader and environment on the current Modrinth release."
+              },
+              "faq-1": {
+                "question": "Where are the mod list and release notes?",
+                "answer": "See Content and Changes on the official Modrinth release."
+              }
+            }
+          }
+        },
+        "es": {
+          "state": "complete",
+          "fields": {
+            "summary": "Modpack Minecraft para macOS, creado para Macs Apple Silicon e Intel.",
+            "description": "Mac Native se centra en Minecraft en Mac. La publicación oficial describe objetivos de renderizado y gestión de recursos. Los resultados dependen del equipo y configuración; los mods y cambios publicados están en Modrinth.",
+            "installation": "Abre Mac Native en Modrinth y comprueba Minecraft y loader de la versión elegida. Instala una instancia independiente en Modrinth App. Inicia con la configuración incluida y consulta la guía para VSync, Java y shaders."
+          },
+          "structured": {
+            "features": {
+              "feature-0": {
+                "title": "Creado para Mac",
+                "description": "La publicación oficial contempla Macs Apple Silicon e Intel."
+              },
+              "feature-1": {
+                "title": "Experiencia client-side",
+                "description": "Componentes de renderizado y gestión de recursos sin promesas universales de rendimiento."
+              },
+              "feature-2": {
+                "title": "Integración con trackpad",
+                "description": "El proyecto describe respuesta háptica en trackpads Force Touch integrados de MacBooks compatibles, no en trackpads externos."
+              }
+            },
+            "faq": {
+              "faq-0": {
+                "question": "¿Qué Macs contempla?",
+                "answer": "El proyecto oficial contempla Apple Silicon e Intel. Consulta Minecraft, loader y entorno en la versión actual de Modrinth."
+              },
+              "faq-1": {
+                "question": "¿Dónde están los mods y notas de versión?",
+                "answer": "Consulta Content y Changes en la versión oficial de Modrinth."
+              }
+            }
+          }
+        },
+        "pt-BR": {
+          "state": "complete",
+          "fields": {
+            "summary": "Modpack Minecraft para macOS, desenvolvido para Macs Apple Silicon e Intel.",
+            "description": "Mac Native se concentra na experiência Minecraft no Mac. A publicação oficial descreve objetivos de renderização e gestão de recursos. Os resultados dependem do equipamento e configuração; mods e mudanças publicados estão no Modrinth.",
+            "installation": "Abra Mac Native no Modrinth e confira Minecraft e loader da versão escolhida. Instale uma instância separada no Modrinth App. Inicie com a configuração incluída e consulte o guia para VSync, Java e shaders."
+          },
+          "structured": {
+            "features": {
+              "feature-0": {
+                "title": "Criado para Mac",
+                "description": "A publicação oficial contempla Macs Apple Silicon e Intel."
+              },
+              "feature-1": {
+                "title": "Experiência client-side",
+                "description": "Componentes de renderização e gestão de recursos sem promessa universal de desempenho."
+              },
+              "feature-2": {
+                "title": "Integração com trackpad",
+                "description": "O projeto descreve resposta háptica em trackpads Force Touch integrados de MacBooks compatíveis, não em trackpads externos."
+              }
+            },
+            "faq": {
+              "faq-0": {
+                "question": "Quais Macs são contemplados?",
+                "answer": "O projeto oficial contempla Apple Silicon e Intel. Confira Minecraft, loader e ambiente na versão atual do Modrinth."
+              },
+              "faq-1": {
+                "question": "Onde estão os mods e notas de versão?",
+                "answer": "Consulte Content e Changes na versão oficial do Modrinth."
+              }
+            }
+          }
+        }
+      },
       "status": "beta",
       "pageTemplate": "premium",
       "premiumCopy": "mac",
       "iconUrl": "https://cdn.modrinth.com/data/fPtkF9pO/bfda649b0fac7ba5fac41e9da46fead6ed9b8965_96.webp",
-      "upstream": {"provider": "modrinth", "projectSlug": "mac-native"},
+      "upstream": {
+        "provider": "modrinth",
+        "projectSlug": "mac-native"
+      },
       "summary": "Modpack Minecraft para macOS, desenvolvido para Macs com Apple Silicon e Intel.",
       "description": "Mac Native concentra-se na experiência Minecraft no Mac. A publicação oficial descreve objetivos de otimização da renderização e gestão de recursos, além de integração com o trackpad em modelos compatíveis. Os resultados dependem do equipamento e da configuração; a lista de mods e as alterações publicadas estão no Modrinth.",
-      "releaseSlugs": ["mac-native-0-3-1"],
+      "releaseSlugs": [
+        "mac-native-0-3-1"
+      ],
       "features": [
-        {"title": "Criado para Mac", "description": "A publicação do projeto contempla Macs com Apple Silicon e processadores Intel."},
-        {"title": "Foco na experiência client-side", "description": "O projeto reúne componentes de renderização e gestão de recursos, sem uma promessa universal de desempenho."},
-        {"title": "Integração com trackpad", "description": "A descrição oficial refere resposta háptica na hotbar com trackpads Force Touch integrados em MacBooks compatíveis, não em trackpads externos."}
+        {
+          "title": "Criado para Mac",
+          "description": "A publicação do projeto contempla Macs com Apple Silicon e processadores Intel.",
+          "id": "feature-0"
+        },
+        {
+          "title": "Foco na experiência client-side",
+          "description": "O projeto reúne componentes de renderização e gestão de recursos, sem uma promessa universal de desempenho.",
+          "id": "feature-1"
+        },
+        {
+          "title": "Integração com trackpad",
+          "description": "A descrição oficial refere resposta háptica na hotbar com trackpads Force Touch integrados em MacBooks compatíveis, não em trackpads externos.",
+          "id": "feature-2"
+        }
       ],
-      "compatibility": {"minecraft": ["1.21.11"], "loaders": ["Fabric"], "platforms": ["macOS"], "environment": "client"},
-      "installation": "1. Abre a página oficial de Mac Native no Modrinth e consulta a release compatível com Minecraft Java 1.21.11 e Fabric.\n2. Na aplicação Modrinth, procura Mac Native na secção de modpacks e instala-o a partir da página do projeto.\n3. Segue as instruções da aplicação para iniciar a instância. Se utilizares outro launcher, consulta primeiro a ajuda oficial do Modrinth para modpacks.",
+      "compatibility": {
+        "minecraft": [
+          "1.21.11"
+        ],
+        "loaders": [
+          "Fabric"
+        ],
+        "platforms": [
+          "macOS"
+        ],
+        "environment": "client"
+      },
+      "installation": "1. Abre a página oficial de Mac Native no Modrinth e confirma a versão Minecraft e o loader da release escolhida.\n2. Na aplicação Modrinth, procura Mac Native e instala uma instância própria.\n3. Inicia a instância com as opções fornecidas e consulta o guia para VSync, Java e shaders.",
       "faq": [
-        {"question": "Que Macs são abrangidos?", "answer": "A página oficial descreve Apple Silicon e Intel. A release 0.3.1 indica Minecraft Java 1.21.11, Fabric e ambiente client-side."},
-        {"question": "Onde estão a lista de mods e as notas da release?", "answer": "Consulta as secções Content e Changes da página oficial da release no Modrinth."}
+        {
+          "question": "Que Macs são abrangidos?",
+          "answer": "A publicação oficial contempla Apple Silicon e Intel. Confirma a versão Minecraft, o loader e o ambiente na release atual do Modrinth.",
+          "id": "faq-0"
+        },
+        {
+          "question": "Onde estão a lista de mods e as notas da release?",
+          "answer": "Consulta as secções Content e Changes da página oficial da release no Modrinth.",
+          "id": "faq-1"
+        }
       ],
-      "distribution": [{"provider": "modrinth", "state": "active", "priority": "primary", "url": "https://modrinth.com/modpack/mac-native"}]
+      "distribution": [
+        {
+          "provider": "modrinth",
+          "state": "active",
+          "priority": "primary",
+          "url": "https://modrinth.com/modpack/mac-native"
+        }
+      ]
     },
     {
       "slug": "crafttoons",

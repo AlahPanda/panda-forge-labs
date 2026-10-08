@@ -3,8 +3,8 @@ import { useState } from 'react';
 import { Menu, Search, Moon, Sun, Monitor, MessageCircle } from 'lucide-react';
 import { BrandSymbol } from '@/components/design-system/BrandSymbol';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
-import { site, LOCALES, LOCALE_LABEL, type Locale } from '@/content';
-import { useI18n } from '@/lib/i18n';
+import { site, LOCALES, LOCALE_LABEL } from '@/content';
+import { useI18n, type LocalePreference } from '@/lib/i18n';
 import { useTheme, type ThemePreference } from '@/lib/theme';
 import { publicSettings } from '@/content/publicResolver';
 import { localizeItem } from '@/content/v2/localize';
@@ -17,10 +17,10 @@ export const siteLinks = [
 ] as const;
 
 function Preferences() {
-  const { locale, setLocale, t } = useI18n();
+  const { preference: languagePreference, setPreference: setLanguagePreference, t } = useI18n();
   const { preference, setPreference } = useTheme();
   return <div className="experience-preferences">
-    <label><span className="sr-only">{t('ui.language')}</span><select aria-label={t('ui.language')} value={locale} onChange={(event) => setLocale(event.target.value as Locale)}>{LOCALES.map((value) => <option key={value} value={value}>{LOCALE_LABEL[value]}</option>)}</select></label>
+    <label><span className="sr-only">{t('ui.language')}</span><select aria-label={t('ui.language')} value={languagePreference} onChange={(event) => setLanguagePreference(event.target.value as LocalePreference)}><option value="system">{t('ui.system')}</option>{LOCALES.map((value) => <option key={value} value={value}>{LOCALE_LABEL[value]}</option>)}</select></label>
     <label className="experience-theme-select">{preference === 'dark' ? <Moon size={17} /> : preference === 'light' ? <Sun size={17} /> : <Monitor size={17} />}<span className="sr-only">{t('ui.theme')}</span><select aria-label={t('ui.theme')} value={preference} onChange={(event) => setPreference(event.target.value as ThemePreference)}><option value="system">{t('ui.system')}</option><option value="light">{t('ui.light')}</option><option value="dark">{t('ui.dark')}</option></select></label>
   </div>;
 }

@@ -92,7 +92,44 @@
       "slug": "accounts-compatibility",
       "name": "Accounts & Compatibility",
       "sourceLocale": "pt-PT",
-      "translations": {},
+      "translations": {
+        "en": {
+          "state": "partial",
+          "fields": {},
+          "structured": {
+            "items": {
+              "mac-version": {
+                "question": "Which Minecraft version is supported?",
+                "answer": "Check the current release on [official Modrinth](https://modrinth.com/modpack/mac-native) for Minecraft version, loader and availability. Mac Native is publicly available; use the newest compatible release."
+              }
+            }
+          }
+        },
+        "es": {
+          "state": "partial",
+          "fields": {},
+          "structured": {
+            "items": {
+              "mac-version": {
+                "question": "¿Qué versión de Minecraft es compatible?",
+                "answer": "Consulta la versión actual en [Modrinth oficial](https://modrinth.com/modpack/mac-native) para Minecraft, loader y disponibilidad. Mac Native tiene una publicación pública; utiliza la versión compatible más reciente."
+              }
+            }
+          }
+        },
+        "pt-BR": {
+          "state": "partial",
+          "fields": {},
+          "structured": {
+            "items": {
+              "mac-version": {
+                "question": "Qual versão Minecraft é compatível?",
+                "answer": "Consulte a versão atual no [Modrinth oficial](https://modrinth.com/modpack/mac-native) para Minecraft, loader e disponibilidade. Mac Native tem uma publicação pública; use a versão compatível mais recente."
+              }
+            }
+          }
+        }
+      },
       "items": [
         {
           "id": "minecraft-account",
@@ -112,7 +149,7 @@
         {
           "id": "mac-version",
           "question": "Que versão de Minecraft é suportada?",
-          "answer": "A release 0.3.1 publicada indica Minecraft Java 1.21.11 e Fabric. Verifica a publicação oficial para informação posterior."
+          "answer": "Consulta a release atual no [Modrinth oficial](https://modrinth.com/modpack/mac-native) para versão Minecraft, loader e disponibilidade. Mac Native tem uma publicação pública; usa a release mais recente compatível."
         }
       ]
     },
@@ -169,12 +206,49 @@
       "slug": "mac-native",
       "name": "Mac Native",
       "sourceLocale": "pt-PT",
-      "translations": {},
+      "translations": {
+        "en": {
+          "state": "partial",
+          "fields": {},
+          "structured": {
+            "items": {
+              "mac-available": {
+                "question": "Is Mac Native available?",
+                "answer": "Check the current release on [official Modrinth](https://modrinth.com/modpack/mac-native) for Minecraft version, loader and availability. Mac Native is publicly available; use the newest compatible release."
+              }
+            }
+          }
+        },
+        "es": {
+          "state": "partial",
+          "fields": {},
+          "structured": {
+            "items": {
+              "mac-available": {
+                "question": "¿Mac Native está disponible?",
+                "answer": "Consulta la versión actual en [Modrinth oficial](https://modrinth.com/modpack/mac-native) para Minecraft, loader y disponibilidad. Mac Native tiene una publicación pública; utiliza la versión compatible más reciente."
+              }
+            }
+          }
+        },
+        "pt-BR": {
+          "state": "partial",
+          "fields": {},
+          "structured": {
+            "items": {
+              "mac-available": {
+                "question": "Mac Native já está disponível?",
+                "answer": "Consulte a versão atual no [Modrinth oficial](https://modrinth.com/modpack/mac-native) para Minecraft, loader e disponibilidade. Mac Native tem uma publicação pública; use a versão compatível mais recente."
+              }
+            }
+          }
+        }
+      },
       "items": [
         {
           "id": "mac-available",
           "question": "Mac Native já está disponível?",
-          "answer": "Sim. A release pública 0.3.1 Beta está ligada à [página de Mac Native](/modpacks/mac-native) e ao Modrinth oficial."
+          "answer": "Consulta a release atual no [Modrinth oficial](https://modrinth.com/modpack/mac-native) para versão Minecraft, loader e disponibilidade. Mac Native tem uma publicação pública; usa a release mais recente compatível."
         }
       ]
     }
