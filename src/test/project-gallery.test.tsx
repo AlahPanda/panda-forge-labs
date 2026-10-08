@@ -26,3 +26,31 @@ describe('reusable project carousel',()=>{
     expect(screen.getByRole('img',{name:'Gallery 2'})).toBeInTheDocument();
   });
 });
+
+import { curatedProjectGallery } from '@/content/project-galleries';
+describe('owner-supplied gallery assets',()=>{
+  it('keeps six native images and responsive sources in every locale',()=>{
+    for(const locale of ['en','pt-PT','pt-BR','es'] as const){
+      const gallery=curatedProjectGallery('mac-native',locale);
+      expect(gallery).toHaveLength(6);
+      for(const image of gallery){
+        expect(image.url).toMatch(/^\/projects\/mac-native\/gallery\//);
+        expect(image.width).toBe(1920);
+        expect([800,1200]).toContain(image.height);
+        expect(image.srcSet).toContain(`${image.url} 1920w`);
+        expect(image.alt).toBeTruthy();
+      }
+    }
+    expect(curatedProjectGallery('future-project','en')).toEqual([]);
+  });
+  it('renders responsive dimensions without preloading every slide',()=>{
+    render(<I18nProvider><ProjectGallery title="Mac Native" images={curatedProjectGallery('mac-native','en')}/></I18nProvider>);
+    const image=screen.getByRole('img');
+    expect(image).toHaveAttribute('width','1920');
+    expect(image).toHaveAttribute('height','800');
+    expect(image).toHaveAttribute('loading','lazy');
+    expect(image).toHaveAttribute('srcset',expect.stringContaining('1920w'));
+    expect(screen.getAllByRole('img')).toHaveLength(1);
+    expect(document.querySelectorAll('link[rel="preload"]')).toHaveLength(0);
+  });
+});

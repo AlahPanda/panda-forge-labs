@@ -83,7 +83,7 @@ describe('public redesign and editorial boundaries', () => {
     expect(document.querySelector('a[href^="/api/download/"]')).toBeNull();
     for (const heading of ['Mac Native on Mac', 'How it works', 'Need help or want to learn more?']) expect(screen.getByRole('heading', { name: heading })).toBeInTheDocument();
     expect(screen.getByRole('link', { name: /What’s inside/ })).toHaveAttribute('href', '#inside');
-    expect(screen.getByText(/Mac Native illustration/)).toBeInTheDocument();
+    expect(screen.getByRole('img', { name: 'Sunlit cherry grove overlooking grassy hills' })).toBeInTheDocument();
     expect(document.querySelectorAll('.mac-benefit')).toHaveLength(3);
     expect(screen.getByText('Installation', { selector: 'summary' })).toBeInTheDocument();
     expect(screen.queryByText(/412 MB|8 GB|1\.4\.2|community rating|592 FPS/i)).not.toBeInTheDocument();
@@ -127,15 +127,15 @@ describe('public redesign and editorial boundaries', () => {
     expect(screen.getByText('0.3.1',{selector:'.mac-release-version strong'})).toBeInTheDocument();
   });
 
-  it('uses the official gallery as a navigable carousel only when Modrinth supplies images', async () => {
+  it('prefers six curated local screenshots over the upstream gallery', async () => {
     vi.stubGlobal('fetch', vi.fn(async () => new Response(JSON.stringify(publicationFixture({gallery:[
       { url: 'https://cdn.modrinth.com/data/mac/one.webp', alt: 'First world' },
       { url: 'https://cdn.modrinth.com/data/mac/two.webp', alt: 'Second world' },
     ]})), { status: 200 })));
     publicRoute('/modpacks/mac-native', '/modpacks/:slug', <ProjectDetailExperience/>);
-    expect(await screen.findByRole('img', { name: 'First world' })).toBeInTheDocument();
+    expect(await screen.findByRole('img', { name: 'Sunlit cherry grove overlooking grassy hills' })).toBeInTheDocument();
     fireEvent.click(screen.getByRole('button', { name: 'Next image' }));
-    expect(screen.getByRole('img', { name: 'Second world' })).toBeInTheDocument();
+    expect(screen.getByRole('img', { name: 'Lake beneath a cherry-covered hillside' })).toBeInTheDocument();
   });
 
   it('serves verified AstralRinth platform downloads without old shorteners', () => {
