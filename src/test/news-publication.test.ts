@@ -110,7 +110,11 @@ describe('article HTTP and discovery policy', () => {
   });
   it('keeps Vercel article handling before the SPA fallback and packages the generated index', () => {
     const config = JSON.parse(readFileSync('vercel.json', 'utf8'));
-    expect(config.rewrites[0]).toEqual({ source: '/news/:slug', destination: '/api/news?slug=:slug' });
+    const news = config.rewrites.findIndex((route: { source: string }) => route.source === '/news/:slug');
+    const spa = config.rewrites.findIndex((route: { destination: string }) => route.destination === '/');
+    expect(news).toBeGreaterThanOrEqual(0);
+    expect(news).toBeLessThan(spa);
+    expect(config.rewrites[news]).toEqual({ source: '/news/:slug', destination: '/api/news?slug=:slug' });
     expect(config.functions['api/news.ts'].includeFiles).toBe('dist/{index.html,news-index.json}');
   });
 });

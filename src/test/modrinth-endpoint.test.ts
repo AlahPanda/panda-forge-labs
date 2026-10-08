@@ -28,7 +28,7 @@ afterEach(() => { vi.unstubAllEnvs(); vi.unstubAllGlobals(); });
 describe('actual release endpoint and scheduled refresh', () => {
   it('keeps API paths outside SPA fallback and explicitly passes the project slug', () => {
     expect(configuration.rewrites[0]).toEqual({ source: '/api/modrinth/:slug', destination: '/api/modrinth?slug=:slug' });
-    const pattern = new RegExp('^' + configuration.rewrites[1].source + '$');
+    const pattern = new RegExp('^' + configuration.rewrites.find((route) => route.destination === '/')!.source + '$');
     expect(pattern.test('/modpacks/mac-native')).toBe(true);
     expect(pattern.test('/api/modrinth/mac-native')).toBe(false);
     expect(pattern.test('/api/sync-modrinth')).toBe(false);
