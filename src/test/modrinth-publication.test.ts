@@ -120,3 +120,13 @@ describe('release refresh recovery', () => {
     await expect(resolveSnapshot(connection, { read: async () => changed, write: vi.fn() }, false, badFetcher as typeof fetch, now)).rejects.toThrow();
   });
 });
+
+
+describe('0.9.x latest publication stays automatic', () => {
+  it('0.9.1 and a later 0.9.2 supersede older releases by publication date', () => {
+    const first = version('0.9.1', '2026-10-08T00:20:17Z');
+    const next = version('0.9.2', '2026-10-09T00:00:00Z');
+    expect(parseModrinthPublication(project, [...versions, first]).release.version).toBe('0.9.1');
+    expect(parseModrinthPublication(project, [first, ...versions, next]).release.version).toBe('0.9.2');
+  });
+});

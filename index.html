@@ -13,9 +13,25 @@
     <meta name="author" content="AlahPanda Labs" />
     <meta name="theme-color" content="#f8f5f0" />
     <script>
-      // Apply the chosen theme before styles paint.
+      // Resolve preferences before the React UI paints.
       try {
-        var savedTheme = localStorage.getItem('apl.theme');
+        var savedLocale = null;
+        try { savedLocale = localStorage.getItem('apl.locale'); } catch (error) { /* Use browser language. */ }
+        var supportedLocales = ['pt-PT', 'pt-BR', 'en', 'es'];
+        var initialLocale = supportedLocales.includes(savedLocale) ? savedLocale : null;
+        if (!initialLocale) {
+          var languages = (navigator.languages || []).concat(navigator.language || 'en');
+          for (var language of languages) {
+            var code = language.toLowerCase();
+            if (code === 'pt-br' || code.startsWith('pt-br-')) { initialLocale = 'pt-BR'; break; }
+            if (code === 'pt' || code.startsWith('pt-')) { initialLocale = 'pt-PT'; break; }
+            if (code === 'en' || code.startsWith('en-')) { initialLocale = 'en'; break; }
+            if (code === 'es' || code.startsWith('es-')) { initialLocale = 'es'; break; }
+          }
+        }
+        document.documentElement.lang = initialLocale || 'en';
+        var savedTheme = null;
+        try { savedTheme = localStorage.getItem('apl.theme'); } catch (error) { /* Use system theme. */ }
         var darkTheme = savedTheme === 'dark' || (savedTheme !== 'light' && matchMedia('(prefers-color-scheme: dark)').matches);
         document.documentElement.classList.toggle('dark', darkTheme);
         document.documentElement.style.colorScheme = darkTheme ? 'dark' : 'light';
