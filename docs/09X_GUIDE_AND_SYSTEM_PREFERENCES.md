@@ -41,8 +41,8 @@ No static Content V2 edit is needed when 0.9.2 or a later version is published.
 
 ## Guide content
 
-Eleven small headings in each of en/pt-PT/pt-BR/es: before beginning; official
-installation; first launch; VSync; Java/instance fields; memory; no shaders;
+Twelve main headings plus a Java subsection in each of en/pt-PT/pt-BR/es: before beginning; official
+installation; first launch; VSync; Java/instance fields; memory; environment variables; no shaders;
 Beryl; controlled tuning; troubleshooting; safe updates. Existing Premium layout,
 reading container, Markdown sanitization and Content V2 CMS editing are preserved.
 
@@ -50,11 +50,35 @@ VSync recommendation: start enabled to compare perceived smoothness, frame deliv
 and tearing against the display refresh rate. It does not universally increase raw
 FPS; latency/adaptive sync/alternative limiting may warrant comparison. Not mandatory.
 
-No owner-approved custom JVM argument or environment-variable value was found in
-repository documentation/content or official project description/release notes.
-**Owner-approved Java argument value still required.** No fabricated command/code
-block was added. The separate launcher fields are named exactly and users are asked
-to retain defaults until a precise recommendation exists. No universal RAM amount.
+Owner approval supplied on 2026-10-08 in the PR #14 continuation replaces the
+previous pending Java recommendation. Exact approved configuration:
+
+```text
+-Xms2G -Xmx4G -XX:+UseG1GC -XX:MaxGCPauseMillis=30 -XX:+ParallelRefProcEnabled
+```
+
+The guide documents initial/max heap 2/4 GB, G1 collector, approximately 30 ms
+pause target (not a guaranteed maximum), and parallel reference processing where
+supported. No universal FPS/stutter improvement is promised. Heap values are not
+the total application's memory cap. For machines without sufficient headroom or
+unsupported runtime options, restore defaults and seek support.
+
+Launcher duplication check: Prism's official Java settings documentation separates
+memory and JVM fields. Use instance memory minimum/maximum 2048/4096 MiB and the
+three collector flags in the argument field, not a second heap configuration.
+Modrinth official source (`packages/app-lib/src/launcher/args.rs`) explicitly
+appends `-Xmx{memory.maximum}M`; its instance Java settings UI independently exposes
+custom memory and argument overrides. Use 4 GB maximum in that UI and `-Xms2G`
+plus the collector flags in custom arguments, avoiding duplicate Xmx. The full
+approved string is reproduced unchanged in all four translations. No custom
+environment variable is required for the standard setup unless future notes say
+otherwise. Java options do not belong in environment-variable fields.
+
+Sources (reviewed 2026-10-08):
+- https://prismlauncher.org/wiki/help-pages/java-settings/
+- https://github.com/modrinth/code/blob/main/apps/app-frontend/src/pages/instance/components/settings-modal/java-settings.vue
+- https://github.com/modrinth/code/blob/main/packages/app-lib/src/launcher/args.rs
+- https://docs.oracle.com/en/java/javase/21/gctuning/garbage-first-garbage-collector-tuning.html
 
 Beryl: official 0.9.0 release notes explicitly introduce optional shader support;
 the current official project description includes Beryl. Its official page
@@ -96,9 +120,29 @@ Full gates and bounded remote Preview results are reported in the PR/final deliv
 Real authenticated Preview checks must not be inferred from local passing tests.
 No protection bypass or owner authentication/configuration changes are authorized.
 
-Final local results: 38 focused tests passed; full suite 165 tests / 19 files passed.
+Initial PR results: 38 focused tests passed; full suite 165 tests / 19 files passed.
 App and NodeNext sync API typecheck passed. Build passed (main chunk ~760.5 kB;
 existing chunk-size/Browserslist warnings; guide translations increase bundled
 editorial data). Lint: 0 errors / 72 warnings; no dependency upgrades. Diff check
 passed. The optional-content fixture now clears translations when deleting its
 source sections, preventing stale translated fixture content from masking removal.
+
+
+## Owner-approved Java continuation
+
+Previous PR #14 HEAD: `07340758f63109a5f29d86123a605ab966554f7b`.
+Only this guide, regression tests and this document changed. Java code blocks are
+byte-for-byte identical across all locales. VSync now includes a four-step test
+workflow and refresh-rate/frame-pacing explanation; Beryl follows a stable
+no-shader baseline. PT-BR wording/typos found during the language review corrected.
+Language/theme providers and release-sync code remain untouched.
+
+Validation: 42 focused tests passed before the final wording assertions; final
+full suite 169 tests / 19 files passed. App and sync API typecheck passed. Build
+passed with existing chunk/Browserslist warnings; lint 0 errors / 71 warnings.
+Diff check passed. Official API rechecked: latest listed version_number 0.9.1,
+id iPJDM1yr, published 2026-10-08T00:20:17.536032Z. Current rendering remains
+upstream-driven, including the already-tested later 0.9.2 transition.
+
+Authenticated runtime Preview acceptance remains separate from passing local gates.
+Bounded Preview outcome and final commit SHA are recorded in PR #14. No merge.

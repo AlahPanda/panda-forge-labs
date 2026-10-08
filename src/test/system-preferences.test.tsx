@@ -73,8 +73,26 @@ describe('0.9.x guide and editorial localization', () => {
   it.each(['en','pt-PT','pt-BR','es'] as const)('has generation, VSync, Java and shader guidance in %s', locale => {
     const guide = localizeItem(guideSchema.parse(guides.items[0]),locale);
     expect(guide.body).toContain('0.9.x'); expect(guide.body).toContain('VSync'); expect(guide.body).toContain('Beryl'); expect(guide.body).toContain('Custom Java arguments');
-    expect(guide.body).not.toMatch(/0\.3\.1|0\.9\.1|-Xmx|-XX:/);
+    expect(guide.body).not.toMatch(/0\.3\.1|0\.9\.1/);
     expect(guide.body!.split('## ').length).toBeGreaterThanOrEqual(11);
+  });
+  it.each(['en','pt-PT','pt-BR','es'] as const)('keeps the approved Java configuration exact in %s', locale => {
+    const body = localizeItem(guideSchema.parse(guides.items[0]), locale).body!;
+    const approved = '-Xms2G -Xmx4G -XX:+UseG1GC -XX:MaxGCPauseMillis=30 -XX:+ParallelRefProcEnabled';
+    const blocks = [...body.matchAll(/```text\n([^`]+)\n```/g)].map(match => match[1]);
+    expect(blocks).toEqual([approved]);
+    for (const option of approved.split(' ')) expect(body).toContain('`' + option + '`:');
+    expect(body).toContain('2048'); expect(body).toContain('4096');
+    expect(body).toMatch(/not a guaranteed maximum|não um máximo garantido|no un máximo garantizado/);
+    expect(body).toMatch(/no custom environment variable is currently required|não exige atualmente nenhuma variável|no requiere actualmente ninguna variable/);
+    expect(body).not.toMatch(/JAVA_TOOL_OPTIONS|JAVA_OPTS|still required|No owner-approved|Não foi verificado|No se ha verificado/);
+    expect(body).toContain('Prism Launcher'); expect(body).toContain('Custom memory allocation');
+    expect(body).toContain('Custom environment variables');
+    expect(body).toContain('60 Hz'); expect(body).toContain('120 Hz');
+    expect(body).toMatch(/does not universally increase raw FPS|não aumenta universalmente o FPS|No aumenta universalmente el FPS/);
+    expect(body).toMatch(/not a requirement for every Mac|não uma obrigação para todos os Macs|no una obligación para todos los Macs/);
+    expect(body).toMatch(/Shaders are optional|Shaders são opcionais|Los shaders son opcionales/);
+    expect(body).not.toMatch(/asual|Asual|Primeiro inicialização|do tela/);
   });
   it('English project content does not unnecessarily retain Portuguese copy', () => {
     const project = localizeItem(projectSchema.parse(projects.items[0]),'en');
