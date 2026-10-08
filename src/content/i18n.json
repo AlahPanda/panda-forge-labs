@@ -281,7 +281,10 @@
     "automation.review": "requiring review",
     "automation.unavailable": "Upstream unavailable or last-known-good in use.",
     "automation.open": "Review connection",
-    "automation.empty": "Connect a published Modrinth project in Modpacks to enable sync."
+    "automation.empty": "Connect a published Modrinth project in Modpacks to enable sync.",
+    "guide.releaseFacts": "Official release facts",
+    "guide.staleFacts": "Saved release facts; refresh is currently unavailable.",
+    "guide.releaseNotes": "Official release notes"
   },
   "pt-PT": {
     "nav.home": "Início",
@@ -565,7 +568,10 @@
     "automation.review": "a rever",
     "automation.unavailable": "Fonte indisponível ou último estado válido em uso.",
     "automation.open": "Rever ligação",
-    "automation.empty": "Liga um projeto publicado no Modrinth através de Modpacks para ativar a sincronização."
+    "automation.empty": "Liga um projeto publicado no Modrinth através de Modpacks para ativar a sincronização.",
+    "guide.releaseFacts": "Dados da release oficial",
+    "guide.staleFacts": "Dados guardados; a atualização está indisponível neste momento.",
+    "guide.releaseNotes": "Notas oficiais da release"
   },
   "pt-BR": {
     "nav.home": "Início",
@@ -849,7 +855,10 @@
     "automation.review": "para revisão",
     "automation.unavailable": "Fonte indisponível ou último estado válido em uso.",
     "automation.open": "Revisar conexão",
-    "automation.empty": "Conecte um projeto publicado no Modrinth em Modpacks para ativar a sincronização."
+    "automation.empty": "Conecte um projeto publicado no Modrinth em Modpacks para ativar a sincronização.",
+    "guide.releaseFacts": "Dados da versão oficial",
+    "guide.staleFacts": "Dados salvos; a atualização está indisponível no momento.",
+    "guide.releaseNotes": "Notas oficiais da versão"
   },
   "es": {
     "nav.home": "Inicio",
@@ -1133,6 +1142,9 @@
     "automation.review": "para revisar",
     "automation.unavailable": "Fuente no disponible o último estado válido en uso.",
     "automation.open": "Revisar conexión",
-    "automation.empty": "Conecta un proyecto publicado en Modrinth desde Modpacks para activar la sincronización."
+    "automation.empty": "Conecta un proyecto publicado en Modrinth desde Modpacks para activar la sincronización.",
+    "guide.releaseFacts": "Datos de la versión oficial",
+    "guide.staleFacts": "Datos guardados; la actualización no está disponible ahora.",
+    "guide.releaseNotes": "Notas oficiales de la versión"
   }
 }

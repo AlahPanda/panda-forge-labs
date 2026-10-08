@@ -211,7 +211,7 @@ describe('public redesign and editorial boundaries', () => {
     expect(screen.getByRole('heading', { name: 'Publisher requirement' })).toBeInTheDocument();
     expect(screen.getAllByRole('link', { name: /Detailed instructions/ }).some((link) => link.getAttribute('href') === '#mac-install-detail')).toBe(true);
     cleanup();
-    publicRoute('/modpacks/mac-native', '/modpacks/:slug', <PremiumProjectPage project={{...mac.item, installation:undefined, faq:undefined, media:undefined}} releases={[]}/>);
+    publicRoute('/modpacks/mac-native', '/modpacks/:slug', <PremiumProjectPage project={{...mac.item, translations:{}, installation:undefined, faq:undefined, media:undefined}} releases={[]}/>);
     expect(screen.queryByText('Installation', { selector: 'summary' })).not.toBeInTheDocument();
     expect(screen.queryByRole('heading', { name: 'Latest release' })).not.toBeInTheDocument();
   });
