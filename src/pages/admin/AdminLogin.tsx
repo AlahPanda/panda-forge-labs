@@ -5,6 +5,7 @@ import Seo from '@/components/Seo';
 import { AdminApiError, adminApi, adminAuth, previewOrigin } from '@/lib/adminApi';
 import { useI18n } from '@/lib/i18n';
 import { Lock, Loader2 } from 'lucide-react';
+import { adminConfiguration } from '@/lib/adminConfiguration';
 import { useAdminText } from './adminText';
 
 const loginErrorKey = (error: unknown) => {
@@ -71,6 +72,7 @@ export default function AdminLogin() {
               />
             </div>
             {error && <p role="alert" className="text-sm text-destructive">{error}</p>}
+            {!adminConfiguration().ready && <pre className="text-xs whitespace-pre-wrap break-words">{JSON.stringify(adminConfiguration().status, null, 2)}</pre>}
             {originHelp && <p className="text-xs break-words text-muted-foreground">{a('receivedOrigin')}: <code>{window.location.origin}</code>. {previewOrigin() ? <>{a('expectedOrigin')}: <code>{previewOrigin()}</code>. </> : <>{a('aliasOptional')} </>}{a('originAllowlistHelp')}</p>}
             <button
               type="submit"
