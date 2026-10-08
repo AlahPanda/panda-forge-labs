@@ -1,7 +1,7 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react-swc";
 import path from "path";
-import { publishedNewsPlugin } from "./build/publishedNews";
+import { discoveryPlugin } from "./build/discovery";
 import { previewBuildPlugin } from "./build/previewBuild";
 import { componentTagger } from "lovable-tagger";
 
@@ -14,7 +14,7 @@ export default defineConfig(({ mode }) => ({
       overlay: false,
     },
   },
-  plugins: [react(), publishedNewsPlugin(), previewBuildPlugin(), mode === "development" && componentTagger()].filter(Boolean),
+  plugins: [react(), discoveryPlugin(), previewBuildPlugin(), mode === "development" && componentTagger()].filter(Boolean),
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),

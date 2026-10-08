@@ -56,9 +56,7 @@
           "checkedAt": "2026-09-28T00:00:00.000Z"
         }
       ],
-      "seo": {
-        "noindex": true
-      },
+      "seo": {},
       "projectSlug": "mac-native"
     },
     {
@@ -116,9 +114,7 @@
           "checkedAt": "2026-09-28T00:00:00.000Z"
         }
       ],
-      "seo": {
-        "noindex": true
-      },
+      "seo": {},
       "projectSlug": "mac-native"
     },
     {
@@ -171,9 +167,7 @@
           "checkedAt": "2026-09-28T00:00:00.000Z"
         }
       ],
-      "seo": {
-        "noindex": true
-      },
+      "seo": {},
       "projectSlug": "crafttoons"
     },
     {
@@ -222,13 +216,11 @@
       "sources": [
         {
           "label": "Source 1",
-          "url": "https://github.com/AlahPanda/panda-forge-labs/tree/v2/full-redesign/docs/V2_PHASE_4B21_DATA_I18N_CMS.md",
+          "url": "https://github.com/AlahPanda/panda-forge-labs/blob/0ba93df9b6c2dac0b5c617b64eb51511a581819d/docs/V2_PHASE_4B21_DATA_I18N_CMS.md",
           "checkedAt": "2026-09-28T00:00:00.000Z"
         }
       ],
-      "seo": {
-        "noindex": true
-      }
+      "seo": {}
     },
     {
       "slug": "launchers-destinos-oficiais",
@@ -290,9 +282,7 @@
           "checkedAt": "2026-09-28T00:00:00.000Z"
         }
       ],
-      "seo": {
-        "noindex": true
-      }
+      "seo": {}
     },
     {
       "slug": "faq-nova-base",
@@ -344,9 +334,7 @@
           "checkedAt": "2026-09-28T00:00:00.000Z"
         }
       ],
-      "seo": {
-        "noindex": true
-      }
+      "seo": {}
     },
     {
       "slug": "modrinth-factos-publicos",
@@ -403,9 +391,7 @@
           "checkedAt": "2026-09-28T00:00:00.000Z"
         }
       ],
-      "seo": {
-        "noindex": true
-      },
+      "seo": {},
       "projectSlug": "mac-native"
     },
     {
@@ -458,9 +444,7 @@
           "checkedAt": "2026-09-28T00:00:00.000Z"
         }
       ],
-      "seo": {
-        "noindex": true
-      }
+      "seo": {}
     }
   ]
 }

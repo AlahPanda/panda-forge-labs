@@ -3,7 +3,7 @@ import { adminApi } from '@/lib/adminApi';
 import { useAdminText } from './adminText';
 
 const files = [
-  { path:'src/content/modpacks.json', key:'modpacks' }, { path:'src/content/news.json', key:'articles' },
+  { path:'src/content/modpacks.json', key:'modpacks' },
   { path:'src/content/faq.json', key:'categories' }, { path:'src/content/reviews.json', key:'reviews' },
   { path:'src/content/site.json', key:'site' },
 ] as const;

@@ -92,8 +92,21 @@
       "destination": "/api/modrinth?slug=:slug"
     },
     {
+      "source": "/news/:slug",
+      "destination": "/api/news?slug=:slug"
+    },
+    {
+      "source": "/api/(.*)",
+      "destination": "/api/$1"
+    },
+    {
       "source": "/((?!api(?:/|$)).*)",
       "destination": "/"
     }
-  ]
+  ],
+  "functions": {
+    "api/news.ts": {
+      "includeFiles": "dist/{index.html,news-index.json}"
+    }
+  }
 }

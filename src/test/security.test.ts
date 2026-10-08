@@ -1,5 +1,5 @@
 import { describe, expect, it,  } from 'vitest';
-import { publishedNews } from '../../build/publishedNews';
+import { validatedPublicItems } from '../content/v2/publication';
 import { canSave, validateClaims, validateContent } from '../../supabase/functions/admin-cms/policy';
 import { renderMarkdown, safeMarkdownUrl } from '../components/RichMarkdown';
 import DOMPurify from 'dompurify';
@@ -15,14 +15,15 @@ describe('publication security', () => {
   });
   it('rejects unauthorized paths, malformed JSON and stale revisions', () => {
     expect(validateContent('src/App.tsx', '{}')).toBe('Invalid path');
-    expect(validateContent(news, 'not json')).toBe('Content is not valid JSON');
-    expect(validateContent(news, JSON.stringify({ articles: [{ slug: 'a', draft: true }] }))).toContain('Drafts cannot');
+    expect(validateContent('src/content/v2/articles.json', 'not json')).toBe('Content is not valid JSON');
+    expect(validateContent(news, JSON.stringify({ articles: [] }))).toBe('Invalid path');
+    expect(validateContent('src/content/v2/articles.json', JSON.stringify({ schemaVersion: 2, items: [{ slug: 'private', name: 'Private', body: 'Private', draft: true }] }))).toBe('Invalid articles collection');
     expect(canSave('old', 'new')).toBe(false);
     expect(canSave('same', 'same')).toBe(true);
   });
   it('strips drafts from the public data at build time', () => {
-    expect(publishedNews(JSON.stringify({ articles: [{ slug: 'public', draft: false }, { slug: 'private', draft: true }] })).articles)
-      .toEqual([{ slug: 'public', draft: false }]);
+    const published = { slug: 'public', name: 'Public', body: 'Own text' };
+    expect(validatedPublicItems<{ slug: string }>('articles', { schemaVersion: 2, items: [published, { ...published, slug: 'private', draft: true }] }).map((item) => item.slug)).toEqual(['public']);
   });
   it('does not render unsafe links, image URLs or attributes', () => {
     expect(safeMarkdownUrl('javascript:alert(1)')).toBeNull();

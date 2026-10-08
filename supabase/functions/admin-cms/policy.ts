@@ -7,14 +7,14 @@ export function isContentKind(value: unknown): value is ContentKind {
 }
 
 export const ALLOWED_PATHS = new Set([
-  'src/content/site.json', 'src/content/modpacks.json', 'src/content/news.json',
+  'src/content/site.json', 'src/content/modpacks.json',
   'src/content/faq.json', 'src/content/i18n.json', 'src/content/reviews.json',
   ...CONTENT_KINDS.map(collectionPath),
 ]);
 
 const ROOT_KEYS: Record<string, string> = {
   'src/content/site.json': 'site', 'src/content/modpacks.json': 'modpacks',
-  'src/content/news.json': 'articles', 'src/content/faq.json': 'categories',
+  'src/content/faq.json': 'categories',
   'src/content/reviews.json': 'reviews',
 };
 
@@ -36,10 +36,6 @@ export function validateContent(path: string, content: unknown): string | null {
   if (root && (root === 'site' ? (!obj.site || typeof obj.site !== 'object' || Array.isArray(obj.site)) : !Array.isArray(obj[root]))) {
     return 'Invalid content shape';
   }
-  // Legacy public news must never receive private drafts. Existing published entries remain untouched.
-  if (path === 'src/content/news.json' && (obj.articles as unknown[]).some((a) =>
-    !a || typeof a !== 'object' || typeof (a as { slug?: unknown }).slug !== 'string' ||
-    (a as { draft?: unknown }).draft !== false)) return 'Drafts cannot be saved to public GitHub';
   return null;
 }
 

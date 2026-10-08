@@ -11,7 +11,6 @@
     "preview": "vite preview",
     "test": "vitest run",
     "test:watch": "vitest",
-    "prebuild": "node scripts/generate-discovery.mjs",
     "typecheck:sync": "tsc -p tsconfig.api.json"
   },
   "dependencies": {

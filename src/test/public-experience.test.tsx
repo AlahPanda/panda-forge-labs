@@ -153,15 +153,13 @@ describe('public redesign and editorial boundaries', () => {
     expect(document.body.textContent).not.toContain('ouo.io');
   });
 
-  it('withholds articles pending provenance review at their original URL', () => {
-    const old = publicArticles().find((entry) => entry.source === 'legacy');
-    if (!old) throw new Error('Expected a known legacy article');
-    publicRoute('/news/' + old.slug, '/news/:slug', <ArticleExperience/>);
-    expect(screen.getByRole('heading', { name: 'Article under review' })).toBeInTheDocument();
-    expect(screen.queryByText(old.item.title)).not.toBeInTheDocument();
+  it('does not render the retired under-review page for a removed article', () => {
+    publicRoute('/news/neoforge-vs-fabric-modding-2026', '/news/:slug', <ArticleExperience/>);
+    expect(screen.getByRole('heading', { name: 'Article not found' })).toBeInTheDocument();
+    expect(screen.queryByText('Article under review')).not.toBeInTheDocument();
   });
 
-  it('shows eight sourced editorial drafts with thumbnails and five guides', () => {
+  it('shows eight published sourced articles with thumbnails and five guides', () => {
     publicRoute('/news', '/news', <NewsExperience/>);
     expect(document.querySelectorAll('.experience-article-card img')).toHaveLength(6);
     expect(screen.getByRole('navigation', { name: 'News pages' })).toBeInTheDocument();
