@@ -13,6 +13,7 @@ import { useModrinthStats } from '@/lib/modrinthStats';
 import { officialModrinthProjectUrl } from '@/lib/projectDownload';
 import { localizeItem } from '@/content/v2/localize';
 import { ProjectGallery } from './ProjectGallery';
+import { curatedProjectGallery } from '@/content/project-galleries';
 import { SupporterDownload, resolveSupporterConfiguration } from './SupporterDownload';
 import { publicSettings } from '@/content/publicResolver';
 
@@ -51,7 +52,8 @@ export function PremiumProjectPage({ project: sourceProject, releases }: { proje
   const localGallery = [
     ...(project.media?.filter((item) => item.kind === 'image').map((item) => ({ url: item.url, alt: item.alt || project.name, caption: item.caption })) || []),
   ];
-  const gallery = official?.gallery.length ? official.gallery : localGallery;
+  const curatedGallery = curatedProjectGallery(project.slug, locale);
+  const gallery = curatedGallery.length ? curatedGallery : localGallery.length ? localGallery : official?.gallery || [];
   const related = publicProject('crafttoons');
   const download = officialModrinthProjectUrl(project) || (!project.upstream ? releaseUrl : undefined);
   const supporter = resolveSupporterConfiguration(project.supporterDownload, publicSettings()?.defaultSupporterDownload);
